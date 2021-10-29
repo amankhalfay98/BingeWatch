@@ -15,6 +15,7 @@ const getCollectionFn = (collection) => {
 	};
 };
 
+// to checkout git
 /* Now, you can list your collections here: */
 // You need to change only these
 module.exports = {
