@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/amankhalfay98/BingeWatch/issues"
   },
-  "homepage": "https://github.com/amankhalfay98/BingeWatch#readme"
+  "homepage": "https://github.com/amankhalfay98/BingeWatch#readme",
+  "dependencies": {
+    "mongodb": "^4.1.4"
+  }
 }
