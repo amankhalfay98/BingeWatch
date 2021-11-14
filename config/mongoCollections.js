@@ -18,5 +18,5 @@ const getCollectionFn = (collection) => {
 /* Now, you can list your collections here: */
 // You need to change only these
 module.exports = {
-	restaurants: getCollectionFn('users'),
+	users: getCollectionFn('users'),
 };
