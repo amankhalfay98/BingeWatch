@@ -1,0 +1,102 @@
+const express = require("express");
+const router = express.Router();
+const data = require("./data");
+const moviesData = data.movies;
+
+router.get('/:id', async (req, res) => {
+    try {
+      const movie = await moviesData.getMovie(req.params.id);
+      res.status(200).json(movie);
+    } catch (e) {
+      res.status(404).json({error : 'Movie/TV Show not found.'});
+    }
+  });
+  
+  router.get('/', async (req, res) => {
+    try {
+      const listRest = await moviesData.getAllMovies();
+      res.status(200).json(listRest);
+    } catch (e) {
+      res.status(500).send();
+    }
+  });
+  
+  router.post('/', async (req, res) => {
+      const moviesDataList = req.body;
+      if (!moviesDataList.movie_name) {
+        res.status(400).json({ error: 'You must provide Name of Restaurant' });
+        return;
+      }
+      if (!moviesDataList.director) {
+        res.status(400).json({ error: 'You must provide Location of Restaurant' });
+        return;
+      }
+      if (!moviesDataList.release_year) {
+        res.status(400).json({ error: 'You must provide Phone Number of Restaurant' });
+        return;
+      }
+      if (!moviesDataList.cast) {
+          res.status(400).json({ error: 'You must provide Website of Restaurant' });
+          return;
+        }
+        if (!moviesDataList.genre) {
+          res.status(400).json({ error: 'You must provide PriceRange of Restaurant' });
+          return;
+        }
+        if (!moviesDataList.streaming_services) {
+          res.status(400).json({ error: 'You must provide Cuisines of Restaurant' });
+          return;
+        }
+        
+      try {
+        const { movie_name, director, release_year, cast, genre, streaming_services } = restDataList;
+        const newMovie = await moviesData.create(movie_name, director, release_year, cast, genre, streaming_services);
+        res.status(200).json(newMovie);
+      } catch (e) {
+        res.status(500).json({ error: e });
+      }
+    });
+    
+    router.put('/:id', async (req, res) => {
+      const updatedData = req.body; 
+      if (!updatedData.movie_name || !updatedData.director || !updatedData.release_year || !updatedData.cast || !updatedData.genre ||
+          !updatedData.streaming_services) {
+        res.status(400).json({ error: 'You must Supply All fields' });
+        return;
+      }
+      try {
+        await moviesData.get(req.params.id);
+      } catch (e) {
+        res.status(404).json({ error: 'Movie/TV Show not found' });
+        return;
+      }
+    
+      try {
+        const { name, location, phoneNumber, website, priceRange, cuisines, serviceOptions } = updatedData;
+        const updatedMovie = await moviesData.update(req.params.id, name, location, phoneNumber, website, priceRange, cuisines, serviceOptions);
+        res.status(200).json(updatedMovie);
+      } catch (e) {
+        res.status(500).json({ error: e });
+      }
+    });
+  
+  router.delete('/:id', async (req, res) => {
+      if (!req.params.id) {
+        res.status(400).json({ error: 'You must Supply an ID to delete' });
+        return;
+      }
+      try {
+        await moviesData.get(req.params.id);
+      } catch (e) {
+        res.status(404).json({ error: 'Movie not found' });
+        return;
+      }
+      try {
+        const delmovie = await moviesData.remove(req.params.id);
+        res.status(200).json(delmovie);
+      } catch (e) {
+        res.status(500).json({ error: e });
+      }
+    });
+  
+  module.exports = router;
