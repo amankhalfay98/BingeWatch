@@ -1,4 +1,5 @@
 {
+
   "name": "bingewatch",
   "version": "1.0.0",
   "description": "CS 546 Web Programming I Final Project",
@@ -19,6 +20,7 @@
   "homepage": "https://github.com/amankhalfay98/BingeWatch#readme",
   "dependencies": {
     "mongodb": "^4.1.4",
+    "bcryptjs": "^2.4.3",
     "axios": "^0.23.0",
     "blueimp-md5": "^2.19.0",
     "ejs": "^2.6.2",

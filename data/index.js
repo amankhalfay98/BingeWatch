@@ -1,5 +1,10 @@
-const reviewsData = require("./reviews");
+const moviesData = require('./movies');
+const usersData = require('./users');
+const reviewsData = require('./reviews');
 
 module.exports = {
-  reviews: reviewsData,
+  restaurants: moviesData,
+  users: usersData,
+  reviews: reviewsData
 };
+
