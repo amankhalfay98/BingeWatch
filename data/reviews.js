@@ -47,8 +47,11 @@ const getByMovieId = async (movie_id) => {
   for (let x of allReviews) {
     x._id = x._id.toString();
   }
-
-  return allReviews;
+  if (allReviews && allReviews.length > 0) {
+    return allReviews;
+  } else {
+    return "Review Not Found";
+  }
 };
 
 // To get single review using review id
@@ -99,16 +102,17 @@ const update = async (id, review, rating) => {
 // Method to remove review using review id
 const remove = async (id) => {
   if (!id) throw "You must provide an id to search for";
-  if (!ObjectId.isValid(id)) throw "You must provide a valid id format";
-  id = convertStringToObject(id);
+  if (typeof id !== "string" || !ObjectId.isValid(id))
+    throw "You must provide a valid id format";
+  id = new ObjectId(id.trim());
   const reviewsCollection = await reviews();
   const deletionInfo = await reviewsCollection.deleteOne({ _id: id });
 
   if (deletionInfo.deletedCount === 0) {
     throw `Could not delete review with id of ${id}`;
+  } else {
+    return { deleted: true };
   }
-  const result = `Review has been deleted.`;
-  return result;
 };
 
 module.exports = {
