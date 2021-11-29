@@ -1,5 +1,6 @@
 const mongoCollections = require('../config/mongoCollections');
 const movies = mongoCollections.movies;
+const { ObjectId } = require('mongodb');
 
 // let validNames = (input) => {
 //     //First take out any whitespace within word
@@ -132,10 +133,42 @@ let update = async () => {
 };
 
 //Talk about needing to link movies added to user account, to enable calling this function (unless this is admin specific)
-let remove = async () => {
-    return 1; 
+let remove = async (id) => {
+    if(!id)
+        throw "no id was supplied";
+    
+    if(typeof id !== "string")
+        throw "id is of invalid type";
+
+    if(id.trim().length === 0)
+        throw "id supplied is just an empty string";
+    
+    if(!ObjectId.isValid(id.trim()))
+        throw "id is not a valid ObjectId";
+    
+    let parseId = ObjectId(id.trim());
+
+    const movieCollection = await movies();
+    let name = "";
+
+    try{
+        const findMovie = await movieCollection.findOne({ _id: parseId });
+        if(findMovie === null)
+            throw "no movie with that id";
+        name = findMovie.movie_name;
+    } catch(e) {
+        throw "no movie with that id";
+    }
+
+    const deleteMovie = await movieCollection.deleteOne({ _id: parseId });
+
+    if(deleteMovie.deletedCount === 0)
+        throw "no movie with given id existed within the database";
+        
+    return `${name} was successfully deleted!`;
 };
 
 module.exports = {
-    create
+    create,
+    remove
 };
