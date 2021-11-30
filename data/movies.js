@@ -48,9 +48,99 @@ let validWebsite = (website) => {
     return true;
 };
 
-let create = async (movie_name, director, release_year, cast, streaming, genre, movie_img) => {
+let createMovie = async (movie_name, director, release_year, cast, streaming, genre, movie_img) => {
     if(!movie_name || !director || !release_year || !cast || !streaming || !genre || !movie_img) 
         throw 'One or more input parameter missing.';
+
+    if(typeof movie_name !== 'string' || typeof director !== 'string') 
+        throw 'Incorrect data types';
+    
+    if(movie_name.trim().length === 0 || director.trim().length === 0) 
+        throw 'Strings are just empty spaces';
+    
+    //Most likely will need an extra check for director name
+    //Make sure it is a valid name
+    //Can not add the same movie twice
+
+    if(typeof release_year !== 'number') 
+        throw 'Incorrect data type';
+    
+    //First film produced was 1888
+    if(release_year < 1888 || release_year > new Date().getFullYear())
+        throw 'Invalid release year';
+
+    if(!Array.isArray(cast) || !Array.isArray(genre)) 
+        throw 'Incorrect data type';
+
+    for(i = 0; i < cast.length; i++) {
+        if(typeof cast[i] !== "string" || cast[i].trim().length === 0)
+            throw "cast is not an array of strings or contains empty strings";
+        cast[i] = cast[i].trim();
+    }
+
+    for(i = 0; i < genre.length; i++) {
+        if(typeof genre[i] !== "string" || genre[i].trim().length === 0)
+            throw "genre is not an array of strings or contains empty strings";
+        genre[i] = genre[i].trim();
+    }
+
+    if(typeof streaming !== "object")
+        throw "streaming is not an object";
+
+    if(streaming === null || Array.isArray(streaming))
+        throw "streaming in not a valid object";
+
+    if(!("name" in streaming) || !("link" in streaming)) 
+        throw "streaming missing important information";
+
+    for(let option in streaming) {
+        if(typeof streaming[option] !== "string" || streaming[option].trim().length === 0)
+            throw "key/value pair in streaming is invalid";
+    }
+
+    if(!validWebsite(streaming["link"].trim()))
+        throw "link field in streaming is not a valid website";
+    
+    //validating img here
+
+    const movieCollection = await movies();
+
+    //make a userId field FOR LATER
+    let newMovie = {
+        movie_name: movie_name.trim(),
+        director: director.trim(),
+        release_year: release_year,
+        cast: cast,
+        streaming_service: streaming,
+        rating: 0,
+        genre: genre,
+        views: 0,
+        reviews: [],
+        watched_list: [],
+        movie_img: movie_img,
+        tag: "movie"
+    };
+
+    const insertMovie = await movieCollection.insertOne(newMovie);
+    
+    if(insertMovie.insertedCount === 0)
+        throw "movie could not be added";
+    
+    return `${movie_name} successfully added!`;
+};
+
+let updateMovie = async (id, movie_name, director, release_year, cast, streaming, genre, movie_img) => {
+    if(!id || !movie_name || !director || !release_year || !cast || !streaming || !genre || !movie_img)
+        throw "One or more input parameter missing.";
+    
+    if(typeof id !== "string")
+        throw "id is of invalid type";
+
+    if(id.trim().length === 0)
+        throw "id supplied is just an empty string";
+    
+    if(!ObjectId.isValid(id.trim()))
+        throw "id is not a valid ObjectId";
 
     if(typeof movie_name !== 'string' || typeof director !== 'string') 
         throw 'Incorrect data types';
@@ -99,43 +189,77 @@ let create = async (movie_name, director, release_year, cast, streaming, genre, 
 
     if(!validWebsite(streaming["link"].trim()))
         throw "link field in streaming is not a valid website";
-    
-    //need talk about validating img
 
+    //validating img here
+
+    let parseId = ObjectId(id.trim());
+    let oldMovieName = "";
+    let oldDirector = "";
+    let oldYear = 0;
+    let oldCast = [];
+    let oldStream = {};
+    let currRating = 0;
+    let oldGenre = [];
+    let currViews = 0;
+    let currReviews = [];
+    let currWatch = [];
+    let oldImg = "";
     const movieCollection = await movies();
 
-    let newMovie = {
+    try {
+        const findMovie = await movieCollection.findOne({_id: parseId});
+        if(findMovie === null)
+            throw "no movie with given id";
+        oldMovieName = findMovie.movie_name;
+        oldDirector = findMovie.director;
+        oldYear = findMovie.release_year;
+        oldCast = findMovie.cast;
+        oldStream = findMovie.streaming_service;
+        currRating = findMovie.rating;
+        oldGenre = findMovie.genre;
+        currViews = findMovie.views;
+        currReviews = findMovie.reviews;
+        currWatch = findMovie.watched_list;
+        oldImg = findMovie.movie_img;
+    } catch(e) {
+        throw "no movie with given id";
+    }
+
+    //Compare the mutable fields to see if at least ONE of them is different from previos version of the movie
+    if(movie_name.trim() === oldMovieName && director.trim() === oldDirector && release_year === oldYear &&
+        cast === oldCast && streaming === oldStream && genre === oldGenre && movie_img === oldImg)
+            throw "updated fields are the same as the original";
+    
+    //make a userId field FOR LATER
+    let updateMovie = {
         movie_name: movie_name.trim(),
         director: director.trim(),
         release_year: release_year,
         cast: cast,
         streaming_service: streaming,
-        rating: 0,
+        rating: currRating,
         genre: genre,
-        views: 0,
-        reviews: [],
-        watched_list: [],
+        views: currViews,
+        reviews: currReviews,
+        watched_list: currWatch,
         movie_img: movie_img,
         tag: "movie"
     };
 
-    const insertMovie = await movieCollection.insertOne(newMovie);
+    const updatedMovie = await movieCollection.updateOne(
+        { _id: parseId },
+        { $set: updateMovie }
+    );
     
-    if(insertMovie.insertedCount === 0)
-        throw "movie could not be added";
+    if(updatedMovie.modifiedCount === 0)
+        throw "nothing was updated";
     
-    return `${movie_name} successfully added!`;
+    return `${movie_name} with id ${id} successfully updated!`;
 };
 
-//Need more talk about mutable fields
-let update = async () => {
-    return 1; 
-};
-
-//Talk about needing to link movies added to user account, to enable calling this function (unless this is admin specific)
-let remove = async (id) => {
+let getMovie = async (id) => {
     if(!id)
-        throw "no id was supplied";
+        throw "no id is given.";
     
     if(typeof id !== "string")
         throw "id is of invalid type";
@@ -145,30 +269,26 @@ let remove = async (id) => {
     
     if(!ObjectId.isValid(id.trim()))
         throw "id is not a valid ObjectId";
-    
+
     let parseId = ObjectId(id.trim());
-
     const movieCollection = await movies();
-    let name = "";
+    const wantedMovie = await movieCollection.findOne({_id: parseId});
 
-    try{
-        const findMovie = await movieCollection.findOne({ _id: parseId });
-        if(findMovie === null)
-            throw "no movie with that id";
-        name = findMovie.movie_name;
-    } catch(e) {
-        throw "no movie with that id";
-    }
+    if(wantedMovie === null)
+        throw "no movie with given id";
 
-    const deleteMovie = await movieCollection.deleteOne({ _id: parseId });
+    return wantedMovie;
+};
 
-    if(deleteMovie.deletedCount === 0)
-        throw "no movie with given id existed within the database";
-        
-    return `${name} was successfully deleted!`;
+let getAllMovies = async() => {
+    const movieCollection = await movies();
+    const moviesArr = await movieCollection.find({}).toArray();
+    return moviesArr;
 };
 
 module.exports = {
-    create,
-    remove
+    createMovie,
+    updateMovie,
+    getMovie,
+    getAllMovies
 };
