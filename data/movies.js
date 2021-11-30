@@ -129,7 +129,7 @@ let createMovie = async (movie_name, director, release_year, cast, streaming, ge
     return `${movie_name} successfully added!`;
 };
 
-let updateMovie = async (id, movie_name, director, release_year, cast, streaming, genre, movie_img) => {
+let updatingMovie = async (id, movie_name, director, release_year, cast, streaming, genre, movie_img) => {
     if(!id || !movie_name || !director || !release_year || !cast || !streaming || !genre || !movie_img)
         throw "One or more input parameter missing.";
     
@@ -288,7 +288,7 @@ let getAllMovies = async() => {
 
 module.exports = {
     createMovie,
-    updateMovie,
+    updatingMovie,
     getMovie,
     getAllMovies
 };
