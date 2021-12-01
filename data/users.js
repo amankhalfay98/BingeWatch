@@ -1,301 +1,329 @@
+let { ObjectId } = require('mongodb');
 const mongoCollections = require('../config/mongoCollections');
 const users = mongoCollections.users;
-let { ObjectId } = require('mongodb');
+const bcrypt = require('bcryptjs');
+const saltRounds = 12;
 
 module.exports = {
-  //Functions Start here
+	//Functions Start here
 
-async create(name, date_of_birth, username, password, email, watchlist, favourites,followers,following,reviewId,private,profile_pic,tag)
-{
-  //Error Handeling
-  if (!name||!date_of_birth||!username||!password||!email) {
-    throw 'One or more Input parameter missing. Please provide valid input for all fields for Restaurant.';
-  }
-  if (typeof name !== 'string' || name.trim().length === 0){
-    throw 'User name is invalid'; 
-  }
-  if (typeof date_of_birth !== 'string' || date_of_birth.trim().length === 0){
-    throw 'User Date of Birth is invalid'; 
-  }
-  if (typeof username !== 'string' || username.trim().length === 0){
-    throw 'Username is invalid'; 
-  }
-  if (typeof email !== 'string' || email.trim().length === 0){
-    throw 'User email id is invalid'; 
-  }
-  if (typeof password !== 'string' || password.trim().length === 0){
-    throw 'Password is invalid'; 
-  }
-//     let restNumber = phoneNumber.split("-");
-//     if(restNumber.length!==3||
-//       restNumber[0].length!==3||
-//       restNumber[1].length!==3||
-//       restNumber[2].length!==4){
-//     throw "Invalid Phone Number has been passed.";
-//   }
-    let emailId = email.split("@");
-    if(!(emailId[emailId.length-1].localeCompare('com') === 0 )){
-    throw "Please enter a valid Website For the Restaurant";
-  }
+	async createUser(name, date_of_birth, username, password, email) {
+		//Error Handling
+		if (!name || !date_of_birth || !username || !password || !email) {
+			throw 'One or more Input parameter missing. Please provide valid input for all fields.';
+		}
+		if (typeof name !== 'string' || name.trim().length === 0) {
+			throw 'User name is invalid';
+		}
+		if (
+			typeof date_of_birth !== 'string' ||
+			date_of_birth.trim().length === 0
+		) {
+			throw 'Please provide Date of Birth';
+		}
+		if (
+			!username ||
+			typeof username !== 'string' ||
+			username.trim().length === 0
+		) {
+			throw 'Please provide username';
+		}
 
-//   if(!(priceRange.localeCompare('$') === 0 ||
-//     priceRange.localeCompare('$$') === 0 || 
-//     priceRange.localeCompare('$$$') === 0 || 
-//     priceRange.localeCompare('$$$$') === 0)){
-//     throw 'Price Range has to be between "$" and "$$$$" other input cannot be passed.';
-//   }
-//Arrays watchlist, favourites,followers,following,reviewId
-  if(!Array.isArray(watchlist)){
-    throw 'watchlist must be Array';
-  }
+		username = username.trim().toLowerCase();
+		if (username.length < 4)
+			throw 'username should be at least 4 characters long';
 
-  if(!Array.isArray(favourites)){
-    throw 'favourites must be Array';
-  }
-  if(!Array.isArray(followers)){
-    throw 'followers must be Array';
-  }
-  if(!Array.isArray(following)){
-    throw 'following must be Array';
-  }
-  if(!Array.isArray(reviewId)){
-    throw 'reviewId must be Array';
-  }
+		for (let i = 0; i < username.length; i++) {
+			const element = username[i];
+			//console.log(element);
+			if (/\s+/g.test(element)) throw 'spaces not allowed in username';
+			if (!element.match(/([a-z0-9])/))
+				throw 'only alphanumeric characters allowed';
+		}
 
-//   for (let elements of cuisines) {
-//     if(typeof elements !== 'string' || 
-//       elements.trim().length === 0){
-//         throw 'Cuisine have to be of type String.';
-//     }
-//   }
+		if (typeof email !== 'string' || email.trim().length === 0) {
+			throw 'User email id is invalid';
+		}
+		if (
+			!password ||
+			typeof password !== 'string' ||
+			password.trim().length === 0
+		) {
+			throw 'Please provide password';
+		}
 
-//   if(typeof serviceOptions !== 'object'|| 
-//     Array.isArray(serviceOptions)){
-//     throw 'Service Options has to be of type Object';
-//   }
-  
-//   if(Object.keys(serviceOptions).length !== 3){
-//     throw "Service Option missing."
-//   }
+		if (password.length < 6)
+			throw 'password should be at least 6 characters long';
 
-//   for (const key in serviceOptions) {
-//     if(!(key ==='dineIn')){
-//       if(!(key ==='takeOut')){
-//         if(!(key==='delivery')){
-//       throw 'Service Options require dineIn, takeOut, delivery';
-//         }
-//       }
-//     }
-//     if(typeof private !== 'boolean'){
-//        throw 'private can only be true or false';
-//     }
-//   }
+		for (let i = 0; i < password.length; i++) {
+			const element = password[i];
+			//console.log(element);
+			if (/\s+/g.test(element)) throw 'spaces not allowed in password';
+		}
 
-  if(typeof private !== 'boolean'){
-    throw 'private can only be true or false';
- }
+		// let emailId = email.split('@');
+		// if (!(emailId[emailId.length - 1].localeCompare('com') === 0)) {
+		// 	throw 'Please enter a valid EmailId';
+		// }
 
-  //Insert data into Database
-    const collectionOfUsers = await users();
+		//Arrays watchlist, favourites,followers,following,reviewId
+		// if (!Array.isArray(watchlist)) {
+		// 	throw 'watchlist must be Array';
+		// }
 
-    let userDetails = {
-        name: name,
-        date_of_birth: date_of_birth,
-        username: username, 
-        password: password, 
-        email: email, 
-        watchlist: watchlist, 
-        favourites: favourites,
-        followers: followers,
-        following: following,
-        reviewId: reviewId,
-        private: private,
-        profile_pic: profile_pic,
-        tag: tag
-    };
+		// if (!Array.isArray(favourites)) {
+		// 	throw 'favourites must be Array';
+		// }
+		// if (!Array.isArray(followers)) {
+		// 	throw 'followers must be Array';
+		// }
+		// if (!Array.isArray(following)) {
+		// 	throw 'following must be Array';
+		// }
+		// if (!Array.isArray(reviewId)) {
+		// 	throw 'reviewId must be Array';
+		// }
 
-    const userInserted = await collectionOfUsers.insertOne(userDetails);
+		// if (typeof private !== 'boolean') {
+		// 	throw 'private can only be true or false';
+		// }
 
-    if (userInserted.insertedCount === 0) {
-      throw 'User could not be added';
-    }
-    let userId = userInserted.insertedId;
-    
-    //convert ObjectID to String
-    userId = userId.toString();
+		//Insert data into Database
+		const collectionOfUsers = await users();
 
-    const user = await this.get(userId);
-    return user;
-},
+		const oldUsers = await collectionOfUsers.findOne({ username: username });
 
-// async getAll(){
-//   //Error Handeling
-//   if(arguments.length!==0){
-//     throw "Arguments cannot be passed for this function call.";
-//   }
-//   //Get list of data in DB
-//     const collectionOfUsers = await users();
-//     const listOfAllUsers = await collectionOfUsers.find({}).toArray();
-//     //convert ObjectID to String
-//     listOfAllUsers.forEach(user => {
-//       let getIndex = user._id.toString();
-//       user._id = getIndex;
-//     });
-//     return listOfAllUsers;
-// },
+		if (oldUsers !== null) throw 'already a user with that username';
 
-async get(id){
- //Error Handeling
-    if (!id) {
-      throw 'Input Id field is required.';
-    }
-    
-    if(typeof id !=='string'||id.trim().length===0){
-      throw 'Id can only be of type String.';
-    }
+		const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    //Converting String ID to ObjectID
-    let objParseID = ObjectId(id);
+		let userDetails = {
+			name: name,
+			date_of_birth: date_of_birth,
+			username: username,
+			password: hashedPassword,
+			email: email,
+			watchlist: [],
+			favourites: [],
+			followers: [],
+			following: [],
+			reviewId: [],
+			private: false,
+			profile_pic: '',
+			tag: 'user',
+		};
 
-    const collectionOfUsers = await users();
-    const user = await collectionOfUsers.findOne({ _id: objParseID });
-    if (!user) {
-      throw 'User could not be found with the supplied ID.';
-    }
-    let getIndex = user._id.toString();
-    user._id = getIndex;
-    return user;
-},
+		const userInserted = await collectionOfUsers.insertOne(userDetails);
 
-async remove(id){
-  //Error Handeling
-    if (!id){
-      throw 'Input id must be provided.';
-    } 
-    if(typeof id !=='string'||id.trim().length===0){
-      throw new 'Id can only be of type String.';
-    }
-    //Converting String ID to ObjectID
-    let objParseID = ObjectId(id);
-    //let delrest = await this.get(id);
-    const collectionOfUsers = await users();
-    //Delete Supplied Data ID object
-    const userToBeDeleted = await collectionOfUsers.deleteOne({ _id: objParseID });
+		if (userInserted.insertedCount === 0) {
+			throw 'User could not be added';
+		}
+		let userId = userInserted.insertedId;
 
-    if (userToBeDeleted.deletedCount === 0) {
-      throw 'User with the supplied id could not be deleted/ does not Exist.';
-    }
+		//convert ObjectID to String
+		userId = userId.toString();
 
-    let retObj ={};
-    retObj['userId']= id,
-    retObj['deleted'] = true
-    return retObj;
-},
+		const user = await this.get(userId);
+		return user;
+	},
 
-async update (id, name, username, password, private, profile_pic){ //name, username, profile picture, password ,private
-    
-    // if (!id||!name||!username||!password||!website||!priceRange||!cuisines||!serviceOptions) {
-    //     throw 'One or more Input parameter missing. Please provide valid input for all fields.';
-    //   }
-    if (!id){
-        throw 'Input id must be provided.';
-      } 
-      if (typeof id !== 'string' || id.trim().length === 0){
-        throw 'Please enter Valid (String) Name for Restaurant'; 
-      }
-    //   if (typeof name !== 'string' || name.trim().length === 0){
-    //     throw 'Please enter Valid (String) Name for Restaurant'; 
-    //   }
-    //   if (typeof location !== 'string' || location.trim().length === 0){
-    //     throw 'Please enter Valid (String) location for Restaurant'; 
-    //   }
-    //   if (typeof phoneNumber !== 'string' || phoneNumber.trim().length === 0){
-    //     throw 'Please enter Valid (String) phone number for Restaurant'; 
-    //   }
-    //   if (typeof website !== 'string' || website.trim().length === 0){
-    //     throw 'Please enter Valid (String) website for Restaurant'; 
-    //   }
-    //   if (typeof priceRange !== 'string' || priceRange.trim().length === 0){
-    //     throw 'Please enter Valid (String) price range for Restaurant'; 
-    //   }
-        let restNumber = phoneNumber.split("-");
-      if(restNumber.length!==3||
-          restNumber[0].length!==3||
-          restNumber[1].length!==3||
-          restNumber[2].length!==4){
-        throw "Invalid Phone Number has been passed.";
-      }
-        let siteURL = website.split(".");
-      if(!(siteURL[0].localeCompare('http://www') === 0) || 
-         !(siteURL[siteURL.length-1].localeCompare('com') === 0 ) || 
-         siteURL[1].length < 5){
-        throw "Please enter a valid Website For the Restaurant";
-      }
-    
-      if(!(priceRange.localeCompare('$') === 0 ||
-        priceRange.localeCompare('$$') === 0 || 
-        priceRange.localeCompare('$$$') === 0 || 
-        priceRange.localeCompare('$$$$') === 0)){
-        throw 'Price Range has to be between "$" and "$$$$" other input cannot be passed.';
-      }
-        
-      if(!Array.isArray(cuisines)|| 
-        cuisines.length === 0){
-        throw 'Cuisines must be Array with atleast 1 cusine.';
-      }
-    
-      for (let elements of cuisines) {
-        if(typeof elements !== 'string' || 
-          elements.trim().length === 0){
-            throw 'Cuisine have to be of type String.';
-        }
-      }
-    
-      if(typeof serviceOptions !== 'object'|| 
-        Array.isArray(serviceOptions)){
-        throw 'Service Options has to be of type Object';
-      }
-    
-      if(Object.keys(serviceOptions).length !== 3){
-        throw "Service Option missing."
-      }
+	async checkUser(username, password) {
+		// Error handling for username
+		if (!username || username.trim() == '') throw 'Please provide username';
 
-      for (const key in serviceOptions) {
-          if(!(key ==='dineIn')){
-            if(!(key ==='takeOut')){
-              if(!(key==='delivery')){
-            throw 'Service Options require dineIn, takeOut, delivery';
-              }
-            }
-          }
-          if(typeof serviceOptions[key] !== 'boolean'){
-           throw 'Service Options value have to be Boolean type.';
-        }
-      }
+		username = username.trim().toLowerCase();
+		if (username.length < 4)
+			throw 'username should be at least 4 characters long';
 
-      const fieldValOfUser = await this.get(id);
-      if(!fieldValOfUser) throw 'User does not exist.';
-      //Update Data
-    const collectionOfUsers = await users();
-    const updateAllUser = {
-        name: name,
-        location: location,
-        phoneNumber: phoneNumber,
-        website: website,
-        priceRange: priceRange,
-        cuisines: cuisines,
-        serviceOptions: serviceOptions,
-        overallRating: fieldValOfRest.overallRating,
-        reviews: fieldValOfRest.reviews
-    };
-    let objParseID = ObjectId(id);
-    const userDataUpdate = await collectionOfUsers.updateOne(
-      { _id: objParseID },
-      { $set: updateAllUser }
-    );
-    if (userDataUpdate.modifiedCount === 0) {
-      throw 'User details could not be updated.';
-    }
-    return await this.get(id);  
-}
+		for (let i = 0; i < username.length; i++) {
+			const element = username[i];
+			//console.log(element);
+			if (/\s+/g.test(element)) throw 'spaces not allowed in username';
+			if (!element.match(/([a-z0-9])/))
+				throw 'only alphanumeric characters allowed';
+		}
+
+		// Error handling for password
+
+		if (!password || password.trim() == '') throw 'Please provide password';
+
+		if (password.length < 6)
+			throw 'password should be at least 6 characters long';
+
+		for (let i = 0; i < password.length; i++) {
+			const element = password[i];
+			//console.log(element);
+			if (/\s+/g.test(element)) throw 'spaces not allowed in password';
+		}
+
+		const collectionOfUsers = await users();
+
+		const oldUsers = await collectionOfUsers.findOne({ username: username });
+
+		if (oldUsers === null) throw 'Either the username or password is invalid';
+
+		//console.log(oldUsers);
+
+		let compareToMatch = false;
+
+		try {
+			compareToMatch = await bcrypt.compare(password, oldUsers.password);
+		} catch (e) {
+			//no op
+		}
+
+		if (compareToMatch) {
+			return { authenticated: true };
+		} else {
+			throw 'Either the username or password is invalid';
+		}
+	},
+
+	// async getAll(){
+	//   //Error Handeling
+	//   if(arguments.length!==0){
+	//     throw "Arguments cannot be passed for this function call.";
+	//   }
+	//   //Get list of data in DB
+	//     const collectionOfUsers = await users();
+	//     const listOfAllUsers = await collectionOfUsers.find({}).toArray();
+	//     //convert ObjectID to String
+	//     listOfAllUsers.forEach(user => {
+	//       let getIndex = user._id.toString();
+	//       user._id = getIndex;
+	//     });
+	//     return listOfAllUsers;
+	// },
+
+	async get(id) {
+		//Error Handeling
+		if (!id) {
+			throw 'Input Id field is required.';
+		}
+
+		if (typeof id !== 'string' || id.trim().length === 0) {
+			throw 'Id can only be of type String.';
+		}
+
+		id = id.trim();
+
+		if (!ObjectId.isValid(id) || ObjectId(id).toString() !== id)
+			throw 'Invalid id';
+
+		//Converting String ID to ObjectID
+		let objParseID = ObjectId(id);
+
+		const collectionOfUsers = await users();
+		const user = await collectionOfUsers.findOne({ _id: objParseID });
+		if (!user) {
+			throw 'User could not be found with the supplied ID.';
+		}
+		let getIndex = user._id.toString();
+		user._id = getIndex;
+		return user;
+	},
+
+	async remove(id) {
+		//Error Handeling
+		if (!id) {
+			throw 'Input id must be provided.';
+		}
+		if (typeof id !== 'string' || id.trim().length === 0) {
+			throw new 'Id can only be of type String.'();
+		}
+		//Converting String ID to ObjectID
+		let objParseID = ObjectId(id);
+		//let delrest = await this.get(id);
+		const collectionOfUsers = await users();
+		//Delete Supplied Data ID object
+		const userToBeDeleted = await collectionOfUsers.deleteOne({
+			_id: objParseID,
+		});
+
+		if (userToBeDeleted.deletedCount === 0) {
+			throw 'User with the supplied id could not be deleted/ does not Exist.';
+		}
+
+		let retObj = {};
+		(retObj['userId'] = id), (retObj['deleted'] = true);
+		return retObj;
+	},
+
+	async update(id, name, password, private, profile_pic) {
+		//Error Handling
+		if (!id) throw 'You must provide an id to update';
+
+		if (typeof id !== 'string' || id.trim() === '')
+			throw 'Please provide a valid id';
+
+		id = id.trim();
+
+		if (!ObjectId.isValid(id) || ObjectId(id).toString() !== id)
+			throw 'Invalid id';
+
+		if (!name || !private || !password || !profile_pic) {
+			throw 'One or more Input parameter missing. Please provide valid input for all fields.';
+		}
+		if (typeof name !== 'string' || name.trim().length === 0) {
+			throw 'User name is invalid';
+		}
+		// if (
+		// 	typeof profile_pic !== 'string' ||
+		// 	profile_pic.trim().length === 0
+		// ) {
+		// 	throw 'Please provide Date of Birth';
+		// }
+		if (!private || typeof private !== 'boolean') {
+			throw 'Please provide username';
+		}
+
+		if (
+			!password ||
+			typeof password !== 'string' ||
+			password.trim().length === 0
+		) {
+			throw 'Please provide password';
+		}
+
+		if (password.length < 6)
+			throw 'password should be at least 6 characters long';
+
+		for (let i = 0; i < password.length; i++) {
+			const element = password[i];
+			//console.log(element);
+			if (/\s+/g.test(element)) throw 'spaces not allowed in password';
+		}
+
+		const fieldValOfUser = await this.get(id);
+		if (!fieldValOfUser) throw 'User does not exist.';
+		//Update Data
+		const collectionOfUsers = await users();
+
+		const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+		const updateUser = {
+			name: name,
+			date_of_birth: fieldValOfUser.date_of_birth,
+			username: fieldValOfUser.username,
+			password: hashedPassword,
+			email: fieldValOfUser.email,
+			watchlist: fieldValOfUser.watchlist,
+			favourites: fieldValOfUser.favourites,
+			followers: fieldValOfUser.followers,
+			following: fieldValOfUser.following,
+			reviewId: fieldValOfUser.reviewId,
+			private: private,
+			profile_pic: profile_pic,
+			tag: 'user',
+		};
+		let objParseID = ObjectId(id);
+		const userDataUpdate = await collectionOfUsers.updateOne(
+			{ _id: objParseID },
+			{ $set: updateUser }
+		);
+		if (userDataUpdate.modifiedCount === 0) {
+			throw 'User details could not be updated.';
+		}
+		return await this.get(id);
+	},
 };

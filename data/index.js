@@ -3,7 +3,8 @@ const usersData = require('./users');
 const reviewsData = require('./reviews');
 
 module.exports = {
-  restaurants: moviesData,
+  movies: moviesData,
   users: usersData,
   reviews: reviewsData
 };
+

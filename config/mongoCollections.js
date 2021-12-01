@@ -7,7 +7,7 @@ const getCollectionFn = (collection) => {
 
 	return async () => {
 		if (!_col) {
-			const db = await dbConnection();
+			const db = await dbConnection.connectToDb();
 			_col = await db.collection(collection);
 		}
 
@@ -15,6 +15,7 @@ const getCollectionFn = (collection) => {
 	};
 };
 
+// to checkout git
 /* Now, you can list your collections here: */
 // You need to change only these
 module.exports = {
