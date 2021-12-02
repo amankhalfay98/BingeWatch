@@ -286,9 +286,16 @@ let getAllMovies = async() => {
     return moviesArr;
 };
 
+let getTrending = async ()=> {
+    const movieCollection = await movies();
+    const moviesArr = await movieCollection.find().sort({views:-1}).limit(10);
+    return moviesArr;
+}
+
 module.exports = {
     createMovie,
     updatingMovie,
     getMovie,
-    getAllMovies
+    getAllMovies,
+    getTrending
 };

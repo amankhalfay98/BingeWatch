@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const data = require("./data");
+const data = require("../data");
 const moviesData = data.movies;
 
-router.get('/:id', async (req, res) => {
+router.get('movies/:id', async (req, res) => {
     try {
       const movie = await moviesData.getMovie(req.params.id);
       res.status(200).json(movie);
@@ -11,8 +11,8 @@ router.get('/:id', async (req, res) => {
       res.status(404).json({error : 'Movie/TV Show not found.'});
     }
   });
-  
-  router.get('/', async (req, res) => {
+
+  router.get('movies/all', async (req, res) => {
     try {
       const listRest = await moviesData.getAllMovies();
       res.status(200).json(listRest);
@@ -21,7 +21,16 @@ router.get('/:id', async (req, res) => {
     }
   });
   
-  router.post('/', async (req, res) => {
+  router.get('/', async (req, res) => {
+    try {
+      const listRest = await moviesData.getTrending();
+      res.status(200).json(listRest);
+    } catch (e) {
+      res.status(500).send();
+    }
+  });
+  
+  router.post('movies/', async (req, res) => {
       const moviesDataList = req.body;
       if (!moviesDataList.movie_name) {
         res.status(400).json({ error: 'You must provide Name of the Movie' });
@@ -61,7 +70,7 @@ router.get('/:id', async (req, res) => {
       }
     });
     
-    router.put('/:id', async (req, res) => {
+    router.put('movies/:id', async (req, res) => {
       const updatedData = req.body; 
       if (!updatedData.movie_name || !updatedData.director || !updatedData.release_year || !updatedData.cast || !updatedData.genre ||
           !updatedData.streaming_services ) {
