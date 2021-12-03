@@ -328,10 +328,17 @@ const updateMovieReviewID = async (movie_id, review_id) => {
   return `${movie.movie_name} with id ${movie._id} successfully updated!`;
 };
 
+let getTrending = async ()=> {
+    const movieCollection = await movies();
+    const moviesArr = await movieCollection.find().sort({views:-1}).limit(10);
+    return moviesArr;
+}
+
 module.exports = {
   createMovie,
   updatingMovie,
   getMovie,
   getAllMovies,
+  getTrending,
   updateMovieReviewID,
 };
