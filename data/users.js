@@ -29,7 +29,8 @@ module.exports = {
 			throw 'Please provide Date of Birth';
 		}
 		date_of_birth = date_of_birth.trim();
-		if (!date_of_birth.match(/^\d{2}[/]\d{2}[/]\d{4}$/))
+		// console.log('In Data', date_of_birth);
+		if (!date_of_birth.match(/^\d{4}-\d{2}-\d{2}$/))
 			throw 'Invalid Date of Birth';
 
 		// For Username
