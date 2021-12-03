@@ -1,6 +1,8 @@
 const mongoCollections = require("../config/mongoCollections");
 const ObjectId = require("mongodb").ObjectId;
 const reviews = mongoCollections.reviews;
+const movies = require("./movies");
+const validation = require("./validation");
 
 // Add a new review in review collection
 const create = async (
@@ -9,9 +11,20 @@ const create = async (
   movie_id,
   movie_name,
   review,
-  rating,
-  tag
+  rating
 ) => {
+  if (!validation.validObjectIdString(user_id))
+    throw "user id provided is not a valid object.";
+  if (!validation.validString(username))
+    throw "username provided is not a valid string.";
+  if (!validation.validObjectIdString(movie_id))
+    throw "movie id provided is not a valid object.";
+  if (!validation.validString(movie_name))
+    throw "movie name provided is not a valid string.";
+  if (!validation.validString(review))
+    throw "review provided is not a valid string.";
+  if (!validation.validRating(rating))
+    throw "review provided is not a valid string.";
   let newReview = {
     user_id,
     username,
@@ -19,15 +32,18 @@ const create = async (
     movie_name,
     review,
     rating,
-    tag,
+    tag: "review",
   };
   const reviewsCollection = await reviews();
   const insertInfo = await reviewsCollection.insertOne(newReview);
   if (insertInfo.insertedCount === 0) throw "Could not add Review";
+  movies.updateMovieReviewID(movie_id, insertInfo.insertedId);
 };
 
 // To get all the reviews for a particular user using user_id
 const getByUser = async (user_id) => {
+  if (!validation.validObjectIdString(user_id))
+    throw "user id provided is not a valid object.";
   const reviewCollection = await reviews();
   const allReviews = await reviewCollection
     .find({ user_id: { $eq: user_id } })
@@ -39,7 +55,9 @@ const getByUser = async (user_id) => {
 };
 
 // To get all the reviews for a particular movie using movie id
-const getByMovieId = async (movie_id) => {
+const getReviewsByMovieId = async (movie_id) => {
+  if (!validation.validObjectIdString(movie_id))
+    throw "movie id provided is not a valid object.";
   const reviewCollection = await reviews();
   const allReviews = await reviewCollection
     .find({ movie_id: { $eq: movie_id } })
@@ -56,6 +74,8 @@ const getByMovieId = async (movie_id) => {
 
 // To get single review using review id
 const getById = async (id) => {
+  if (!validation.validObjectIdString(id))
+    throw "user id provided is not a valid object.";
   let reviewId = ObjectId(id);
   const reviewCollection = await reviews();
   let review = await reviewCollection.findOne({ _id: reviewId });
@@ -67,8 +87,14 @@ const getById = async (id) => {
 // Method to update review and rating
 const update = async (id, review, rating) => {
   if (id === undefined) throw "No id provided";
+  if (!validation.validObjectIdString(id))
+    throw "user id provided is not a valid object.";
   if (review === undefined) throw "No id provided";
+  if (!validation.validString(review))
+    throw "review provided is not a valid string.";
   if (rating === undefined) throw "No id provided";
+  if (!validation.validRating(rating))
+    throw "review provided is not a valid string.";
   const reviewCollection = await reviews();
   let reviewId = ObjectId(id);
   let originalData = await get(reviewId);
@@ -101,9 +127,9 @@ const update = async (id, review, rating) => {
 
 // Method to remove review using review id
 const remove = async (id) => {
-  if (!id) throw "You must provide an id to search for";
-  if (typeof id !== "string" || !ObjectId.isValid(id))
-    throw "You must provide a valid id format";
+  if (id === undefined) throw "No id provided";
+  if (!validation.validObjectIdString(id))
+    throw "user id provided is not a valid object.";
   id = new ObjectId(id.trim());
   const reviewsCollection = await reviews();
   const deletionInfo = await reviewsCollection.deleteOne({ _id: id });
@@ -119,7 +145,7 @@ module.exports = {
   create,
   getByUser,
   getById,
-  getByMovieId,
+  getReviewsByMovieId,
   update,
   remove,
 };
