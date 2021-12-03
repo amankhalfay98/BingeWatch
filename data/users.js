@@ -9,18 +9,30 @@ module.exports = {
 
 	async createUser(name, date_of_birth, username, password, email) {
 		//Error Handling
-		if (!name || !date_of_birth || !username || !password || !email) {
-			throw 'One or more Input parameter missing. Please provide valid input for all fields.';
-		}
-		if (typeof name !== 'string' || name.trim().length === 0) {
+
+		//For Name
+		if (!name || typeof name !== 'string' || name.trim().length === 0) {
 			throw 'User name is invalid';
 		}
+		for (let i = 0; i < name.length; i++) {
+			const element = name[i];
+			//console.log(element);
+			if (!element.match(/([a-zA-Z])/)) throw 'only characters allowed';
+		}
+
+		// For DOB
 		if (
+			!date_of_birth ||
 			typeof date_of_birth !== 'string' ||
 			date_of_birth.trim().length === 0
 		) {
 			throw 'Please provide Date of Birth';
 		}
+		date_of_birth = date_of_birth.trim();
+		if (!date_of_birth.match(/^\d{2}[/]\d{2}[/]\d{4}$/))
+			throw 'Invalid Date of Birth';
+
+		// For Username
 		if (
 			!username ||
 			typeof username !== 'string' ||
@@ -41,9 +53,19 @@ module.exports = {
 				throw 'only alphanumeric characters allowed';
 		}
 
-		if (typeof email !== 'string' || email.trim().length === 0) {
+		// For Email
+		if (!email || typeof email !== 'string' || email.trim().length === 0) {
 			throw 'User email id is invalid';
 		}
+		email = email.trim();
+		if (
+			!email.match(
+				/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+			)
+		)
+			throw 'Invalid Email Address';
+
+		//For Password
 		if (
 			!password ||
 			typeof password !== 'string' ||
@@ -60,29 +82,6 @@ module.exports = {
 			//console.log(element);
 			if (/\s+/g.test(element)) throw 'spaces not allowed in password';
 		}
-
-		// let emailId = email.split('@');
-		// if (!(emailId[emailId.length - 1].localeCompare('com') === 0)) {
-		// 	throw 'Please enter a valid EmailId';
-		// }
-
-		//Arrays watchlist, favourites,followers,following,reviewId
-		// if (!Array.isArray(watchlist)) {
-		// 	throw 'watchlist must be Array';
-		// }
-
-		// if (!Array.isArray(favourites)) {
-		// 	throw 'favourites must be Array';
-		// }
-		// if (!Array.isArray(followers)) {
-		// 	throw 'followers must be Array';
-		// }
-		// if (!Array.isArray(following)) {
-		// 	throw 'following must be Array';
-		// }
-		// if (!Array.isArray(reviewId)) {
-		// 	throw 'reviewId must be Array';
-		// }
 
 		// if (typeof private !== 'boolean') {
 		// 	throw 'private can only be true or false';
