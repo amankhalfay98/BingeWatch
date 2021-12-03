@@ -27,6 +27,7 @@ router.get('/signup', async (req, res) => {
 // To Sign Up a new User
 router.post('/signup', async (req, res) => {
 	const newUser = req.body;
+	// console.log(newUser);
 
 	// Error handling for name
 	if (!newUser.name || newUser.name.trim() == '') {
@@ -54,8 +55,9 @@ router.post('/signup', async (req, res) => {
 		return;
 	}
 	newUser.date_of_birth = newUser.date_of_birth.trim();
+	// console.log(newUser.date_of_birth);
 
-	if (!newUser.date_of_birth.match(/^\d{2}[/]\d{2}[/]\d{4}$/)) {
+	if (!newUser.date_of_birth.match(/^\d{4}-\d{2}-\d{2}$/)) {
 		res.status(400).render('pages/signup', {
 			error: 'Invalid Date of Birth',
 		});
