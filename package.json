@@ -1,31 +1,31 @@
 {
-
-  "name": "bingewatch",
-  "version": "1.0.0",
-  "description": "CS 546 Web Programming I Final Project",
-  "main": "app.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/amankhalfay98/BingeWatch.git"
-  },
-  "author": "CS 546 Group 3",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/amankhalfay98/BingeWatch/issues"
-  },
-  "homepage": "https://github.com/amankhalfay98/BingeWatch#readme",
-  "dependencies": {
-    "mongodb": "^4.1.4",
-    "bcryptjs": "^2.4.3",
-    "axios": "^0.23.0",
-    "blueimp-md5": "^2.19.0",
-    "ejs": "^2.6.2",
-    "express": "^4.17.1",
-    "express-handlebars": "^3.1.0",
-    "handlebars": "^4.7.3"
-  }
+	"name": "bingewatch",
+	"version": "1.0.0",
+	"description": "CS 546 Web Programming I Final Project",
+	"main": "app.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "node app.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/amankhalfay98/BingeWatch.git"
+	},
+	"author": "CS 546 Group 3",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/amankhalfay98/BingeWatch/issues"
+	},
+	"homepage": "https://github.com/amankhalfay98/BingeWatch#readme",
+	"dependencies": {
+		"axios": "^0.23.0",
+		"bcryptjs": "^2.4.3",
+		"blueimp-md5": "^2.19.0",
+		"ejs": "^2.6.2",
+		"express": "^4.17.1",
+		"express-handlebars": "^3.1.0",
+		"express-session": "^1.17.2",
+		"handlebars": "^4.7.3",
+		"mongodb": "^4.1.4"
+	}
 }
