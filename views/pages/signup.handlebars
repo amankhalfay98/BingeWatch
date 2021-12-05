@@ -1,0 +1,50 @@
+<head>
+	<meta charset='utf-8' />
+
+	<title>Sign Up</title>
+
+</head>
+<body>
+	<form action='/signup' method='post' id='signup-form'>
+		<div class='container'>
+			<label for='name'><b>Name:</b></label>
+			<input type='text' id='name' placeholder='Enter Your Name' name='name' />
+			<br />
+			<label for='date_of_birth'><b>DOB:</b></label>
+			<input
+				type='date'
+				min='1920-09-08'
+				max='2012-09-08'
+				id='date_of_birth'
+				placeholder='Enter Your DOB'
+				name='date_of_birth'
+			/>
+			<br />
+			<label for='username'><b>Username:</b></label>
+			<input
+				type='text'
+				id='username'
+				placeholder='Enter Username'
+				name='username'
+			/>
+			<br />
+			<label for='password'><b>Password:</b></label>
+			<input
+				type='password'
+				id='password'
+				placeholder='Enter Password'
+				name='password'
+			/>
+			<br />
+			<label for='email'><b>Email:</b></label>
+			<input type='text' id='email' placeholder='Enter Email' name='email' />
+			<br />
+			<button type='submit'>Sign Up</button>
+		</div>
+		<a href='/'>Already have an account? Click here to log-in</a>
+		<br />
+	</form>
+	<p class='error'>
+		{{error}}
+	</p>
+</body>
