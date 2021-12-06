@@ -17,7 +17,7 @@ router.get('/:id', async (req, res) => {
       const movie = await moviesData.getMovie(req.params.id);
       res.render('movies/individualMovie',{movie:movie, title:'Characters Found'});
     } catch (e) {
-      res.status(400).render('characters/retResponse',{error:e, title:'Search Error'});
+      res.status(400).render('pages/error',{error:e, title:'Search Error'});
     }
   });
 
@@ -29,6 +29,15 @@ router.get('/', async (req, res) => {
     } catch (e) {
       res.status(400).render('pages/error',{error:e, title:'Search Error'});
     }
+});
+
+router.get('/addMovie', async (req, res) => {
+  try {
+    res.render('movies/newMovies',{title:'Characters Found'});
+  } catch (e) {
+    res.status(400).render('pages/error',{error:e, title:'Search Error'});
+  }
+
 });
   
 router.post('/addMovie', async (req, res) => {
