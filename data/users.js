@@ -218,25 +218,22 @@ module.exports = {
 			throw 'Input Id field is required.';
 		}
 
-		if (typeof id !== 'string' || id.trim().length === 0) {
-			throw 'Id can only be of type String.';
-		}
+		// if (typeof id !== 'string' || id.trim().length === 0) {
+		// 	throw 'Id can only be of type String.';
+		// }
 
-		id = id.trim();
-
-		if (!ObjectId.isValid(id) || ObjectId(id).toString() !== id)
-			throw 'Invalid id';
+		if (!ObjectId.isValid(id)) throw 'Invalid id';
 
 		//Converting String ID to ObjectID
-		let objParseID = ObjectId(id);
+		// let objParseID = ObjectId(id);
 
 		const collectionOfUsers = await users();
-		const user = await collectionOfUsers.findOne({ _id: objParseID });
+		const user = await collectionOfUsers.findOne({ _id: id });
 		if (!user) {
 			throw 'User could not be found with the supplied ID.';
 		}
-		let getIndex = user._id.toString();
-		user._id = getIndex;
+		// let getIndex = user._id.toString();
+		// user._id = getIndex;
 		return user;
 	},
 
@@ -266,32 +263,48 @@ module.exports = {
 		return retObj;
 	},
 
-	async update(id, name, password, private, profile_pic) {
+	async update(id, name, date_of_birth, private, password) {
 		//Error Handling
-		if (!id) throw 'You must provide an id to update';
+		// if (!id) throw 'You must provide an id to update';
 
-		if (typeof id !== 'string' || id.trim() === '')
-			throw 'Please provide a valid id';
+		// if (typeof id !== 'string' || id.trim() === '')
+		// 	throw 'Please provide a valid id';
 
-		id = id.trim();
+		// id = id.trim();
 
-		if (!ObjectId.isValid(id) || ObjectId(id).toString() !== id)
-			throw 'Invalid id';
+		// if (!ObjectId.isValid(id) || ObjectId(id).toString() !== id)
+		// 	throw 'Invalid id';
 
-		if (!name || !private || !password || !profile_pic) {
-			throw 'One or more Input parameter missing. Please provide valid input for all fields.';
-		}
-		if (typeof name !== 'string' || name.trim().length === 0) {
+		if (!name || typeof name !== 'string' || name.trim().length === 0) {
 			throw 'User name is invalid';
 		}
+
+		// For DOB
+		if (
+			!date_of_birth ||
+			typeof date_of_birth !== 'string' ||
+			date_of_birth.trim().length === 0
+		) {
+			throw 'Please provide Date of Birth';
+		}
+		date_of_birth = date_of_birth.trim();
+		// console.log('In Data', date_of_birth);
+		if (!date_of_birth.match(/^\d{4}-\d{2}-\d{2}$/))
+			throw 'Invalid Date of Birth';
+
 		// if (
 		// 	typeof profile_pic !== 'string' ||
 		// 	profile_pic.trim().length === 0
 		// ) {
 		// 	throw 'Please provide Date of Birth';
 		// }
-		if (!private || typeof private !== 'boolean') {
-			throw 'Please provide username';
+
+		if (!private) {
+			private = false;
+		}
+
+		if (typeof private !== 'boolean') {
+			throw 'Please provide privacy setting';
 		}
 
 		if (
@@ -320,7 +333,7 @@ module.exports = {
 
 		const updateUser = {
 			name: name,
-			date_of_birth: fieldValOfUser.date_of_birth,
+			date_of_birth: date_of_birth,
 			username: fieldValOfUser.username,
 			password: hashedPassword,
 			email: fieldValOfUser.email,
@@ -330,9 +343,10 @@ module.exports = {
 			following: fieldValOfUser.following,
 			reviewId: fieldValOfUser.reviewId,
 			private: private,
-			profile_pic: profile_pic,
+			profile_pic: fieldValOfUser.profile_pic,
 			tag: 'user',
 		};
+		console.log(updateUser);
 		let objParseID = ObjectId(id);
 		const userDataUpdate = await collectionOfUsers.updateOne(
 			{ _id: objParseID },
