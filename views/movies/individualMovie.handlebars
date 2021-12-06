@@ -1,0 +1,20 @@
+<main>
+<div class='char'>
+  <h1>{{char.data.results.[0].name}}</h1>
+  <a href="/">Home Page</a><br><br>
+  <img alt="{{char.data.results.[0].name}}"  src= "{{char.data.results.[0].thumbnail.path}}/portrait_fantastic.{{char.data.results.[0].thumbnail.extension}}"/>
+  <p>{{ char.data.results.[0].description }}</p>
+  <h2>Comics</h2>
+  {{#if char.data.results.[0].comics.items.length}}
+    <ul>
+      {{#each char.data.results.[0].comics.items}}
+        <li>{{name}}</li>
+      {{/each}}
+    </ul>
+    {{else}}
+    <h3>No Comic Found</h3>
+  {{/if}}
+  </div>
+  </main>
+
+  
