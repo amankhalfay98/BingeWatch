@@ -74,7 +74,7 @@ let createMovie = async (
   //Make sure it is a valid name
   //Can not add the same movie twice
 
-  if (typeof release_year !== "number") throw "Incorrect data type";
+  if (typeof release_year !== "number" || !Number.isInteger(release_year)) throw "Incorrect data type";
 
   //First film produced was 1888
   if (release_year < 1888 || release_year > new Date().getFullYear())
@@ -330,7 +330,7 @@ const updateMovieReviewID = async (movie_id, review_id) => {
 
 let getTrending = async ()=> {
     const movieCollection = await movies();
-    const moviesArr = await movieCollection.find().sort({views:-1}).limit(10);
+    const moviesArr = await movieCollection.find({}).sort({views:-1}).limit(10).toArray();
     return moviesArr;
 }
 
