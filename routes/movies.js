@@ -6,19 +6,27 @@ const moviesData = data.movies;
 router.get('movies/:id', async (req, res) => {
     try {
       const movie = await moviesData.getMovie(req.params.id);
-      res.status(200).json(movie);
+      res.render('movies/individualMovie',{searchedChar:searchedChar, header:searchChar.searchTerm, title:'Characters Found'});
     } catch (e) {
-      res.status(404).json({error : 'Movie/TV Show not found.'});
+      res.status(400).render('characters/retResponse',{error:e, title:'Search Error'});
     }
+    //   res.status(200).json(movie);
+    // } catch (e) {
+    //   res.status(404).json({error : 'Movie/TV Show not found.'});
+    // }
   });
 
   router.get('movies/all', async (req, res) => {
     try {
       const listRest = await moviesData.getAllMovies();
-      res.status(200).json(listRest);
+      res.render('movies/allMovies',{searchedChar:searchedChar, header:searchChar.searchTerm, title:'Characters Found'});
     } catch (e) {
-      res.status(500).send();
+      res.status(400).render('pages/error',{error:e, title:'Search Error'});
     }
+    //   res.status(200).json(listRest);
+    // } catch (e) {
+    //   res.status(500).send();
+    // }
   });
   
   router.get('/', async (req, res) => {
@@ -64,7 +72,7 @@ router.get('movies/:id', async (req, res) => {
       try {
         const { movie_name, director, release_year, cast, streaming_services, genre, movie_img } = restDataList;
         const newMovie = await moviesData.createMovie(movie_name, director, release_year, cast, streaming_services,genre, movie_img);
-        res.status(200).json(newMovie);
+        res.redirect('/movies/all');
       } catch (e) {
         res.status(500).json({ error: e });
       }
@@ -85,8 +93,8 @@ router.get('movies/:id', async (req, res) => {
       }
     
       try {
-        const { id, movie_name, director, release_year, cast, streaming_services, genre, movie_img } = updatedData;
-        const updatedMovie = await moviesData.updatingMovie(id, movie_name, director, release_year, cast, streaming_services, genre, movie_img);
+        const { movie_name, director, release_year, cast, streaming_services, genre, movie_img } = updatedData;
+        const updatedMovie = await moviesData.updatingMovie(req.params.id, movie_name, director, release_year, cast, streaming_services, genre, movie_img);
         res.status(200).json(updatedMovie);
       } catch (e) {
         res.status(500).json({ error: e });
