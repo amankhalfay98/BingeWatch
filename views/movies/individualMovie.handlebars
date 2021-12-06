@@ -1,10 +1,16 @@
 <main>
 <div class='char'>
-  <h1>{{char.data.results.[0].name}}</h1>
+  <h1>{{movie.movie_name}}</h1>
   <a href="/">Home Page</a><br><br>
-  <img alt="{{char.data.results.[0].name}}"  src= "{{char.data.results.[0].thumbnail.path}}/portrait_fantastic.{{char.data.results.[0].thumbnail.extension}}"/>
-  <p>{{ char.data.results.[0].description }}</p>
-  <h2>Comics</h2>
+  <img alt="{{movie.movie_name}}"  src= "{{movie.movie_image}}"/>
+  <span title="services">Streaming Services: {{movie.streaming_service}}</span>
+  <span title="release_year">{{movie.release_year}}</span>
+  <span title="director">Director: {{movie.director}}</span>
+  <span title="cast">Cast: {{movie.cast}}</span>
+  <span title="genres">Genres: {{movie.genre}}</span>
+  <span title="rating">Rating: {{movie.overall_rating}}</span>
+  <span>Reviews: </span>
+  {{!-- <h2>Comics</h2>
   {{#if char.data.results.[0].comics.items.length}}
     <ul>
       {{#each char.data.results.[0].comics.items}}
@@ -13,7 +19,7 @@
     </ul>
     {{else}}
     <h3>No Comic Found</h3>
-  {{/if}}
+  {{/if}} --}}
   </div>
   </main>
 

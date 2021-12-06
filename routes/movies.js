@@ -15,7 +15,7 @@ router.get('/all', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {
       const movie = await moviesData.getMovie(req.params.id);
-      res.render('movies/individualMovie',{searchedChar:searchedChar, header:searchChar.searchTerm, title:'Characters Found'});
+      res.render('movies/individualMovie',{movie:movie, title:'Characters Found'});
     } catch (e) {
       res.status(400).render('characters/retResponse',{error:e, title:'Search Error'});
     }
@@ -69,7 +69,7 @@ router.post('/addMovie', async (req, res) => {
     } catch (e) {
       res.status(500).json({ error: e });
     }
-});
+  });
     
 router.put('/edit/:id', async (req, res) => {
     const updatedData = req.body; 
