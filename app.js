@@ -11,6 +11,7 @@ const users = require('./data/users');
 const closeConnection = require('./config/mongoConnection');
 
 const session = require('express-session');
+const { getAllUsers } = require('./data/users');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

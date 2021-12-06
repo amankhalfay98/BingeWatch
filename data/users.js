@@ -7,6 +7,16 @@ const saltRounds = 12;
 module.exports = {
 	//Functions Start here
 
+	async getAllUsers() {
+		const userCollection = await users();
+		const allUsers = await userCollection.find({}).toArray();
+		for (let x of allUsers) {
+			x._id = x._id.toString();
+		}
+
+		return allUsers;
+	},
+
 	async createUser(name, date_of_birth, username, password, email) {
 		//Error Handling
 
@@ -58,7 +68,7 @@ module.exports = {
 		if (!email || typeof email !== 'string' || email.trim().length === 0) {
 			throw 'User email id is invalid';
 		}
-		email = email.trim();
+		email = email.trim().toLowerCase();
 		if (
 			!email.match(
 				/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -91,9 +101,11 @@ module.exports = {
 		//Insert data into Database
 		const collectionOfUsers = await users();
 
-		const oldUsers = await collectionOfUsers.findOne({ username: username });
-
-		if (oldUsers !== null) throw 'already a user with that username';
+		const allUsers = await this.getAllUsers();
+		allUsers.forEach((user) => {
+			if (user.email == email) throw 'This email is already taken.';
+			if (user.username == username) throw 'This username is already taken.';
+		});
 
 		const hashedPassword = await bcrypt.hash(password, saltRounds);
 
@@ -179,21 +191,26 @@ module.exports = {
 		}
 	},
 
-	// async getAll(){
-	//   //Error Handeling
-	//   if(arguments.length!==0){
-	//     throw "Arguments cannot be passed for this function call.";
-	//   }
-	//   //Get list of data in DB
-	//     const collectionOfUsers = await users();
-	//     const listOfAllUsers = await collectionOfUsers.find({}).toArray();
-	//     //convert ObjectID to String
-	//     listOfAllUsers.forEach(user => {
-	//       let getIndex = user._id.toString();
-	//       user._id = getIndex;
-	//     });
-	//     return listOfAllUsers;
-	// },
+	async getUser(username) {
+		if (!username || username.trim() == '') throw 'Please provide username';
+
+		username = username.trim().toLowerCase();
+		if (username.length < 4)
+			throw 'username should be at least 4 characters long';
+
+		for (let i = 0; i < username.length; i++) {
+			const element = username[i];
+			//console.log(element);
+			if (/\s+/g.test(element)) throw 'spaces not allowed in username';
+			if (!element.match(/([a-z0-9])/))
+				throw 'only alphanumeric characters allowed';
+		}
+		const collectionOfUsers = await users();
+
+		const user = await collectionOfUsers.findOne({ username: username });
+
+		return user;
+	},
 
 	async get(id) {
 		//Error Handeling
