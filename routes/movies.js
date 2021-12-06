@@ -15,11 +15,11 @@ router.get('/all', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {
       const movie = await moviesData.getMovie(req.params.id);
-      res.status(200).json(movie);
+      res.render('movies/individualMovie',{movie:movie, title:'Characters Found'});
     } catch (e) {
-      res.status(404).json({error : 'Movie/TV Show not found.'});
+      res.status(400).render('characters/retResponse',{error:e, title:'Search Error'});
     }
-});
+  });
 
 //WIP!!!!!
 router.get('/', async (req, res) => {
@@ -27,7 +27,7 @@ router.get('/', async (req, res) => {
       const listRest = await moviesData.getTrending();
       res.status(200).json(listRest);
     } catch (e) {
-      res.status(500).send();
+      res.status(400).render('pages/error',{error:e, title:'Search Error'});
     }
 });
   
@@ -69,7 +69,7 @@ router.post('/addMovie', async (req, res) => {
     } catch (e) {
       res.status(500).json({ error: e });
     }
-});
+  });
     
 router.put('/edit/:id', async (req, res) => {
     const updatedData = req.body; 
