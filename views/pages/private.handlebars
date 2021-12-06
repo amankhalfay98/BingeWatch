@@ -9,6 +9,50 @@
 
 	<h3>Welcome back, {{name}}</h3>
 	<h3>username: {{username}}</h3>
+	<h3>Edit Profile:</h3>
+	<form action='/private' method='post' id='userEdit-form'>
+
+		<div class='container'>
+			<label for='name'><b>Name:</b></label>
+			<input type='text' id='name' placeholder='Enter Your Name' name='name' />
+			<br />
+			<label for='date_of_birth'><b>DOB:</b></label>
+			<input
+				type='date'
+				min='1920-09-08'
+				max='2012-09-08'
+				id='date_of_birth'
+				placeholder='Enter Your DOB'
+				name='date_of_birth'
+			/>
+			<br />
+			{{! <label for='username'><b>Username:</b></label>
+			<input
+				type='text'
+				id='username'
+				placeholder='Enter Username'
+				name='username'
+			/>
+			<br /> }}
+			<label for='private'><b>Private Account?</b></label><br />
+			<input type='radio' id='true' name='fav_language' value='true' />Yes<br />
+			<input type='radio' id='false' name='fav_language' value='false' />No<br
+			/>
+			 
+			<label for='password'><b>Password:</b></label>
+			<input
+				type='password'
+				id='password'
+				placeholder='Enter Password'
+				name='password'
+			/>
+			<br />
+			<button type='submit'>Confirm</button>
+		</div>
+	</form>
+	<p class='error'>
+		{{error}}
+	</p>
 
 	<a href='/logout'>LogOut</a>
 </body>

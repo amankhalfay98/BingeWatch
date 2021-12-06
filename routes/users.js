@@ -245,10 +245,102 @@ router.post('/login', async (req, res) => {
 	}
 });
 
+// To Update a User
+router.post('/private', async (req, res) => {
+	const newUser = req.body;
+	// console.log(newUser);
+
+	// Error handling for name
+	if (!newUser.name || newUser.name.trim() == '') {
+		res.status(400).render('pages/private', { error: 'Please provide name' });
+		return;
+	}
+	newUser.name = newUser.name.trim();
+
+	for (let i = 0; i < newUser.name.length; i++) {
+		const element = newUser.name[i];
+
+		if (!element.match(/([a-zA-Z])/)) {
+			res.status(400).render('pages/private', {
+				error: 'only characters allowed',
+			});
+			return;
+		}
+	}
+
+	//Error Handling for DOB
+	if (!newUser.date_of_birth || newUser.date_of_birth.trim() == '') {
+		res
+			.status(400)
+			.render('pages/private', { error: 'Please provide Date of Birth' });
+		return;
+	}
+	newUser.date_of_birth = newUser.date_of_birth.trim();
+	// console.log(newUser.date_of_birth);
+
+	if (!newUser.date_of_birth.match(/^\d{4}-\d{2}-\d{2}$/)) {
+		res.status(400).render('pages/private', {
+			error: 'Invalid Date of Birth',
+		});
+		return;
+	}
+
+	// Error handling for password
+
+	if (!newUser.password || newUser.password.trim() == '') {
+		res
+			.status(400)
+			.render('pages/signup', { error: 'Please provide password' });
+		return;
+	}
+
+	if (newUser.password.length < 6) {
+		res.status(400).render('pages/signup', {
+			error: 'password should be at least 6 characters long',
+		});
+		return;
+	}
+
+	for (let i = 0; i < newUser.password.length; i++) {
+		const element = newUser.password[i];
+		//console.log(element);
+		if (/\s+/g.test(element)) {
+			res
+				.status(400)
+				.render('pages/signup', { error: 'spaces not allowed in password' });
+			return;
+		}
+	}
+
+	try {
+		const { name, date_of_birth, private, password } = newUser;
+
+		//console.log(newUser);
+		let current = await usersData.getUser(req.session.user.username);
+
+		let rev = await usersData.update(
+			current._id,
+			name,
+			date_of_birth,
+			private,
+			password
+		);
+		//console.log(rev);
+		res.status(200).redirect('/');
+	} catch (e) {
+		//console.log(e);
+		if (e == 'Internal Server Error') {
+			res.status(500).render('pages/private', { error: e });
+		} else {
+			res.status(400).render('pages/private', { error: e });
+		}
+	}
+});
+
 // If authenticated go to Private Route
 router.get('/private', async (req, res) => {
-	const rev = await usersData.getUser(req.session.user.username);
-	// console.log(rev);
+	let rev = await usersData.getUser(req.session.user.username);
+	console.log(rev._id);
 
 	res.render('pages/private', { username: rev.username, name: rev.name });
 });
