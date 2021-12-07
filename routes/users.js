@@ -235,10 +235,11 @@ router.post('/login', async (req, res) => {
 
 		//console.log(newRestaurant);
 		const rev = await usersData.checkUser(username, password);
-		if (rev) req.session.user = { username: newUser.username };
+		if (rev) {req.session.user = { username: newUser.username }
+	return rev};
 		//console.log(rev.authenticated);
 		//res.status(200).json(rev);
-		res.redirect('/private');
+		//res.redirect('/private');
 	} catch (e) {
 		//console.log(e);
 		res.status(400).render('pages/login', { error: e });

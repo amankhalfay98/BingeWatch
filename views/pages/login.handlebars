@@ -4,6 +4,7 @@
 
 </head>
 <body> --}}
+	<main>
 	<form action='/login' method='post' id='login-form'>
 		<div class='container'>
 			<label for='username'><b>Username</b></label>
@@ -12,7 +13,7 @@
 				id='username'
 				placeholder='Enter Username'
 				name='username'
-			/>
+			>
 			<br />
 			<label for='password'><b>Password</b></label>
 			<input
@@ -20,7 +21,7 @@
 				id='password'
 				placeholder='Enter Password'
 				name='password'
-			/>
+			>
 			<br />
 			<button id="login" type='submit'>Login</button>
 		</div>
@@ -29,5 +30,5 @@
 	<p class='error'>
 		{{error}}
 	</p>
-
+</main>
 {{!-- </body> --}}

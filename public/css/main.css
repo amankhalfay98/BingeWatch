@@ -1,0 +1,38 @@
+body {
+	background: #a6d0d3;
+	font-family: Georgia, Cambria, 'Times New Roman', Times, serif;
+	font-size: 15pt;
+}
+
+.error {
+	font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+	font-size: large;
+	color: crimson;
+}
+main {
+	max-width: 75%;
+	margin: auto;
+}
+ul {
+	max-width: 25%;
+}
+
+header {
+	border-bottom: 1px solid #afafaf;
+}
+
+h1 {
+	color: #333;
+	margin-bottom: 5px;
+	font-size: 2rem;
+}
+
+p {
+	font-size: 1rem;
+	line-height: 2;
+}
+
+.post {
+	width: 75%;
+	border-bottom: 1px dashed #333;
+}
