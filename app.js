@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const static = express.static(__dirname + "/public");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -12,6 +13,7 @@ const closeConnection = require('./config/mongoConnection');
 
 const session = require('express-session');
 const { getAllUsers } = require('./data/users');
+app.use("/public", static);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
