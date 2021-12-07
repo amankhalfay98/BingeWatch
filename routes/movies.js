@@ -6,10 +6,14 @@ const moviesData = data.movies;
 router.get('/all', async (req, res) => {
   try {
     const listRest = await moviesData.getAllMovies();
-    res.status(200).json(listRest);
+    res.render('movies/allMovies',{movieList:listRest,title:'Characters Found'});
   } catch (e) {
-    res.status(500).send();
+    res.status(400).render('pages/error',{error:e, title:'Search Error'});
   }
+  //   res.status(200).json(listRest);
+  // } catch (e) {
+  //   res.status(500).send();
+  // }
 });
 
 router.get('/addMovie', async (req, res) => {

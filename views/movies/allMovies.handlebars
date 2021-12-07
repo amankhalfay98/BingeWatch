@@ -8,7 +8,7 @@
     <option value="watchCount">Watch Count</option>
     </select>
   <span>Filter: 
-   Rating:
+   {{!-- Rating:
   <input type="checkbox" id="rating1" name="rating1" value="1">
   <label for="rating1">1</label><br>
   <input type="checkbox" id="rating2" name="rating2" value="2">
@@ -18,8 +18,29 @@
   <input type="checkbox" id="rating4" name="rating4" value="4">
   <label for="rating4">4</label><br><br>
   <input type="checkbox" id="rating5" name="rating5" value="5">
-  <label for="rating5">5</label><br><br>
-  Genres:
+  <label for="rating5">5</label><br><br> --}}
+  <label for="rate">Rating:</label>
+    <select id="rate" name="rate">
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+    </select>
+    <label for="genres">Genres:</label>
+    <select id="genres" name="genres">
+    <option value=""></option>
+    <option value="action">Action & Adventure</option>
+    <option value="comedy">Comedy</option>
+    <option value="crime">Crime</option>
+    <option value="drama">Drama</option>
+    <option value="horror">Horror</option>
+    <option value="mystery">Mystery</option>
+    <option value="romance">Romance</option>
+    <option value="sciFi">Science-Fiction</option>
+    <option value="thriller">Thriller</option>
+    </select>
+  {{!-- Genres:
   <input type="checkbox" id="rating1" name="rating1" value="1">
   <label for="rating1">Action & Adventure</label><br>
   <input type="checkbox" id="rating1" name="rating1" value="1">
@@ -37,12 +58,23 @@
   <input type="checkbox" id="rating1" name="rating1" value="1">
   <label for="rating1">Science-Fiction</label><br>
   <input type="checkbox" id="rating1" name="rating1" value="1">
-  <label for="rating1">Thriller</label><br>
+  <label for="rating1">Thriller</label><br> --}}
   </span>
   </nav>
    </header>
    <button type="button" onclick="addMovie()">Add Movie</button>
    <div id="all_movies">
+      {{!-- {{#if movieList.length}} --}}
+<h1> All Movies</h1>
+<a href="/">Make another search</a>
+<ul> 
+    {{#each movieList}}
+        <li><a href="/movies/{{_id}}" class="character-link">{{movie_name}}</a></li>
+      {{/each}}
+</ul>
+{{!-- {{else}}
+  <p class="error">We're sorry, but no results were found for.</p>
+  {{/if}} --}}
        
    </div>
 </main>

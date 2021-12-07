@@ -1,6 +1,28 @@
-// (function($) {
-// 	// Let's start writing AJAX calls!
-
+(function($) {
+	// Let's start writing AJAX calls!
+    //$(document).ready(function(){
+        $("#login").submit(function(){
+            var username = $("#username").val().trim();
+            var password = $("#password").val().trim();
+    
+            if( username != "" && password != "" ){
+                $.ajax({
+                    url:'users/login',
+                    type:'post',
+                    data:{username:username,password:password},
+                    success:function(response){
+                        var msg = "";
+                        if(response == 1){
+                            window.location = "home.php";
+                        }else{
+                            msg = "Invalid username and password!";
+                        }
+                        $("#message").html(msg);
+                    }
+                });
+            }
+        });
+    //});
 // 	var movie = $('#search_movie')
 //         show = $('#show'),
 //         searchForm = $('#searchForm'),
@@ -11,7 +33,7 @@
 //         $('.error').empty();
 //         homeLink.hide();
 //         var requestConfig = {
-//             type: 'GET',
+//             type: 'POST',
 //             url: "http://api.tvmaze.com/shows",
 //             dataType: "json",
 //             };
@@ -25,6 +47,8 @@
 //         });
        
 //     })
+
+
     
 
 //     showList.on('click','li', function(e) {
@@ -143,4 +167,4 @@
 // 		}
     
 // 	});
-// })(window.jQuery);
+})(window.jQuery);
