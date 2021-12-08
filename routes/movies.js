@@ -16,6 +16,20 @@ router.get('/all', async (req, res) => {
   // }
 });
 
+router.get('/all/:genre', async (req, res) => {
+  try {
+    const sorted = await moviesData.getByGenre(req.params.genre);
+    //res.render('movies/allMovies',{movieList:sorted,title:'Characters Found'});
+    return sorted
+    //res.render('movies/allMovies',{movieList:listRest,title:'Characters Found'});
+  } catch (e) {
+    //res.status(400).render('pages/error',{error:e, title:'Search Error'});
+  }
+  //   res.status(200).json(listRest);
+  // } catch (e) {
+  //   res.status(500).send();
+  // }
+});
 router.get('/addMovie', async (req, res) => {
   try {
     res.render('movies/newMovie',{title:'Characters Found'});
@@ -28,6 +42,7 @@ router.get('/addMovie', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {
       const movie = await moviesData.getMovie(req.params.id);
+      //console.log(movie);
       res.render('movies/individualMovie',{movie:movie, title:'Characters Found'});
     } catch (e) {
       res.status(400).render('pages/error',{error:e, title:'Search Error'});
