@@ -346,7 +346,7 @@ module.exports = {
 			profile_pic: fieldValOfUser.profile_pic,
 			tag: 'user',
 		};
-		console.log(updateUser);
+		//console.log(updateUser);
 		let objParseID = ObjectId(id);
 		const userDataUpdate = await collectionOfUsers.updateOne(
 			{ _id: objParseID },
