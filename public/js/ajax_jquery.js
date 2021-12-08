@@ -37,8 +37,10 @@
                 var genres = $('#genres').val().trim();
                 var showList = $('#showList')
                 showList.empty();
+
+            
                 var requestConfig = {
-                            type: 'GET',
+                            type: 'POST',
                             url: `/movies/all/${genres}`,
                             //contentType: 'application/json',
                             dataType: "json"
@@ -62,6 +64,29 @@
                                   showList.before("<p class='error'>No match found</p>" );
                                   }
             })
+        })
+
+        $(document).ready(function(){
+            var reviews = $('#reviews')
+           // $('.error').empty();
+           reviews.empty();
+            var id = window.location.href.split('/')
+            id=id[id.length-1];
+            //homeLink.hide();
+            var requestConfig = {
+                type: 'Post',
+                url: `/reviews/${id}`,
+                dataType: "json",
+                };
+            
+            $.ajax(requestConfig).then(function(data) {
+                $.each(data, function(){
+                    const div = `<div>${this.username}<br>${this.review}<br>${this.rating}</div>`; //id='${this.id}'
+                    reviews.append(div);
+                });  
+                reviews.show();
+            });
+           
         })
     
 })(window.jQuery);

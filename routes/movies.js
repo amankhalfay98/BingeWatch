@@ -16,11 +16,11 @@ router.get('/all', async (req, res) => {
   // }
 });
 
-router.get('/all/:genre', async (req, res) => {
+router.post('/all/:genre', async (req, res) => {
   try {
     const sorted = await moviesData.getByGenre(req.params.genre);
     //res.render('movies/allMovies',{movieList:sorted,title:'Characters Found'});
-    return sorted
+    res.json(sorted)
     //res.render('movies/allMovies',{movieList:listRest,title:'Characters Found'});
   } catch (e) {
     //res.status(400).render('pages/error',{error:e, title:'Search Error'});

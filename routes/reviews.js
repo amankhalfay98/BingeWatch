@@ -3,10 +3,10 @@ const router = express.Router();
 const data = require("../data");
 const reviews = data.reviews;
 
-router.get("/getByMovieId", async (req, res) => {
-  let data = req.body;
-  const { movie_id } = data;
-  const allReviews = await reviews.getByMovieId(movie_id);
+router.post("/:id", async (req, res) => {
+  //let data = req.body;
+  //const { movie_id } = data;
+  const allReviews = await reviews.getReviewsByMovieId(req.params.id);
   res.json(allReviews);
 });
 router.post("/postReview", async (req, res) => {
