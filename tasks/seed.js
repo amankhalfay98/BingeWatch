@@ -4,6 +4,7 @@ const dbFunctions = require("../data/index");
 async function main() {
   try {
     const avengers = await dbFunctions.movies.createMovie(
+      "akhalfay",
       "Avengers",
       "Joss Whedon",
       2012,
@@ -21,6 +22,7 @@ async function main() {
   }
   try {
     const inception = await dbFunctions.movies.createMovie(
+      "supersid",
       "Inception",
       "Christopher Nolan",
       2010,
@@ -38,6 +40,7 @@ async function main() {
   }
   try {
     const forrest = await dbFunctions.movies.createMovie(
+      "jdelrosa",
       "Forrest Gump",
       "Robert Zemeckis",
       1994,
