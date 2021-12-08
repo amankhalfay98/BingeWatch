@@ -7,6 +7,16 @@ const saltRounds = 12;
 module.exports = {
 	//Functions Start here
 
+	async getAllUsers() {
+		const userCollection = await users();
+		const allUsers = await userCollection.find({}).toArray();
+		for (let x of allUsers) {
+			x._id = x._id.toString();
+		}
+
+		return allUsers;
+	},
+
 	async createUser(name, date_of_birth, username, password, email) {
 		//Error Handling
 
@@ -58,7 +68,7 @@ module.exports = {
 		if (!email || typeof email !== 'string' || email.trim().length === 0) {
 			throw 'User email id is invalid';
 		}
-		email = email.trim();
+		email = email.trim().toLowerCase();
 		if (
 			!email.match(
 				/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -91,9 +101,11 @@ module.exports = {
 		//Insert data into Database
 		const collectionOfUsers = await users();
 
-		const oldUsers = await collectionOfUsers.findOne({ username: username });
-
-		if (oldUsers !== null) throw 'already a user with that username';
+		const allUsers = await this.getAllUsers();
+		allUsers.forEach((user) => {
+			if (user.email == email) throw 'This email is already taken.';
+			if (user.username == username) throw 'This username is already taken.';
+		});
 
 		const hashedPassword = await bcrypt.hash(password, saltRounds);
 
@@ -179,21 +191,26 @@ module.exports = {
 		}
 	},
 
-	// async getAll(){
-	//   //Error Handeling
-	//   if(arguments.length!==0){
-	//     throw "Arguments cannot be passed for this function call.";
-	//   }
-	//   //Get list of data in DB
-	//     const collectionOfUsers = await users();
-	//     const listOfAllUsers = await collectionOfUsers.find({}).toArray();
-	//     //convert ObjectID to String
-	//     listOfAllUsers.forEach(user => {
-	//       let getIndex = user._id.toString();
-	//       user._id = getIndex;
-	//     });
-	//     return listOfAllUsers;
-	// },
+	async getUser(username) {
+		if (!username || username.trim() == '') throw 'Please provide username';
+
+		username = username.trim().toLowerCase();
+		if (username.length < 4)
+			throw 'username should be at least 4 characters long';
+
+		for (let i = 0; i < username.length; i++) {
+			const element = username[i];
+			//console.log(element);
+			if (/\s+/g.test(element)) throw 'spaces not allowed in username';
+			if (!element.match(/([a-z0-9])/))
+				throw 'only alphanumeric characters allowed';
+		}
+		const collectionOfUsers = await users();
+
+		const user = await collectionOfUsers.findOne({ username: username });
+
+		return user;
+	},
 
 	async get(id) {
 		//Error Handeling
@@ -201,25 +218,22 @@ module.exports = {
 			throw 'Input Id field is required.';
 		}
 
-		if (typeof id !== 'string' || id.trim().length === 0) {
-			throw 'Id can only be of type String.';
-		}
+		// if (typeof id !== 'string' || id.trim().length === 0) {
+		// 	throw 'Id can only be of type String.';
+		// }
 
-		id = id.trim();
-
-		if (!ObjectId.isValid(id) || ObjectId(id).toString() !== id)
-			throw 'Invalid id';
+		if (!ObjectId.isValid(id)) throw 'Invalid id';
 
 		//Converting String ID to ObjectID
-		let objParseID = ObjectId(id);
+		// let objParseID = ObjectId(id);
 
 		const collectionOfUsers = await users();
-		const user = await collectionOfUsers.findOne({ _id: objParseID });
+		const user = await collectionOfUsers.findOne({ _id: id });
 		if (!user) {
 			throw 'User could not be found with the supplied ID.';
 		}
-		let getIndex = user._id.toString();
-		user._id = getIndex;
+		// let getIndex = user._id.toString();
+		// user._id = getIndex;
 		return user;
 	},
 
@@ -249,32 +263,48 @@ module.exports = {
 		return retObj;
 	},
 
-	async update(id, name, password, private, profile_pic) {
+	async update(id, name, date_of_birth, private, password) {
 		//Error Handling
-		if (!id) throw 'You must provide an id to update';
+		// if (!id) throw 'You must provide an id to update';
 
-		if (typeof id !== 'string' || id.trim() === '')
-			throw 'Please provide a valid id';
+		// if (typeof id !== 'string' || id.trim() === '')
+		// 	throw 'Please provide a valid id';
 
-		id = id.trim();
+		// id = id.trim();
 
-		if (!ObjectId.isValid(id) || ObjectId(id).toString() !== id)
-			throw 'Invalid id';
+		// if (!ObjectId.isValid(id) || ObjectId(id).toString() !== id)
+		// 	throw 'Invalid id';
 
-		if (!name || !private || !password || !profile_pic) {
-			throw 'One or more Input parameter missing. Please provide valid input for all fields.';
-		}
-		if (typeof name !== 'string' || name.trim().length === 0) {
+		if (!name || typeof name !== 'string' || name.trim().length === 0) {
 			throw 'User name is invalid';
 		}
+
+		// For DOB
+		if (
+			!date_of_birth ||
+			typeof date_of_birth !== 'string' ||
+			date_of_birth.trim().length === 0
+		) {
+			throw 'Please provide Date of Birth';
+		}
+		date_of_birth = date_of_birth.trim();
+		// console.log('In Data', date_of_birth);
+		if (!date_of_birth.match(/^\d{4}-\d{2}-\d{2}$/))
+			throw 'Invalid Date of Birth';
+
 		// if (
 		// 	typeof profile_pic !== 'string' ||
 		// 	profile_pic.trim().length === 0
 		// ) {
 		// 	throw 'Please provide Date of Birth';
 		// }
-		if (!private || typeof private !== 'boolean') {
-			throw 'Please provide username';
+
+		if (!private) {
+			private = false;
+		}
+
+		if (typeof private !== 'boolean') {
+			throw 'Please provide privacy setting';
 		}
 
 		if (
@@ -303,7 +333,7 @@ module.exports = {
 
 		const updateUser = {
 			name: name,
-			date_of_birth: fieldValOfUser.date_of_birth,
+			date_of_birth: date_of_birth,
 			username: fieldValOfUser.username,
 			password: hashedPassword,
 			email: fieldValOfUser.email,
@@ -313,9 +343,10 @@ module.exports = {
 			following: fieldValOfUser.following,
 			reviewId: fieldValOfUser.reviewId,
 			private: private,
-			profile_pic: profile_pic,
+			profile_pic: fieldValOfUser.profile_pic,
 			tag: 'user',
 		};
+		//console.log(updateUser);
 		let objParseID = ObjectId(id);
 		const userDataUpdate = await collectionOfUsers.updateOne(
 			{ _id: objParseID },
