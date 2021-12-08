@@ -6,8 +6,10 @@ const reviews = data.reviews;
 router.post("/:id", async (req, res) => {
   //let data = req.body;
   //const { movie_id } = data;
+  //if(req.params.id){
   const allReviews = await reviews.getReviewsByMovieId(req.params.id);
   res.json(allReviews);
+  //}
 });
 router.post("/postReview", async (req, res) => {
   let data = req.body;

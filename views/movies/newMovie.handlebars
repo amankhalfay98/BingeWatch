@@ -1,42 +1,61 @@
-<main class="container">
-        <header>
-        <h1 id="the-heading">Add a new Movie</h1>
-        </header><br>
-        <form action="movies/addMovie" id="addMovieForm" method="post">
-            <label for="search_term"> Movie Name:
-            <input type="search" id="search_movie" placeholder="Enter Movie Name...">
-            </label><br><br>
-            <label for="stream_service"> Streaming Service:
-            Name: <input type="text"> URL:<input type="url" id="stream_service"> 
-            </label><br><br>
-            <label for="release_year"> Release Year:
-                <input type="number" min="1888" max="2021" step="1" id="release_year"/>
-                {{!-- <input type="date" id="release_year">  --}}
-            </label><br><br>
-            <label for="director"> Director:
-                <input type="text" id="director"> 
-            </label><br><br>
-            <label for="cast"> Cast:
-                <textarea id="cast"></textarea> 
-            </label><br><br>
-           <label for="genres">Genres:</label>
-           <select id="genres" name="genres">
-           <option value=""></option>
-    <option value="action">Action & Adventure</option>
-    <option value="comedy">Comedy</option>
-    <option value="crime">Crime</option>
-    <option value="drama">Drama</option>
-    <option value="horror">Horror</option>
-    <option value="mystery">Mystery</option>
-    <option value="romance">Romance</option>
-    <option value="sciFi">Science-Fiction</option>
-    <option value="thriller">Thriller</option>
-    </select><br><br>
-            <label> Poster:
-                <input type="file" id="poster" accept="image/*"> 
-            </label><br><br>
-            <button type="submit">Submit Movie</button>
-        </form>
+<div class="container mt-3 col-5">
+    <h1 class="center">Add Movie</h1>
+    <form action="movies/addMovie" id="addMovieForm" method="post" class="needs-validation" novalidate>
+        <div class="form-group">
+            <label for="search_term">Movie Name:</label>
+            <input type="text" class="form-control" id="search_term" placeholder="Enter movie name" required>
+        </div>
+        <div class="form-group">
+            <label for="stream_service">Streaming Service:</label>
+            <select id="stream_service" class="form-control">
+                <option value="all">All</option>
+                <option value="netflix">Netflix</option>
+                <option value="amazon">Amazon</option>
+                <option value="disney">Disney+</option>
+                <option value="hulu">Hulu</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="stream_service">Streaming Service URL:</label>
+            <input type="url" class="form-control" id="stream_service" placeholder="Enter streaming service link"
+                required>
+        </div>
+        <div class="form-group">
+            <label for="release_year">Release Year:</label>
+            <input type="number" class="form-control" min="1888" max="2099" step="1" id="release_year"
+                placeholder="Enter release year" required>
+        </div>
+        <div class="form-group">
+            <label for="director">Director:</label>
+            <input type="text" class="form-control" id="director" placeholder="Enter director name" required>
+        </div>
+        <div class="form-group">
+            <label for="search_term">Movie Name:</label>
+            <input type="text" class="form-control" id="search_term" placeholder="Enter movie name" required>
+        </div>
+        <div class="form-group">
+            <label for="cast">Cast:</label>
+            <textarea class="form-control" placeholder="Enter cast on new line" id="cast"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="genres">Genres:</label>
+            <select id="genres" class="form-control">
+                <option value="action">Action & Adventure</option>
+                <option value="comedy">Comedy</option>
+                <option value="crime">Crime</option>
+                <option value="drama">Drama</option>
+                <option value="horror">Horror</option>
+                <option value="mystery">Mystery</option>
+                <option value="romance">Romance</option>
+                <option value="sciFi">Science-Fiction</option>
+                <option value="thriller">Thriller</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="poster">Poster:</label>
+            <input type="file" id="poster" accept="image/*" class="form-control">
+        </div>
         <br>
-        <a href="/" id="homeLink">Home Page</a><br><br>
-    </main>
+        <button type="submit" class="btn btn-primary" name="submitButton" id="submitButton">Add Movie</button>
+    </form>
+</div>

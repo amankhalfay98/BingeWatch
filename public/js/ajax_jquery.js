@@ -32,16 +32,16 @@
                 }
             });
 
-            $('#genres').change(function(event){
+            $('#sort').change(function(event){
                 event.preventDefault();
-                var genres = $('#genres').val().trim();
+                var sort = $('#sort').val().trim();
                 var showList = $('#showList')
                 showList.empty();
 
             
                 var requestConfig = {
                             type: 'POST',
-                            url: `/movies/all/${genres}`,
+                            url: `/movies/all/${sort}`,
                             //contentType: 'application/json',
                             dataType: "json"
                             
