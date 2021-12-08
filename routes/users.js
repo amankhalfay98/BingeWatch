@@ -340,7 +340,7 @@ router.post('/private', async (req, res) => {
 // If authenticated go to Private Route
 router.get('/private', async (req, res) => {
 	let rev = await usersData.getUser(req.session.user.username);
-	console.log(rev._id);
+	//console.log(rev._id);
 
 	res.render('pages/private', { username: rev.username, name: rev.name });
 });
