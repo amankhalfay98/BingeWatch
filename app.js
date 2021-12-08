@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const static = express.static(__dirname + "/public");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -10,28 +11,30 @@ const { client } = require('./config/mongoConnection');
 const users = require('./data/users');
 const closeConnection = require('./config/mongoConnection');
 
-// const session = require('express-session');
+const session = require('express-session');
+const { getAllUsers } = require('./data/users');
+app.use("/public", static);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// app.use(
-// 	session({
-// 		name: 'AuthCookie',
-// 		secret: 'some secret string!',
-// 		resave: false,
-// 		saveUninitialized: true,
-// 	})
-// );
+app.use(
+	session({
+		name: 'AuthCookie',
+		secret: 'some secret string!',
+		resave: false,
+		saveUninitialized: true,
+	})
+);
 
-// //if user tries to access private route without being authenicated
-// app.use('/private', (req, res, next) => {
-// 	//console.log(req.session.id);
-// 	if (!req.session.user) {
-// 		return res.status(403).render('pages/error');
-// 	} else {
-// 		next();
-// 	}
-// });
+//if user tries to access private route without being authenicated
+app.use('/private', (req, res, next) => {
+	//console.log(req.session.id);
+	if (!req.session.user) {
+		return res.status(403).render('pages/error');
+	} else {
+		next();
+	}
+});
 
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
