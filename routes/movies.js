@@ -12,6 +12,26 @@ router.get('/all', async (req, res) => {
   }
 });
 
+//TESTS ALPHABETICAL SORT 
+router.get('/alpha', async (req, res) => {
+  try {
+    const listRest = await moviesData.sortAlphabetically();
+    res.status(200).json(listRest);
+  } catch (e) {
+    res.status(500).send();
+  }
+});
+
+//TESTS GENRE FILTER
+router.get('/genre', async (req, res) => {
+  try {
+    const listRest = await moviesData.getByGenre("comedy");
+    res.status(200).json(listRest);
+  } catch (e) {
+    res.status(500).send();
+  }
+});
+
 router.get('/:id', async (req, res) => {
     try {
       const movie = await moviesData.getMovie(req.params.id);
