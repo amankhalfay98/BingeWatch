@@ -1,10 +1,35 @@
 <main>
 <div class='char'>
-  <h1>{{char.data.results.[0].name}}</h1>
+  <h1>{{movie.movie_name}}</h1>
   <a href="/">Home Page</a><br><br>
-  <img alt="{{char.data.results.[0].name}}"  src= "{{char.data.results.[0].thumbnail.path}}/portrait_fantastic.{{char.data.results.[0].thumbnail.extension}}"/>
-  <p>{{ char.data.results.[0].description }}</p>
-  <h2>Comics</h2>
+  <img alt="{{movie.movie_name}}"  src= "{{movie.movie_image}}"/><br><br>
+  <button type="button">Favorite</button>
+  <button type="button">+Watched</button>
+  <button type="button">View</button>
+  <br><br>
+  <span title="services">Streaming Services:
+    <a href="{{movie.streaming_service.link}}">{{movie.streaming_service.name}}</a> 
+    {{!-- <ul>
+      {{#each movie.streaming_service}}
+        <li>{{@key}}-{{this}}</li>
+      {{/each}}
+      <li><a href="{{this}}">{{this}}</a></li> 
+    </ul> --}}
+    </span><br><br>
+  <span title="release_year">Release Year: {{movie.release_year}}</span><br><br>
+  <span title="director">Director: {{movie.director}}</span><br><br>
+  <span title="cast">Cast: <ul>
+    {{#each movie.cast}}
+        <li>{{this}}</li>
+      {{/each}} </ul></span><br><br>
+  <span title="genres">Genres: <ul>
+      {{#each movie.genre}}
+        <li>{{this}}</li>
+      {{/each}}
+    </ul></span><br><br>
+  <span title="rating">Rating: {{movie.rating}}</span><br><br>
+  <span>Reviews: </span>
+  {{!-- <h2>Comics</h2>
   {{#if char.data.results.[0].comics.items.length}}
     <ul>
       {{#each char.data.results.[0].comics.items}}
@@ -13,7 +38,7 @@
     </ul>
     {{else}}
     <h3>No Comic Found</h3>
-  {{/if}}
+  {{/if}} --}}
   </div>
   </main>
 
