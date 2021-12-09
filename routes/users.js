@@ -5,6 +5,17 @@ let { ObjectId } = require('mongodb');
 const usersData = require('../data/users');
 const path = require('path');
 
+//FOR USERS FOLLOWING OTHER USERS (CHANGE IF NEEDED)
+router.get('/follow/:id', async(req, res) => {
+	try {
+		const getUser = await usersData.get(req.params.id);
+		const addFollow = await usersData.followUser("royroy", getUser["username"]);
+		res.status(200).json(addFollow);
+	  } catch (e) {
+		res.status(400).render('pages/error',{error:e, title:'Search Error'});
+	  }
+});
+
 // To go on Landing Page
 router.get('/', async (req, res) => {
 	//console.log(req.session);

@@ -1,7 +1,9 @@
 const express = require("express");
+const { users } = require("../data");
 const router = express.Router();
 const data = require("../data");
 const moviesData = data.movies;
+const usersData = data.users;
 const validation = require("../data/validation");
 
 router.get("/all", async (req, res) => {
@@ -50,9 +52,14 @@ router.get("/all", async (req, res) => {
 
 router.post("/all/:value", async (req, res) => {
   try {
+    //const sorted = await moviesData.getByGenre(req.params.genre);
+    //res.render('movies/allMovies',{movieList:sorted,title:'Characters Found'});
+    //return sorted;
+    //res.render('movies/allMovies',{movieList:listRest,title:'Characters Found'});
     const sorted = await moviesData.getSort(req.params.value);
     res.json(sorted);
-  } catch (e) {}
+  } catch (e) {
+  }
 });
 
 router.get("/addMovie", async (req, res) => {
@@ -62,6 +69,7 @@ router.get("/addMovie", async (req, res) => {
     res.status(400).render("pages/error", { error: e, title: "Search Error" });
   }
 });
+
 
 router.get("/:id", async (req, res) => {
   try {
@@ -167,26 +175,107 @@ router.post("/addMovie", async (req, res) => {
   }
 });
 
-//TESTS ALPHABETICAL SORT 
-router.get('/alpha', async (req, res) => {
+// //TESTS ALPHABETICAL SORT 
+// router.get('/alpha', async (req, res) => {
+//   try {
+//     const listRest = await moviesData.sortAlphabetically();
+//     res.status(200).json(listRest);
+//   } catch (e) {
+//     res.status(500).send();
+//   }
+// });
+
+// //TESTS GENRE FILTER
+// router.get('/genre', async (req, res) => {
+//   try {
+//     const listRest = await moviesData.getByGenre("comedy");
+//     res.status(200).json(listRest);
+//   } catch (e) {
+//     res.status(500).send();
+//   }
+// });
+
+//ADDING MOVIE TO USER'S FAVE LIST
+router.get('/favorite/:id', async (req, res) => {
   try {
-    const listRest = await moviesData.sortAlphabetically();
-    res.status(200).json(listRest);
+    const movie = await moviesData.getMovie(req.params.id);
+    const user = await usersData.addToFave("royroy", movie["movie_name"]);
+    res.status(200).json(user);
   } catch (e) {
-    res.status(500).send();
+    res.status(400).render('pages/error',{error:e, title:'Search Error'});
   }
 });
 
-//TESTS GENRE FILTER
-router.get('/genre', async (req, res) => {
+//ADDING MOVIE TO USER'S WATCHLIST
+router.get('/watchlist/:id', async (req, res) => {
   try {
-    const listRest = await moviesData.getByGenre("comedy");
-    res.status(200).json(listRest);
+    const movie = await moviesData.getMovie(req.params.id);
+    const user = await usersData.addToWatch("royroy", movie["movie_name"]);
+    res.status(200).json(user);
   } catch (e) {
-    res.status(500).send();
+    res.status(400).render('pages/error',{error:e, title:'Search Error'});
   }
 });
 
+// router.get('/:id', async (req, res) => {
+//     try {
+//       const movie = await moviesData.getMovie(req.params.id);
+//       //console.log(movie);
+//       res.render('movies/individualMovie',{movie:movie, title:'Characters Found'});
+//     } catch (e) {
+//       res.status(400).render('pages/error',{error:e, title:'Search Error'});
+//     }
+//   });
+
+//WIP!!!!!
+// router.get('/', async (req, res) => {
+//     try {
+//       const listRest = await moviesData.getTrending();
+//       res.status(200).json(listRest);
+//     } catch (e) {
+//       res.status(400).render('pages/error',{error:e, title:'Search Error'});
+//     }
+// });
+
+// router.post('/addMovie', async (req, res) => {
+//     const moviesDataList = req.body;
+//     if (!moviesDataList.movie_name) {
+//       res.status(400).json({ error: 'You must provide Name of the Movie' });
+//       return;
+//     }
+//     if (!moviesDataList.director) {
+//       res.status(400).json({ error: 'You must provide the director name of the Movie' });
+//       return;
+//     }
+//     if (!moviesDataList.release_year) {
+//       res.status(400).json({ error: 'You must provide release year of the Movie' });
+//       return;
+//     }
+//     if (!moviesDataList.cast) {
+//       res.status(400).json({ error: 'You must provide cast of the Movie' });
+//       return;
+//     }
+//     if (!moviesDataList.genre) {
+//       res.status(400).json({ error: 'You must provide genre of the Movie' });
+//       return;
+//     }
+//     if (!moviesDataList.streaming_services) {
+//       res.status(400).json({ error: 'You must provide streaming services of the Movie' });
+//       return;
+//     }
+//     if (!moviesDataList.movie_img) {
+//       res.status(400).json({ error: 'You must provide poster/image of the Movie' });
+//       return;
+//     }
+        
+//     try {
+//       const { movie_name, director, release_year, cast, streaming_services, genre, movie_img } = moviesDataList;
+//       const newMovie = await moviesData.createMovie(movie_name, director, release_year, cast, streaming_services,genre, movie_img);
+//       res.status(200).json(newMovie);
+//     } catch (e) {
+//       res.status(500).json({ error: e });
+//     }
+//   });
 
 router.put('/edit/:id', async (req, res) => {
     const updatedData = req.body; 
