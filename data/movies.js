@@ -428,10 +428,44 @@ let getSort = async (value)=> {
   } 
 };
 
-let updateRating = async () => {
-  const movieCollection = await movies();
-  const currMovie = await movieCollection.find({rating:{$in:[rate-1,rate]}}).toArray();
-  return moviesArr;
+let updateRating = async (movie) => {
+	if(! movie)
+  		throw "missing input parameters";
+		
+	if(typeof movie !== 'string')
+		throw "invalid data type";
+
+	if(movie.trim().length === 0)
+		throw "invalid strings";
+
+	const moviesCollection = await movies();
+	let currMovie = await moviesCollection.findOne({ movie_name: movie.trim() });
+	if(currMovie === null) throw "movie not found";
+
+	let reviewsArr = currMovie["reviews"];
+	let totalRating = 0;
+	let numOfRatings = reviewsArr.length;
+
+	reviewsArr.forEach(element => {
+		totalRating += element["rating"];
+	});
+
+	// for(let i = 0; i < reviewsArr.length; i++) {
+	// 	totalRating += reviewsArr[i].
+	// }
+	let avgRating = totalRating / numOfRatings;
+	let newRating = avgRating.toFixed(2);
+
+	const updatedMovie = await moviesCollection.updateOne(
+		{ movie_name: movie.trim() },
+		{ $set: { rating: newRating } }
+	);
+
+	if(updatedMovie.modifiedCount === 0) {
+		throw "nothing was added into favourites";
+	}
+
+	return `${movie}'s rating successfully updated.`;
 };
 
 let movieWatched = async (user, movie) => {
@@ -446,14 +480,14 @@ let movieWatched = async (user, movie) => {
 
 	const moviesCollection = await movies();
 	let currMovie = await moviesCollection.findOne({ movie_name: movie.trim() });
-	if(currMovie === null) throw "user not found";
+	if(currMovie === null) throw "movie not found";
 
 	const updatedMovie = await moviesCollection.updateOne(
 		{ movie_name: movie.trim() },
 		{ $push: { watched_list: user.trim() }, $inc: { views: 1 } }
 	);
 
-	if(updatedUser.modifiedCount === 0) {
+	if(updatedMovie.modifiedCount === 0) {
 		throw "nothing was added into favourites";
 	}
 
