@@ -2,11 +2,9 @@ const express = require('express');
 const session = require('express-session');
 const app = express();
 
-
-const static = express.static(__dirname + "/public");
+const static = express.static(__dirname + '/public');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 
 const configRoutes = require('./routes');
 const exphbs = require('express-handlebars');
@@ -21,9 +19,8 @@ const { client } = require('./config/mongoConnection');
 const users = require('./data/users');
 const closeConnection = require('./config/mongoConnection');
 
-const session = require('express-session');
 const { getAllUsers } = require('./data/users');
-app.use("/public", static);
+app.use('/public', static);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
