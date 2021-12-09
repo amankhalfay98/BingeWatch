@@ -1,42 +1,54 @@
-<main class="container">
-        <header>
-        <h1 id="the-heading">Add a new Movie</h1>
-        </header><br>
-        <form action="movies/addMovie" id="addMovieForm" method="post">
-            <label for="search_term"> Movie Name:
-            <input type="search" id="search_movie" placeholder="Enter Movie Name...">
-            </label><br><br>
-            <label for="stream_service"> Streaming Service:
-            Name: <input type="text"> URL:<input type="url" id="stream_service"> 
-            </label><br><br>
-            <label for="release_year"> Release Year:
-                <input type="number" min="1888" max="2021" step="1" id="release_year"/>
-                {{!-- <input type="date" id="release_year">  --}}
-            </label><br><br>
-            <label for="director"> Director:
-                <input type="text" id="director"> 
-            </label><br><br>
-            <label for="cast"> Cast:
-                <textarea id="cast"></textarea> 
-            </label><br><br>
-           <label for="genres">Genres:</label>
-           <select id="genres" name="genres">
-           <option value=""></option>
-    <option value="action">Action & Adventure</option>
-    <option value="comedy">Comedy</option>
-    <option value="crime">Crime</option>
-    <option value="drama">Drama</option>
-    <option value="horror">Horror</option>
-    <option value="mystery">Mystery</option>
-    <option value="romance">Romance</option>
-    <option value="sciFi">Science-Fiction</option>
-    <option value="thriller">Thriller</option>
-    </select><br><br>
-            <label> Poster:
-                <input type="file" id="poster" accept="image/*"> 
-            </label><br><br>
-            <button type="submit">Submit Movie</button>
-        </form>
-        <br>
-        <a href="/" id="homeLink">Home Page</a><br><br>
-    </main>
+<main class='container'>
+	<header>
+		<h1 id='the-heading'>Add a new Movie</h1>
+	</header><br />
+	<form action='movies/addMovie' id='addMovieForm' method='post'>
+		<label for='search_term'>
+			Movie Name:
+			<input
+				type='search'
+				id='search_movie'
+				placeholder='Enter Movie Name...'
+			/>
+		</label><br /><br />
+		<label for='stream_service'>
+			Streaming Service: Name:
+			<input type='text' />
+			URL:<input type='url' id='stream_service' />
+		</label><br /><br />
+		<label for='release_year'>
+			Release Year:
+			<input type='number' min='1888' max='2021' step='1' id='release_year' />
+			{{! <input type="date" id="release_year">  }}
+		</label><br /><br />
+		<label for='director'>
+			Director:
+			<input type='text' id='director' />
+		</label><br /><br />
+		<label for='cast'>
+			Cast:
+			<textarea id='cast'></textarea>
+		</label><br /><br />
+		<label for='genres'>Genres:</label>
+		<select id='genres' name='genres'>
+			<option value=''></option>
+			<option value='action'>Action and Adventure</option>
+			<option value='comedy'>Comedy</option>
+			<option value='crime'>Crime</option>
+			<option value='drama'>Drama</option>
+			<option value='horror'>Horror</option>
+			<option value='mystery'>Mystery</option>
+			<option value='romance'>Romance</option>
+			<option value='sciFi'>Science-Fiction</option>
+			<option value='thriller'>Thriller</option>
+		</select><br /><br />
+		<label for='movie_img'>
+			Poster:
+			<input type='file' name='movie_img' id='poster' accept='image/*' />
+		</label><br /><br />
+
+		<button type='submit'>Submit Movie</button>
+	</form>
+	<br />
+	<a href='/' id='homeLink'>Home Page</a><br /><br />
+</main>
