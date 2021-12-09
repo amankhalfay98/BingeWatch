@@ -235,6 +235,7 @@ router.post('/login', async (req, res) => {
 
 		//console.log(newRestaurant);
 		const rev = await usersData.checkUser(username, password);
+
 		if (rev) {
 			req.session.user = { username: newUser.username };
 			res.redirect('/movies/all');
