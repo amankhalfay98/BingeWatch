@@ -54,111 +54,102 @@ let createMovie = async (
 	genre,
 	movie_img
 ) => {
-	if (
-		!username ||
-		!movie_name ||
-		!director ||
-		!release_year ||
-		!cast ||
-		!streaming ||
-		!genre ||
-		!movie_img
-	)
-		throw 'One or more input parameter missing.';
+  if (
+    !username ||
+    !movie_name ||
+    !director ||
+    !release_year ||
+    !cast ||
+    !streaming ||
+    !genre ||
+    !movie_img
+  )
+    throw "One or more input parameter missing.";
 
-	if (
-		typeof username !== 'string' ||
-		typeof movie_name !== 'string' ||
-		typeof director !== 'string'
-	)
-		throw 'Incorrect data types';
+  if (typeof username !== "string" || typeof movie_name !== "string" || typeof director !== "string")
+    throw "Incorrect data types";
 
-	if (
-		username.trim().length === 0 ||
-		movie_name.trim().length === 0 ||
-		director.trim().length === 0
-	)
-		throw 'Strings are just empty spaces';
+  if (username.trim().length === 0 || movie_name.trim().length === 0 || director.trim().length === 0)
+    throw "Strings are just empty spaces";
 
-	//Most likely will need an extra check for director name
-	//Make sure it is a valid name
-	//Can not add the same movie twice
+  //Most likely will need an extra check for director name
+  //Make sure it is a valid name
+  //Can not add the same movie twice
 
-	if (typeof release_year !== 'number' || !Number.isInteger(release_year))
-		throw 'Incorrect data type';
+  if (typeof release_year !== "number" || !Number.isInteger(release_year)) throw "Incorrect data type";
 
-	//First film produced was 1888
-	if (release_year < 1888 || release_year > new Date().getFullYear())
-		throw 'Invalid release year';
+  //First film produced was 1888
+  if (release_year < 1888 || release_year > new Date().getFullYear())
+    throw "Invalid release year";
 
-	if (!Array.isArray(cast) || !Array.isArray(genre))
-		throw 'Incorrect data type';
+  if (!Array.isArray(cast) || !Array.isArray(genre))
+    throw "Incorrect data type";
 
-	for (i = 0; i < cast.length; i++) {
-		if (typeof cast[i] !== 'string' || cast[i].trim().length === 0)
-			throw 'cast is not an array of strings or contains empty strings';
-		cast[i] = cast[i].trim();
-	}
+  //Loop within cast array to check name validity
+  for (i = 0; i < cast.length; i++) {
+    if (typeof cast[i] !== "string" || cast[i].trim().length === 0)
+      throw "cast is not an array of strings or contains empty strings";
+    cast[i] = cast[i].trim();
+  }
 
-	for (i = 0; i < genre.length; i++) {
-		if (typeof genre[i] !== 'string' || genre[i].trim().length === 0)
-			throw 'genre is not an array of strings or contains empty strings';
-		genre[i] = genre[i].trim();
-	}
+  for (i = 0; i < genre.length; i++) {
+    if (typeof genre[i] !== "string" || genre[i].trim().length === 0)
+      throw "genre is not an array of strings or contains empty strings";
+    genre[i] = genre[i].trim();
+  }
 
-	if (typeof streaming !== 'object') throw 'streaming is not an object';
+  if (typeof streaming !== "object") throw "streaming is not an object";
 
-	if (streaming === null || Array.isArray(streaming))
-		throw 'streaming in not a valid object';
+  if (streaming === null || Array.isArray(streaming))
+    throw "streaming in not a valid object";
 
-	if (!('name' in streaming) || !('link' in streaming))
-		throw 'streaming missing important information';
+  if (!("name" in streaming) || !("link" in streaming))
+    throw "streaming missing important information";
 
-	for (let option in streaming) {
-		if (
-			typeof streaming[option] !== 'string' ||
-			streaming[option].trim().length === 0
-		)
-			throw 'key/value pair in streaming is invalid';
-	}
+  for (let option in streaming) {
+    if (
+      typeof streaming[option] !== "string" ||
+      streaming[option].trim().length === 0
+    )
+      throw "key/value pair in streaming is invalid";
+  }
 
-	if (!validWebsite(streaming['link'].trim()))
-		throw 'link field in streaming is not a valid website';
+  if (!validWebsite(streaming["link"].trim()))
+    throw "link field in streaming is not a valid website";
 
-	//validating img here
+  //validating img here
 
-	const movieCollection = await movies();
-	try {
-		const findSameMovie = await movieCollection.findOne({
-			movie_name: movie_name.trim(),
-		});
-		if (findSameMovie !== null) throw 'movie already exists within database';
-	} catch (e) {
-		throw 'movie already exists within database';
-	}
+  const movieCollection = await movies();
+  try {
+    const findSameMovie = await movieCollection.findOne({movie_name: movie_name.trim()});
+    if(findSameMovie !== null)
+      throw "movie already exists within database";
+  } catch(e) {
+    throw "movie already exists within database";;
+  }
+  
+  //username should be already populated when filling form
+  let newMovie = {
+    username: username.trim(),
+    movie_name: movie_name.trim(),
+    director: director.trim(),
+    release_year: release_year,
+    cast: cast,
+    streaming_service: streaming,
+    rating: 0,
+    genre: genre,
+    views: 0,
+    reviews: [],
+    watched_list: [],
+    movie_img: movie_img,
+    tag: "movie",
+  };
 
-	//username should be already populated when filling form
-	let newMovie = {
-		username: username.trim(),
-		movie_name: movie_name.trim(),
-		director: director.trim(),
-		release_year: release_year,
-		cast: cast,
-		streaming_service: streaming,
-		rating: 0,
-		genre: genre,
-		views: 0,
-		reviews: [],
-		watched_list: [],
-		movie_img: movie_img,
-		tag: 'movie',
-	};
+  const insertMovie = await movieCollection.insertOne(newMovie);
 
-	const insertMovie = await movieCollection.insertOne(newMovie);
+  if (insertMovie.insertedCount === 0) throw "movie could not be added";
 
-	if (insertMovie.insertedCount === 0) throw 'movie could not be added';
-
-	return `${movie_name} successfully added!`;
+  return `${movie_name} successfully added!`;
 };
 
 //username should not be editable
@@ -387,6 +378,16 @@ const updateMovieReviewID = async (movie_id, review_id) => {
 //   return moviesArr;
 // };
 
+let getTrending = async () => {
+	const movieCollection = await movies();
+	const moviesArr = await movieCollection
+		.find({})
+		.sort({ views: -1 })
+		.limit(10)
+		.toArray();
+	return moviesArr;
+};
+
 let getByGenre = async (genre)=> {
   const movieCollection = await movies();
   const moviesArr = await movieCollection.find({genre:`${genre}`}).toArray();
@@ -427,6 +428,72 @@ let getSort = async (value)=> {
   } 
 };
 
+let updateRating = async (movie) => {
+	if(! movie)
+  		throw "missing input parameters";
+		
+	if(typeof movie !== 'string')
+		throw "invalid data type";
+
+	if(movie.trim().length === 0)
+		throw "invalid strings";
+
+	const moviesCollection = await movies();
+	let currMovie = await moviesCollection.findOne({ movie_name: movie.trim() });
+	if(currMovie === null) throw "movie not found";
+
+	let reviewsArr = currMovie["reviews"];
+	let totalRating = 0;
+	let numOfRatings = reviewsArr.length;
+
+	reviewsArr.forEach(element => {
+		totalRating += element["rating"];
+	});
+
+	// for(let i = 0; i < reviewsArr.length; i++) {
+	// 	totalRating += reviewsArr[i].
+	// }
+	let avgRating = totalRating / numOfRatings;
+	let newRating = avgRating.toFixed(2);
+
+	const updatedMovie = await moviesCollection.updateOne(
+		{ movie_name: movie.trim() },
+		{ $set: { rating: newRating } }
+	);
+
+	if(updatedMovie.modifiedCount === 0) {
+		throw "nothing was added into favourites";
+	}
+
+	return `${movie}'s rating successfully updated.`;
+};
+
+let movieWatched = async (user, movie) => {
+  	if(!user || ! movie)
+  		throw "missing input parameters";
+		
+	if(typeof user !== 'string' || typeof movie !== 'string')
+		throw "invalid data type";
+
+	if(user.trim().length === 0 || movie.trim().length === 0)
+		throw "invalid strings";
+
+	const moviesCollection = await movies();
+	let currMovie = await moviesCollection.findOne({ movie_name: movie.trim() });
+	if(currMovie === null) throw "movie not found";
+
+	const updatedMovie = await moviesCollection.updateOne(
+		{ movie_name: movie.trim() },
+		{ $push: { watched_list: user.trim() }, $inc: { views: 1 } }
+	);
+
+	if(updatedMovie.modifiedCount === 0) {
+		throw "nothing was added into favourites";
+	}
+
+	return `${movie} successfully marked as watched.`;
+};
+
 module.exports = {
 	createMovie,
 	updatingMovie,
@@ -439,4 +506,6 @@ module.exports = {
 	getStreamingervice,
 	getRating,
 	getSort,
+  	updateRating,
+  	movieWatched
 };
