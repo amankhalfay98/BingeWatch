@@ -331,6 +331,7 @@ let updatingMovie = async (
 };
 
 let getMovie = async (id) => {
+	//console.log(id);
 	if (!id) throw 'no id is given.';
 
 	if (typeof id !== 'string') throw 'id is of invalid type';
@@ -344,6 +345,8 @@ let getMovie = async (id) => {
 	const wantedMovie = await movieCollection.findOne({ _id: parseId });
 
 	if (wantedMovie === null) throw 'no movie with given id';
+
+	//console.log(wantedMovie);
 
 	return wantedMovie;
 };

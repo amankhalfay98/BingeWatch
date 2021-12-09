@@ -1,11 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const data = require('../data');
+const usersData = require('../data/users');
 const moviesData = data.movies;
 
 router.get('/all', async (req, res) => {
 	try {
 		const listRest = await moviesData.getAllMovies();
+		//console.log(req.session);
 		res.render('movies/allMovies', {
 			movieList: listRest,
 			title: 'Characters Found',
@@ -34,10 +36,16 @@ router.get('/all/:genre', async (req, res) => {
 	// }
 });
 router.get('/addMovie', async (req, res) => {
-	try {
-		res.render('movies/newMovie', { title: 'Characters Found' });
-	} catch (e) {
-		res.status(400).render('pages/error', { error: e, title: 'Search Error' });
+	if (req.session.user) {
+		try {
+			res.render('movies/newMovie', { title: 'Characters Found' });
+		} catch (e) {
+			res
+				.status(400)
+				.render('pages/error', { error: e, title: 'Search Error' });
+		}
+	} else {
+		res.redirect('/');
 	}
 });
 
@@ -62,15 +70,28 @@ router.get('/genre', async (req, res) => {
 });
 
 router.get('/:id', async (req, res) => {
-	try {
-		const movie = await moviesData.getMovie(req.params.id);
-		//console.log(movie);
-		res.render('movies/individualMovie', {
-			movie: movie,
-			title: 'Characters Found',
-		});
-	} catch (e) {
-		res.status(400).render('pages/error', { error: e, title: 'Search Error' });
+	//console.log(req.params.id);
+	//console.log(req.session);
+	if (req.session.user) {
+		try {
+			const movie = await moviesData.getMovie(req.params.id);
+			let rev = await usersData.getUser(req.session.user.username);
+
+			// Getting details from session
+			//console.log(movie);
+			console.log(rev);
+
+			res.render('movies/individualMovie', {
+				movie: movie,
+				title: 'Characters Found',
+			});
+		} catch (e) {
+			res
+				.status(400)
+				.render('pages/error', { error: e, title: 'Search Error' });
+		}
+	} else {
+		res.status(403).render('pages/error');
 	}
 });
 
@@ -78,7 +99,10 @@ router.get('/:id', async (req, res) => {
 router.get('/', async (req, res) => {
 	try {
 		const listRest = await moviesData.getTrending();
-		res.status(200).json(listRest);
+		res.status(200).render('movies/allMovies', {
+			movieList: listRest,
+			title: 'Characters Found',
+		});
 	} catch (e) {
 		res.status(400).render('pages/error', { error: e, title: 'Search Error' });
 	}
