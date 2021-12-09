@@ -1,10 +1,11 @@
-<head>
+{{!-- <head>
 	<meta charset='utf-8' />
 
 	<title>Sign Up</title>
 
 </head>
-<body>
+<body> --}}
+	<main>
 	<form action='/signup' method='post' id='signup-form'>
 		<div class='container'>
 			<label for='name'><b>Name:</b></label>
@@ -18,7 +19,7 @@
 				id='date_of_birth'
 				placeholder='Enter Your DOB'
 				name='date_of_birth'
-			/>
+			>
 			<br />
 			<label for='username'><b>Username:</b></label>
 			<input
@@ -26,7 +27,7 @@
 				id='username'
 				placeholder='Enter Username'
 				name='username'
-			/>
+			>
 			<br />
 			<label for='password'><b>Password:</b></label>
 			<input
@@ -34,10 +35,10 @@
 				id='password'
 				placeholder='Enter Password'
 				name='password'
-			/>
+			>
 			<br />
 			<label for='email'><b>Email:</b></label>
-			<input type='text' id='email' placeholder='Enter Email' name='email' />
+			<input type='text' id='email' placeholder='Enter Email' name='email'>
 			<br />
 			<button type='submit'>Sign Up</button>
 		</div>
@@ -47,4 +48,5 @@
 	<p class='error'>
 		{{error}}
 	</p>
-</body>
+	</main>
+{{!-- </body> --}}
