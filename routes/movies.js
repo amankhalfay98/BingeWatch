@@ -1,7 +1,9 @@
 const express = require("express");
+const { users } = require("../data");
 const router = express.Router();
 const data = require("../data");
 const moviesData = data.movies;
+const usersData = data.users;
 
 router.get('/all', async (req, res) => {
   try {
@@ -10,17 +12,13 @@ router.get('/all', async (req, res) => {
   } catch (e) {
     res.status(400).render('pages/error',{error:e, title:'Search Error'});
   }
-  //   res.status(200).json(listRest);
-  // } catch (e) {
-  //   res.status(500).send();
-  // }
 });
 
 router.get('/all/:genre', async (req, res) => {
   try {
     const sorted = await moviesData.getByGenre(req.params.genre);
     //res.render('movies/allMovies',{movieList:sorted,title:'Characters Found'});
-    return sorted
+    return sorted;
     //res.render('movies/allMovies',{movieList:listRest,title:'Characters Found'});
   } catch (e) {
     //res.status(400).render('pages/error',{error:e, title:'Search Error'});
@@ -30,32 +28,54 @@ router.get('/all/:genre', async (req, res) => {
   //   res.status(500).send();
   // }
 });
+
 router.get('/addMovie', async (req, res) => {
   try {
     res.render('movies/newMovie',{title:'Characters Found'});
   } catch (e) {
     res.status(400).render('pages/error',{error:e, title:'Search Error'});
   }
-
 });
 
-//TESTS ALPHABETICAL SORT 
-router.get('/alpha', async (req, res) => {
+// //TESTS ALPHABETICAL SORT 
+// router.get('/alpha', async (req, res) => {
+//   try {
+//     const listRest = await moviesData.sortAlphabetically();
+//     res.status(200).json(listRest);
+//   } catch (e) {
+//     res.status(500).send();
+//   }
+// });
+
+// //TESTS GENRE FILTER
+// router.get('/genre', async (req, res) => {
+//   try {
+//     const listRest = await moviesData.getByGenre("comedy");
+//     res.status(200).json(listRest);
+//   } catch (e) {
+//     res.status(500).send();
+//   }
+// });
+
+//ADDING MOVIE TO USER'S FAVE LIST
+router.get('/favorite/:id', async (req, res) => {
   try {
-    const listRest = await moviesData.sortAlphabetically();
-    res.status(200).json(listRest);
+    const movie = await moviesData.getMovie(req.params.id);
+    const user = await usersData.addToFave("royroy", movie["movie_name"]);
+    res.status(200).json(user);
   } catch (e) {
-    res.status(500).send();
+    res.status(400).render('pages/error',{error:e, title:'Search Error'});
   }
 });
 
-//TESTS GENRE FILTER
-router.get('/genre', async (req, res) => {
+//ADDING MOVIE TO USER'S WATCHLIST
+router.get('/watchlist/:id', async (req, res) => {
   try {
-    const listRest = await moviesData.getByGenre("comedy");
-    res.status(200).json(listRest);
+    const movie = await moviesData.getMovie(req.params.id);
+    const user = await usersData.addToWatch("royroy", movie["movie_name"]);
+    res.status(200).json(user);
   } catch (e) {
-    res.status(500).send();
+    res.status(400).render('pages/error',{error:e, title:'Search Error'});
   }
 });
 
@@ -79,15 +99,6 @@ router.get('/', async (req, res) => {
     }
 });
 
-// router.get('/addMovie', async (req, res) => {
-//   try {
-//     res.render('movies/newMovies',{title:'Characters Found'});
-//   } catch (e) {
-//     res.status(400).render('pages/error',{error:e, title:'Search Error'});
-//   }
-
-// });
-  
 router.post('/addMovie', async (req, res) => {
     const moviesDataList = req.body;
     if (!moviesDataList.movie_name) {

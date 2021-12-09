@@ -355,38 +355,42 @@ let getTrending = async ()=> {
     return moviesArr;
 };
 
-let getByGenre = async (genreSpecified) => {
-  const movieCollection = await movies();
-  const moviesArr = await movieCollection.find({genre: genreSpecified}).toArray();
-  return moviesArr;
-};
+// let getByGenre = async (genreSpecified) => {
+//   const movieCollection = await movies();
+//   const moviesArr = await movieCollection.find({genre: genreSpecified}).toArray();
+//   return moviesArr;
+// };
 
-let sortAlphabetically = async () => {
-  const movieCollection = await movies();
-  const moviesArr = await movieCollection.find().sort({movie_name: 1}).toArray();
-  return moviesArr;
-};
+// let sortAlphabetically = async () => {
+//   const movieCollection = await movies();
+//   const moviesArr = await movieCollection.find().sort({movie_name: 1}).toArray();
+//   return moviesArr;
+// };
 
 let getByGenre = async (genre)=> {
   const movieCollection = await movies();
   const moviesArr = await movieCollection.find({genre:`${genre}`}).toArray();
   return moviesArr;
-}
+};
+
 let getReleaseYear = async (year)=> {
   const movieCollection = await movies();
   const moviesArr = await movieCollection.find({release_year:year}).toArray();
   return moviesArr;
-}
+};
+
 let getStreamingervice = async (service)=> {
   const movieCollection = await movies();
   const moviesArr = await movieCollection.find({"streaming_service.name":`${service}`}).toArray();
   return moviesArr;
-}
+};
+
 let getRating = async (rate)=> {
   const movieCollection = await movies();
   const moviesArr = await movieCollection.find({rating:{$in:[rate-1,rate]}}).toArray();
   return moviesArr;
-}
+};
+
 let getSort = async (value)=> {
   const movieCollection = await movies();
   if(value ==='views'){
@@ -400,10 +404,8 @@ let getSort = async (value)=> {
   if(value ==='name'){
     const moviesArr = await movieCollection.find({}).sort({name:-1}).toArray();
     return moviesArr;
-  }
-  
-  
-}
+  } 
+};
 
 module.exports = {
   createMovie,
