@@ -355,11 +355,11 @@ let getTrending = async ()=> {
     return moviesArr;
 };
 
-let getByGenre = async (genreSpecified) => {
-  const movieCollection = await movies();
-  const moviesArr = await movieCollection.find({genre: genreSpecified}).toArray();
-  return moviesArr;
-};
+// let getByGenre = async (genreSpecified) => {
+//   const movieCollection = await movies();
+//   const moviesArr = await movieCollection.find({genre: genreSpecified}).toArray();
+//   return moviesArr;
+// };
 
 let sortAlphabetically = async () => {
   const movieCollection = await movies();
