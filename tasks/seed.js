@@ -2,60 +2,60 @@ const connection = require("../config/mongoConnection");
 const dbFunctions = require("../data/index");
 
 async function main() {
-  // try {
-  //   const avengers = await dbFunctions.movies.createMovie(
-  //     "akhalfay",
-  //     "Avengers",
-  //     "Joss Whedon",
-  //     2012,
-  //     ["Robert Downey Jr.", "Chris Evans", "Mark Ruffalo"],
-  //     {
-  //       name: "Disney+",
-  //       link: "https://www.disneyplus.com/movies/marvel-studios-the-avengers/2h6PcHFDbsPy",
-  //     },
-  //     ["action", "thriller"],
-  //     "image"
-  //   );
-  //   console.log(avengers);
-  // } catch (e) {
-  //   console.log(e);
-  // }
-  // try {
-  //   const inception = await dbFunctions.movies.createMovie(
-  //     "supersid",
-  //     "Inception",
-  //     "Christopher Nolan",
-  //     2010,
-  //     ["Leonardo DiCaprio", "Elliot Page", "Joseph Gordon-Levitt"],
-  //     {
-  //       name: "Hulu",
-  //       link: "https://www.hulu.com/movie/inception-5519f425-9b21-48fb-8e67-aef24c76604a?entity_id=5519f425-9b21-48fb-8e67-aef24c76604a",
-  //     },
-  //     ["action", "science-fiction"],
-  //     "image"
-  //   );
-  //   console.log(inception);
-  // } catch (e) {
-  //   console.log(e);
-  // }
-  // try {
-  //   const forrest = await dbFunctions.movies.createMovie(
-  //     "jdelrosa",
-  //     "Forrest Gump",
-  //     "Robert Zemeckis",
-  //     1994,
-  //     ["Tom Hanks", "Robin Wright", "Gary Sinise"],
-  //     {
-  //       name: "YouTube",
-  //       link: "https://www.youtube.com/watch?v=hf_lCA-T99c",
-  //     },
-  //     ["comedy", "drama"],
-  //     "image"
-  //   );
-  //   console.log(forrest);
-  // } catch (e) {
-  //   console.log(e);
-  // }
+  try {
+    const avengers = await dbFunctions.movies.createMovie(
+      "akhalfay",
+      "Avengers",
+      "Joss Whedon",
+      2012,
+      ["Robert Downey Jr.", "Chris Evans", "Mark Ruffalo"],
+      {
+        name: "Disney+",
+        link: "https://www.disneyplus.com/movies/marvel-studios-the-avengers/2h6PcHFDbsPy",
+      },
+      ["action", "thriller"],
+      "image"
+    );
+    console.log(avengers);
+  } catch (e) {
+    console.log(e);
+  }
+  try {
+    const inception = await dbFunctions.movies.createMovie(
+      "supersid",
+      "Inception",
+      "Christopher Nolan",
+      2010,
+      ["Leonardo DiCaprio", "Elliot Page", "Joseph Gordon-Levitt"],
+      {
+        name: "Hulu",
+        link: "https://www.hulu.com/movie/inception-5519f425-9b21-48fb-8e67-aef24c76604a?entity_id=5519f425-9b21-48fb-8e67-aef24c76604a",
+      },
+      ["action", "science-fiction"],
+      "image"
+    );
+    console.log(inception);
+  } catch (e) {
+    console.log(e);
+  }
+  try {
+    const forrest = await dbFunctions.movies.createMovie(
+      "jdelrosa",
+      "Forrest Gump",
+      "Robert Zemeckis",
+      1994,
+      ["Tom Hanks", "Robin Wright", "Gary Sinise"],
+      {
+        name: "YouTube",
+        link: "https://www.youtube.com/watch?v=hf_lCA-T99c",
+      },
+      ["comedy", "drama"],
+      "image"
+    );
+    console.log(forrest);
+  } catch (e) {
+    console.log(e);
+  }
   try {
     const user1 = await dbFunctions.users.createUser(
       "Roy Rogers",

@@ -1,9 +1,8 @@
-
 const express = require("express");
 const { users } = require("../data");
 const router = express.Router();
 const data = require('../data');
-const usersData = require('../data/users');
+// const usersData = require('../data/users');
 const moviesData = data.movies;
 const usersData = data.users;
 const validation = require("../data/validation");
@@ -117,6 +116,7 @@ router.get('/', async (req, res) => {
 	} catch (e) {
 		res.status(400).render('pages/error', { error: e, title: 'Search Error' });
 	}
+});
 
 
 router.post("/addMovie", async (req, res) => {
@@ -237,6 +237,17 @@ router.get('/watchlist/:id', async (req, res) => {
     const movie = await moviesData.getMovie(req.params.id);
     const user = await usersData.addToWatch("royroy", movie["movie_name"]);
     res.status(200).json(user);
+  } catch (e) {
+    res.status(400).render('pages/error',{error:e, title:'Search Error'});
+  }
+});
+
+//MARKING MOVIE AS WATCHED
+router.get('/watched/:id', async (req, res) => {
+  try {
+    const movie = await moviesData.getMovie(req.params.id);
+    const watchMovie = await moviesData.movieWatched("royroy", movie["movie_name"]);
+    res.status(200).json(watchMovie);
   } catch (e) {
     res.status(400).render('pages/error',{error:e, title:'Search Error'});
   }
