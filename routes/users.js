@@ -5,6 +5,7 @@ let { ObjectId } = require('mongodb');
 const usersData = require('../data/users');
 const path = require('path');
 
+
 //FOR USERS FOLLOWING OTHER USERS (CHANGE IF NEEDED)
 router.get('/follow/:id', async(req, res) => {
 	try {
@@ -19,17 +20,28 @@ router.get('/follow/:id', async(req, res) => {
 // To go on Landing Page
 router.get('/', async (req, res) => {
 	//console.log(req.session);
+	// if (req.session.user) {
+
 	if (req.session.user) {
-		res.redirect('/private');
+		res.redirect('movies/all');
 	} else {
-		res.render('pages/login', { title: 'Login' });
+		res.render('pages/landing', { title: 'Binge-Watch' });
+	}
+});
+
+// To go on Login Page
+router.get('/login', async (req, res) => {
+	if (req.session.user) {
+		res.redirect('/movies/all');
+	} else {
+		res.render('pages/login');
 	}
 });
 
 // To go on Signup Page
 router.get('/signup', async (req, res) => {
 	if (req.session.user) {
-		res.redirect('/private');
+		res.redirect('/movies/all');
 	} else {
 		res.render('pages/signup');
 	}
@@ -38,7 +50,8 @@ router.get('/signup', async (req, res) => {
 // To Sign Up a new User
 router.post('/signup', async (req, res) => {
 	const newUser = req.body;
-	// console.log(newUser);
+	//console.log(newUser);
+	//req.session.user = newUser;
 
 	// Error handling for name
 	if (!newUser.name || newUser.name.trim() == '') {
@@ -167,6 +180,11 @@ router.post('/signup', async (req, res) => {
 			password,
 			email
 		);
+
+		//For Sessions
+		req.session.user = newUser.username;
+		//console.log(req.session);
+
 		//console.log(rev);
 		res.status(200).redirect('/');
 	} catch (e) {
@@ -182,6 +200,7 @@ router.post('/signup', async (req, res) => {
 // To Post Login Information
 router.post('/login', async (req, res) => {
 	const newUser = req.body;
+	//console.log(req.session);
 
 	// Error handling for username
 	if (!newUser.username || newUser.username.trim() == '') {
@@ -244,13 +263,15 @@ router.post('/login', async (req, res) => {
 	try {
 		const { username, password } = newUser;
 
-		//console.log(newRestaurant);
+		//console.log(newUser);
 		const rev = await usersData.checkUser(username, password);
+		if (rev.authenticated) {
 
-		if (rev) {
 			req.session.user = { username: newUser.username };
+			//console.log(req.session);
 			res.redirect('/movies/all');
 		}
+		//res.redirect('/all');
 		//console.log(rev.authenticated);
 		//res.status(200).json(rev);
 		//res.redirect('/private');
