@@ -393,15 +393,15 @@ let getRating = async (rate)=> {
 
 let getSort = async (value)=> {
   const movieCollection = await movies();
-  if(value ==='views'){
+  if(value ==='watchCount'){
     const moviesArr = await movieCollection.find({}).sort({views:-1}).toArray();
     return moviesArr;
   }
-  if(value ==='rating'){
+  else if(value ==='rating'){
     const moviesArr = await movieCollection.find({}).sort({rating:-1}).toArray();
     return moviesArr;
   }
-  if(value ==='name'){
+  else if(value ==='alphabetically'){
     const moviesArr = await movieCollection.find({}).sort({name:-1}).toArray();
     return moviesArr;
   } 
