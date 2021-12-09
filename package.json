@@ -27,7 +27,8 @@
 		"express-handlebars": "^3.1.0",
 		"express-session": "^1.17.2",
 		"handlebars": "^4.7.3",
-		"mongodb": "^4.1.4"
+		"mongodb": "^4.1.4",
+		"multer": "^1.4.4"
 	},
 	"devDependencies": {
 		"nodemon": "^2.0.15"
