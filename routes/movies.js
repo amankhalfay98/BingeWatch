@@ -86,6 +86,7 @@ router.get("/", async (req, res) => {
   }
 });
 
+
 router.post("/addMovie", async (req, res) => {
   const moviesDataList = req.body;
   if (
@@ -141,8 +142,7 @@ router.post("/addMovie", async (req, res) => {
     moviesDataList.genre = moviesDataList.genre.split();
   }
   moviesDataList.release_year = parseInt(moviesDataList.release_year);
-
-  try {
+    try {
     const {
       movie_name,
       director,
@@ -167,50 +167,48 @@ router.post("/addMovie", async (req, res) => {
   }
 });
 
-router.put("/edit/:id", async (req, res) => {
-  const updatedData = req.body;
-  if (
-    !updatedData.movie_name ||
-    !updatedData.director ||
-    !updatedData.release_year ||
-    !updatedData.cast ||
-    !updatedData.genre ||
-    !updatedData.streaming_services
-  ) {
-    res.status(400).json({ error: "You must Supply All fields" });
-    return;
-  }
+//TESTS ALPHABETICAL SORT 
+router.get('/alpha', async (req, res) => {
   try {
-    await moviesData.getMovie(req.params.id);
+    const listRest = await moviesData.sortAlphabetically();
+    res.status(200).json(listRest);
   } catch (e) {
-    res.status(404).json({ error: "Movie/TV Show not found" });
-    return;
+    res.status(500).send();
   }
+});
 
+//TESTS GENRE FILTER
+router.get('/genre', async (req, res) => {
   try {
-    const {
-      movie_name,
-      director,
-      release_year,
-      cast,
-      streaming_services,
-      genre,
-      movie_img,
-    } = updatedData;
-    const updatedMovie = await moviesData.updatingMovie(
-      req.params.id,
-      movie_name,
-      director,
-      release_year,
-      cast,
-      streaming_services,
-      genre,
-      movie_img
-    );
-    res.status(200).json(updatedMovie);
+    const listRest = await moviesData.getByGenre("comedy");
+    res.status(200).json(listRest);
   } catch (e) {
-    res.status(500).json({ error: e });
+    res.status(500).send();
   }
+});
+
+
+router.put('/edit/:id', async (req, res) => {
+    const updatedData = req.body; 
+    if (!updatedData.movie_name || !updatedData.director || !updatedData.release_year || !updatedData.cast || !updatedData.genre ||
+        !updatedData.streaming_services ) {
+      res.status(400).json({ error: 'You must Supply All fields' });
+      return;
+    }
+    try {
+      await moviesData.getMovie(req.params.id);
+    } catch (e) {
+        res.status(404).json({ error: 'Movie/TV Show not found' });
+        return;
+    }
+    
+    try {
+      const { movie_name, director, release_year, cast, streaming_services, genre, movie_img } = updatedData;
+      const updatedMovie = await moviesData.updatingMovie(req.params.id, movie_name, director, release_year, cast, streaming_services, genre, movie_img);
+      res.status(200).json(updatedMovie);
+    } catch (e) {
+      res.status(500).json({ error: e });
+    }
 });
 
 // router.delete('/:id', async (req, res) => {

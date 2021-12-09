@@ -45,6 +45,7 @@ let validWebsite = (website) => {
 };
 
 let createMovie = async (
+  username,
   movie_name,
   director,
   release_year,
@@ -54,6 +55,7 @@ let createMovie = async (
   movie_img
 ) => {
   if (
+    !username ||
     !movie_name ||
     !director ||
     !release_year ||
@@ -64,10 +66,10 @@ let createMovie = async (
   )
     throw "One or more input parameter missing.";
 
-  if (typeof movie_name !== "string" || typeof director !== "string")
+  if (typeof username !== "string" || typeof movie_name !== "string" || typeof director !== "string")
     throw "Incorrect data types";
 
-  if (movie_name.trim().length === 0 || director.trim().length === 0)
+  if (username.trim().length === 0 || movie_name.trim().length === 0 || director.trim().length === 0)
     throw "Strings are just empty spaces";
 
   //Most likely will need an extra check for director name
@@ -117,9 +119,17 @@ let createMovie = async (
   //validating img here
 
   const movieCollection = await movies();
-
-  //make a userId field FOR LATER
+  try {
+    const findSameMovie = await movieCollection.findOne({movie_name: movie_name.trim()});
+    if(findSameMovie !== null)
+      throw "movie already exists within database";
+  } catch(e) {
+    throw "movie already exists within database";;
+  }
+  
+  //username should be already populated when filling form
   let newMovie = {
+    username: username.trim(),
     movie_name: movie_name.trim(),
     director: director.trim(),
     release_year: release_year,
@@ -141,8 +151,10 @@ let createMovie = async (
   return `${movie_name} successfully added!`;
 };
 
+//username should not be editable
 let updatingMovie = async (
   id,
+  username,
   movie_name,
   director,
   release_year,
@@ -153,6 +165,7 @@ let updatingMovie = async (
 ) => {
   if (
     !id ||
+    !username ||
     !movie_name ||
     !director ||
     !release_year ||
@@ -169,10 +182,10 @@ let updatingMovie = async (
 
   if (!ObjectId.isValid(id.trim())) throw "id is not a valid ObjectId";
 
-  if (typeof movie_name !== "string" || typeof director !== "string")
+  if (typeof username !== "string" || typeof movie_name !== "string" || typeof director !== "string")
     throw "Incorrect data types";
 
-  if (movie_name.trim().length === 0 || director.trim().length === 0)
+  if (username.trim().length === 0 || movie_name.trim().length === 0 || director.trim().length === 0)
     throw "Strings are just empty spaces";
 
   //Most likely will need an extra check for director name
@@ -220,6 +233,15 @@ let updatingMovie = async (
 
   //validating img here
 
+  const movieCollection = await movies();
+  try {
+    const findSameMovie = await movieCollection.findOne({movie_name: movie_name.trim()});
+    if(findSameMovie !== null)
+      throw "movie already exists within database";
+  } catch(e) {
+    throw "movie already exists within database";;
+  }
+
   let parseId = ObjectId(id.trim());
   let oldMovieName = "";
   let oldDirector = "";
@@ -232,7 +254,6 @@ let updatingMovie = async (
   let currReviews = [];
   let currWatch = [];
   let oldImg = "";
-  const movieCollection = await movies();
 
   try {
     const findMovie = await movieCollection.findOne({ _id: parseId });
@@ -264,8 +285,8 @@ let updatingMovie = async (
   )
     throw "updated fields are the same as the original";
 
-  //make a userId field FOR LATER
   let updateMovie = {
+    username: username.trim(),
     movie_name: movie_name.trim(),
     director: director.trim(),
     release_year: release_year,
@@ -332,7 +353,19 @@ let getTrending = async ()=> {
     const movieCollection = await movies();
     const moviesArr = await movieCollection.find({}).sort({views:-1}).limit(10).toArray();
     return moviesArr;
-}
+};
+
+let getByGenre = async (genreSpecified) => {
+  const movieCollection = await movies();
+  const moviesArr = await movieCollection.find({genre: genreSpecified}).toArray();
+  return moviesArr;
+};
+
+let sortAlphabetically = async () => {
+  const movieCollection = await movies();
+  const moviesArr = await movieCollection.find().sort({movie_name: 1}).toArray();
+  return moviesArr;
+};
 
 let getByGenre = async (genre)=> {
   const movieCollection = await movies();
