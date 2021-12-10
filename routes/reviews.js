@@ -25,7 +25,7 @@ router.post("/:id", async (req, res) => {
   //if(req.params.id){
   const allReviews = await reviews.getReviewsByMovieId(req.params.id);
   res.json(allReviews);
-  } catch (error) {}
+  //} catch (error) {}
   //}
 });
 
