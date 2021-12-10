@@ -18,8 +18,10 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 // const usersData = require('../data/users');
 const moviesData = data.movies;
+//const reviewData = data.reviews
 const usersData = data.users;
 const validation = require('../data/validation');
+
 
 router.get("/all", async (req, res) => {
   try {
@@ -84,6 +86,22 @@ router.post('/all/:value', async (req, res) => {
 	} catch (e) {}
 });
 
+router.get('/allMovies', async (req, res) => {
+  try{const listMovies = await moviesData.getAllMovies();
+    res.json(listMovies);
+  }
+  catch{
+
+  }
+  // const filterList = req.body;
+  // try {
+  //   const { genre, year, service, rate} = filterList;
+  //   const filtered = await moviesData.getFilter(genre,year,service,rate);
+  //   res.json(filtered)
+  // } catch (e) {
+  // }
+});
+
 router.get('/addMovie', async (req, res) => {
 	if (req.session.user) {
 		try {
@@ -104,6 +122,14 @@ router.get("/:id", async (req, res) => {
   if (req.session.user) {
     try {
       const movie = await moviesData.getMovie(req.params.id);
+
+     const reviews = await reviewData.getReviewsByMovieId(req.params.id)
+      //console.log(movie);
+//       res.render('movies/individualMovie',{movie:movie, reviews:reviews, user:req.session.user, title:'Characters Found'});
+//     } catch (e) {
+//       res.status(400).render('pages/error',{error:e, title:'Search Error'});
+//     }
+//   });
       let rev = await usersData.getUser(req.session.user.username);
 
 			res.render('movies/individualMovie', {

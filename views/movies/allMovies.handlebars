@@ -10,6 +10,7 @@
   <span>Filter: 
   <label for="rate">Rating:</label>
     <select id="rate" name="rate">
+    <option value="all">All</option>
     <option value="1">1</option>
     <option value="2">2</option>
     <option value="3">3</option>
@@ -18,8 +19,8 @@
     </select>
     <label for="genres">Genres:</label>
     <select id="genres" name="genres">
-    <option value=""></option>
-    <option value="action">Action and Adventure</option>
+    <option value="all">All</option>
+    <option value="action">Action & Adventure</option>
     <option value="comedy">Comedy</option>
     <option value="crime">Crime</option>
     <option value="drama">Drama</option>
@@ -29,7 +30,7 @@
     <option value="sciFi">Science-Fiction</option>
     <option value="thriller">Thriller</option>
     </select>
-    <label for="service">Streaming Service:</label>
+    <!-- <label for="service">Streaming Service:</label>
     <select id="service" name="genres">
     <option value="all">All</option>
     <option value="netflix">Netflix</option>
@@ -37,10 +38,12 @@
     <option value="disney">Disney+</option>
     <option value="hulu">Hulu</option>
     <option value="others">Others</option>
-    </select>
+    </select> -->
     <label for="release_year"> Release Year:
-    <input type="number" min="1888" max="2021" step="1" id="release_year"/>
+    <input type="number" value='1888' min="1888" max="2021" step="1" id="release_year"/>
     </label><br><br>
+    <button type="button" id="apply">Apply</button>
+    <button type="button" id="reset">Reset</button>
   </span>
   </nav>
    </header>
@@ -51,7 +54,15 @@
 {{!-- <a href="/">Make another search</a> --}}
 <ul id="showList"> 
     {{#each movieList}}
-        <li><a href="/movies/{{_id}}"  class="character-link">{{movie_name}}</a></li>
+    <li><div>
+        <a href="/movies/{{_id}}" class="character-link">{{movie_name}}</a><br>
+        Release Year: {{release_year}}<br>
+        Streaming On: {{streaming_service.name}}<br>
+        Genres: {{genre}}<br>
+        Rating: {{rating}}<br>
+        Views: {{views}}
+    </div>
+    </li>
       {{/each}}
 </ul>
 {{!-- {{else}}
@@ -59,7 +70,10 @@
   {{/if}} --}}
        
    </div>
-  {{!-- <input type="checkbox" id="rating1" name="rating1" value="1">
+{{!-- <script src="/public/js/sortAndFilter.js"></script> --}}
+
+{{!-- Rating:
+  <input type="checkbox" id="rating1" name="rating1" value="1">
   <label for="rating1">1</label><br>
   <input type="checkbox" id="rating2" name="rating2" value="2">
   <label for="rating2">2</label><br>

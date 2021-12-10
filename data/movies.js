@@ -352,17 +352,21 @@ let getAllMovies = async () => {
 };
 
 // A method to add review id to movies collection when new review is added.
-const updateMovieReviewID = async (movie_id, review_id) => {
-	const movieCollection = await movies();
-	let movie = await movieCollection.findOne({ _id: ObjectId(movie_id.trim()) });
-	movie.reviews.push(review_id.toString());
-	const updatedMovie = await movieCollection.updateOne(
-		{ _id: ObjectId(movie_id.trim()) },
-		{ $set: movie }
-	);
-	if (updatedMovie.modifiedCount === 0) throw 'nothing was updated';
+const updateMovieReviewID = async (movie_id, review_id, review_rating) => {
+  if (!ObjectId.isValid(movie_id.trim())) throw "Movie id is not a valid ObjectId";
 
-	return `${movie.movie_name} with id ${movie._id} successfully updated!`;
+  let parseId = ObjectId(movie_id.trim());
+  const movieCollection = await movies();
+  let movie = await movieCollection.findOne({ _id: parseId });
+  movie.reviews.push(review_id.toString());
+  movie.rating = (movie.rating + parseInt(review_rating))/2
+  const updatedMovie = await movieCollection.updateOne(
+    { _id: parseId },
+    { $set: movie }
+  );
+  if (updatedMovie.modifiedCount === 0) throw "nothing was updated";
+
+  return `${movie.movie_name} with id ${movie._id} successfully updated!`;
 };
 
 
@@ -388,30 +392,6 @@ let getTrending = async () => {
 	return moviesArr;
 };
 
-let getByGenre = async (genre)=> {
-  const movieCollection = await movies();
-  const moviesArr = await movieCollection.find({genre:`${genre}`}).toArray();
-  return moviesArr;
-};
-
-let getReleaseYear = async (year)=> {
-  const movieCollection = await movies();
-  const moviesArr = await movieCollection.find({release_year:year}).toArray();
-  return moviesArr;
-};
-
-let getStreamingervice = async (service)=> {
-  const movieCollection = await movies();
-  const moviesArr = await movieCollection.find({"streaming_service.name":`${service}`}).toArray();
-  return moviesArr;
-};
-
-let getRating = async (rate)=> {
-  const movieCollection = await movies();
-  const moviesArr = await movieCollection.find({rating:{$in:[rate-1,rate]}}).toArray();
-  return moviesArr;
-};
-
 let getSort = async (value)=> {
   const movieCollection = await movies();
   if(value ==='watchCount'){
@@ -423,7 +403,7 @@ let getSort = async (value)=> {
     return moviesArr;
   }
   else if(value ==='alphabetically'){
-    const moviesArr = await movieCollection.find({}).sort({name:-1}).toArray();
+    const moviesArr = await movieCollection.find({}).sort({movie_name:1}).toArray();
     return moviesArr;
   } 
 };
@@ -501,11 +481,7 @@ module.exports = {
 	getAllMovies,
 	getTrending,
 	updateMovieReviewID,
-	getByGenre,
-	getReleaseYear,
-	getStreamingervice,
-	getRating,
 	getSort,
-  	updateRating,
-  	movieWatched
+  updateRating,
+  movieWatched
 };
