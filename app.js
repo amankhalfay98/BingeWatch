@@ -33,7 +33,7 @@ app.use(
 	})
 );
 
-// NEED TO COMMENT THIS OUT LATER : JUST FOR UNDERSTANDING ROUTES
+//NEED TO COMMENT THIS OUT LATER : JUST FOR UNDERSTANDING ROUTES
 app.use((req, res, next) => {
 	if (!req.session.user) {
 		console.log(
@@ -85,6 +85,7 @@ app.use('/private', (req, res, next) => {
 		next();
 	}
 });
+app.use('/uploads', express.static('uploads'));
 
 // app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
 // app.set('view engine', 'handlebars');
