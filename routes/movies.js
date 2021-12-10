@@ -370,6 +370,7 @@ router.put("/edit/:id", async (req, res) => {
   } catch (e) {
     res.status(500).json({ error: e });
   }
+});
   
   //ADDING MOVIE TO USER'S FAVE LIST
 router.get('/favorite/:id', async (req, res) => {
