@@ -22,3 +22,10 @@
   height: 350px;
   width: 300px;
 }
+.login {
+  align-items: center;
+}
+.card_gap{
+  margin-top: 20px
+  /* opacity: 0.7; */
+}
