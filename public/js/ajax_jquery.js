@@ -11,7 +11,6 @@
       dataType: "json",
     };
     $.ajax(requestConfig).then(function (data) {
-      console.log(data);
       let genre = $("#genres").val().trim();
       let release_year = $("#release_year").val().trim();
       //let streaming_service = $("#service").val().trim();
@@ -39,7 +38,6 @@
       }
 
       user_data = filterBy(original_data, compare);
-      console.log(user_data);
       showList.empty();
       if (!(user_data.length === 0)) {
         $.each(user_data, function () {
@@ -160,7 +158,6 @@
       };
 
       $.ajax(requestConfig).then(function (review) {
-        console.log(review);
         // const div = `<div>${review.username}<br>${review.review}<br>${review.rating}</div>`;
         // $('#reviews').prepend(div);
         location.reload();

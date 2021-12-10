@@ -8,7 +8,6 @@
 }
 .card {
   transition: transform 0.3s ease;
-  min-height: auto;
 }
 .gap {
   border: none;
@@ -18,4 +17,8 @@
 }
 .head {
   font-size: 3.125rem;
+}
+.movie_card_img {
+  height: 350px;
+  width: 300px;
 }
