@@ -18,7 +18,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 // const usersData = require('../data/users');
 const moviesData = data.movies;
-//const reviewData = data.reviews
+const reviewData = data.reviews
 const usersData = data.users;
 const validation = require("../data/validation");
 
