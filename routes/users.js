@@ -17,6 +17,17 @@ router.get('/follow/:id', async(req, res) => {
 	  }
 });
 
+//FOR USERS UNFOLLOWING OTHER USERS
+router.get('/unfollow/:id', async(req, res) => {
+	try {
+		const getUser = await usersData.get(req.params.id);
+		const unfollow = await usersData.unfollowUser("royroy", getUser["username"]);
+		res.status(200).json(unfollow);
+	  } catch (e) {
+		res.status(400).render('pages/error',{error:e, title:'Search Error'});
+	  }
+});
+
 // To go on Landing Page
 router.get('/', async (req, res) => {
 	//console.log(req.session);
