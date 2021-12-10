@@ -3,6 +3,10 @@ const router = express.Router();
 const data = require("../data");
 const reviews = data.reviews;
 
+router.get("/", async (req, res) => {
+  res.render('pages/landing')
+});
+
 router.post("/:id", async (req, res) => {
   //let data = req.body;
   //const { movie_id } = data;

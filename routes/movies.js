@@ -26,7 +26,7 @@ router.get("/all", async (req, res) => {
     const listRest = await moviesData.getAllMovies();
     res.render("movies/allMovies", {
       movieList: listRest,
-      title: "Characters Found",
+      title: "Movies"
     });
   } catch (e) {
     res.status(400).render("pages/error", { error: e, title: "Search Error" });
@@ -156,7 +156,7 @@ router.get('/', async (req, res) => {
 router.post("/addMovie", upload.single("movie_img"), async (req, res) => {
   let username =
     req.session.user != undefined || req.session.user != null
-      ? req.session.user
+      ? req.session.user.username
       : "temp";
   console.log(req.file);
   const moviesDataList = req.body;

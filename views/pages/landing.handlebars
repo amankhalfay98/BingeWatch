@@ -1,4 +1,4 @@
-<div class="container">
+<!-- <div class="container">
     <div class="center">
         <button type="button" class="btn btn-light border">Explore More</button>
     </div>
@@ -68,4 +68,32 @@
         </div>
     </div>
     <br>
+</div> -->
+
+
+
+<style>
+    body {
+        background-image: url('../../public/images/bgimg.jpg');
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    .navbar-default {
+        background: none;
+    }
+</style>
+<div class="container">
+    <div class="card text-center gap">
+        <div class="card-body">
+            <h1 class="card-title head">BingeWatch</h1>
+            <h3 class="card-text">One stop place to know what to watch next!</h3>
+            <a href="/" class="btn btn-danger">Get Started</a>
+        </div>
+    </div>
+</div>
+<div>
+    {{#each trending}}
+    
+    {{/each}}
 </div>
