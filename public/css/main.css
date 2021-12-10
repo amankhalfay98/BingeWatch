@@ -3,10 +3,10 @@
   margin-bottom: 5px;
   text-align: center;
 }
-.card:hover {
+.cardall:hover {
   transform: scale(1.1);
 }
-.card {
+.cardall {
   transition: transform 0.3s ease;
 }
 .gap {
