@@ -1,117 +1,3 @@
-<main>
-   <header>
-       <nav>
-    <label for="sort">Sort By:</label>
-    <select id="sort" name="sort">
-    <option value="alphabetically">A to Z</option>
-    <option value="rating">Rating</option>
-    <option value="watchCount">Watch Count</option>
-    </select>
-  <span>Filter: 
-  <label for="rate">Rating:</label>
-    <select id="rate" name="rate">
-    <option value="all">All</option>
-    <option value="1">1</option>
-    <option value="2">2</option>
-    <option value="3">3</option>
-    <option value="4">4</option>
-    <option value="5">5</option>
-    </select>
-    <label for="genres">Genres:</label>
-    <select id="genres" name="genres">
-    <option value="all">All</option>
-    <option value="action">Action & Adventure</option>
-    <option value="comedy">Comedy</option>
-    <option value="crime">Crime</option>
-    <option value="drama">Drama</option>
-    <option value="horror">Horror</option>
-    <option value="mystery">Mystery</option>
-    <option value="romance">Romance</option>
-    <option value="sciFi">Science-Fiction</option>
-    <option value="thriller">Thriller</option>
-    </select>
-    <!-- <label for="service">Streaming Service:</label>
-    <select id="service" name="genres">
-    <option value="all">All</option>
-    <option value="netflix">Netflix</option>
-    <option value="amazon">Amazon</option>
-    <option value="disney">Disney+</option>
-    <option value="hulu">Hulu</option>
-    <option value="others">Others</option>
-    </select> -->
-    <label for="release_year"> Release Year:
-    <input type="number" value='1888' min="1888" max="2021" step="1" id="release_year"/>
-    </label><br><br>
-    <button type="button" id="apply">Apply</button>
-    <button type="button" id="reset">Reset</button>
-  </span>
-  </nav>
-   </header>
-   <button type="button" onclick="window.location.href='/movies/addMovie'">Add Movie</button>
-   <div id="all_movies">
-      {{!-- {{#if movieList.length}} --}}
-<h1> All Movies</h1>
-{{!-- <a href="/">Make another search</a> --}}
-<ul id="showList"> 
-    {{#each movieList}}
-    <li><div>
-        <a href="/movies/{{_id}}" class="character-link">{{movie_name}}</a><br>
-        Release Year: {{release_year}}<br>
-        Streaming On: {{streaming_service.name}}<br>
-        Genres: {{genre}}<br>
-        Rating: {{rating}}<br>
-        Views: {{views}}
-    </div>
-    </li>
-      {{/each}}
-</ul>
-{{!-- {{else}}
-  <p class="error">We're sorry, but no results were found for.</p>
-  {{/if}} --}}
-       
-   </div>
-{{!-- <script src="/public/js/sortAndFilter.js"></script> --}}
-
-{{!-- Rating:
-  <input type="checkbox" id="rating1" name="rating1" value="1">
-  <label for="rating1">1</label><br>
-  <input type="checkbox" id="rating2" name="rating2" value="2">
-  <label for="rating2">2</label><br>
-  <input type="checkbox" id="rating3" name="rating3" value="3">
-  <label for="rating3">3</label><br><br>
-  <input type="checkbox" id="rating4" name="rating4" value="4">
-  <label for="rating4">4</label><br><br>
-  <input type="checkbox" id="rating5" name="rating5" value="5">
-  <label for="rating5">5</label><br><br> --}}
-
-  {{!-- <label for="rating5">5</label><br><br>
-  <input type="checkbox" id="rating1" name="rating1" value="1">
-  <label for="rating1">Action & Adventure</label><br>
-  <input type="checkbox" id="rating1" name="rating1" value="1">
-  <label for="rating1">Comedy</label><br>
-  <input type="checkbox" id="rating1" name="rating1" value="1">
-  <label for="rating1">Crime</label><br>
-  <input type="checkbox" id="rating1" name="rating1" value="1">
-  <label for="rating1">Drama</label><br>
-  <input type="checkbox" id="rating1" name="rating1" value="1">
-  <label for="rating1">Horror</label><br>
-  <input type="checkbox" id="rating1" name="rating1" value="1">
-  <label for="rating1">Mystery</label><br>
-  <input type="checkbox" id="rating1" name="rating1" value="1">
-  <label for="rating1">Romance</label><br>
-  <input type="checkbox" id="rating1" name="rating1" value="1">
-  <label for="rating1">Science-Fiction</label><br>
-  <input type="checkbox" id="rating1" name="rating1" value="1">
-  <label for="rating1">Thriller</label><br> --}}
-  </span>
-  </nav>
-  </header>
-  <button type="button" onclick="addMovie()">Add Movie</button>
-  <div id="all_movies">
-
-  </div>
-</main> -->
-
 <div class="container overflow-hidden px-2">
   <div class="center head">
     <h1>All Movies</h1>
@@ -184,13 +70,13 @@
       </div>
     </div>
     <div class="col">
-      <div class="p-3 border bg-light">
+      <div class="p-4 border bg-light">
         <div id="showList">
           {{#each movieList}}
-          <div class="card mb-3">
+          <div class="card mb-3 cardall">
             <div class="row g-0">
               <div class="col-md-4">
-                <img src="/{{movie_img}}" class="img-fluid rounded-start" alt="...">
+                <img src="/{{movie_img}}" class="img-fluid rounded-start movie_card_img" alt="{{movie_name}} poster">
               </div>
               <div class="col-md-8">
                 <div class="card-body">
@@ -215,5 +101,6 @@
         </div>
       </div>
     </div>
+    <br>
   </div>
 </div>

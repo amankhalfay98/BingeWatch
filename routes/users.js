@@ -40,7 +40,6 @@ router.get("/", async (req, res) => {
     res.redirect("movies/all");
   } else {
     const trendingMovies = await movies.getTrending();
-    console.log(trendingMovies);
     res.render("pages/landing", {
       title: "Binge-Watch",
       trending: trendingMovies,
@@ -202,7 +201,6 @@ router.post("/signup", async (req, res) => {
 
     //For Sessions
     req.session.user = newUser.username;
-    req.session.id = rev._id;
     //console.log(req.session);
 
     //console.log(rev);
@@ -287,9 +285,6 @@ router.post("/login", async (req, res) => {
     const rev = await usersData.checkUser(username, password);
     if (rev.authenticated) {
       req.session.user = { username: newUser.username };
-      console.log(req.session);
-      req.session.id = rev.id;
-      console.log(req.session.id)
       //console.log(req.session);
       res.redirect("/movies/all");
     }
