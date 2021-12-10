@@ -401,41 +401,7 @@ let getTrending = async () => {
   return moviesArr;
 };
 
-<<<<<<< Updated upstream
 let getSort = async (value)=> {
-=======
-let getByGenre = async (genre) => {
-  const movieCollection = await movies();
-  const moviesArr = await movieCollection.find({ genre: `${genre}` }).toArray();
-  return moviesArr;
-};
-
-let getReleaseYear = async (year) => {
-  const movieCollection = await movies();
-  const moviesArr = await movieCollection
-    .find({ release_year: year })
-    .toArray();
-  return moviesArr;
-};
-
-let getStreamingervice = async (service) => {
-  const movieCollection = await movies();
-  const moviesArr = await movieCollection
-    .find({ "streaming_service.name": `${service}` })
-    .toArray();
-  return moviesArr;
-};
-
-let getRating = async (rate) => {
-  const movieCollection = await movies();
-  const moviesArr = await movieCollection
-    .find({ rating: { $in: [rate - 1, rate] } })
-    .toArray();
-  return moviesArr;
-};
-
-let getSort = async (value) => {
->>>>>>> Stashed changes
   const movieCollection = await movies();
   if (value === "watchCount") {
     const moviesArr = await movieCollection
@@ -449,17 +415,9 @@ let getSort = async (value) => {
       .sort({ rating: -1 })
       .toArray();
     return moviesArr;
-<<<<<<< Updated upstream
   }
   else if(value ==='alphabetically'){
     const moviesArr = await movieCollection.find({}).sort({movie_name:1}).toArray();
-=======
-  } else if (value === "alphabetically") {
-    const moviesArr = await movieCollection
-      .find({})
-      .sort({ movie_name: 1 })
-      .toArray();
->>>>>>> Stashed changes
     return moviesArr;
   }
 };
@@ -527,7 +485,6 @@ let movieWatched = async (user, movie) => {
 };
 
 module.exports = {
-<<<<<<< Updated upstream
 	createMovie,
 	updatingMovie,
 	getMovie,
@@ -537,19 +494,4 @@ module.exports = {
 	getSort,
   updateRating,
   movieWatched
-=======
-  createMovie,
-  updatingMovie,
-  getMovie,
-  getAllMovies,
-  getTrending,
-  updateMovieReviewID,
-  getByGenre,
-  getReleaseYear,
-  getStreamingervice,
-  getRating,
-  getSort,
-  updateRating,
-  movieWatched,
->>>>>>> Stashed changes
 };
