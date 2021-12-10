@@ -388,6 +388,32 @@ module.exports = {
 		return `${movie} successfully added to ${user}'s favourites.`;
 	},
 
+	async removeFromFave(user, movie) {
+		if(!user || ! movie)
+			throw "missing input parameters";
+		
+		if(typeof user !== 'string' || typeof movie !== 'string')
+			throw "invalid data type";
+
+		if(user.trim().length === 0 || movie.trim().length === 0)
+			throw "invalid strings";
+
+		const usersCollection = await users();
+		let currUser = await usersCollection.findOne({ username: user.trim() });
+		if(currUser === null) throw "user not found";
+
+		const updatedUser = await usersCollection.updateOne(
+			{ username: user.trim() },
+			{ $pull: { favourites: movie.trim() } }
+		);
+
+		if(updatedUser.modifiedCount === 0) {
+			throw "nothing was removed from favourites";
+		}
+
+		return `${movie} successfully removed from ${user}'s favourites.`;
+	},
+
 	async addToWatch(user, movie) {
 		if(!user || ! movie)
 			throw "missing input parameters";
@@ -412,6 +438,32 @@ module.exports = {
 		}
 
 		return `${movie} successfully added to ${user}'s watchlist.`;
+	},
+
+	async removeFromWatch(user, movie) {
+		if(!user || ! movie)
+			throw "missing input parameters";
+		
+		if(typeof user !== 'string' || typeof movie !== 'string')
+			throw "invalid data type";
+
+		if(user.trim().length === 0 || movie.trim().length === 0)
+			throw "invalid strings";
+
+		const usersCollection = await users();
+		let currUser = await usersCollection.findOne({ username: user.trim() });
+		if(currUser === null) throw "user not found";
+
+		const updatedUser = await usersCollection.updateOne(
+			{ username: user.trim() },
+			{ $pull: { watchlist: movie.trim() } }
+		);
+
+		if(updatedUser.modifiedCount === 0) {
+			throw "nothing was removed from favourites";
+		}
+
+		return `${movie} successfully removed from ${user}'s watchlist.`;
 	},
 
 	async followUser(user1, user2) {
@@ -441,13 +493,50 @@ module.exports = {
 		);
 
 		if(updatedUser1.modifiedCount === 0) {
-			throw "nothing was added into favourites";
+			throw "no one was added to following";
 		}
 
 		if(updatedUser2.modifiedCount === 0) {
-			throw "nothing was added into favourites";
+			throw "no one was added to followers";
 		}
 
 		return `${user1} successfully following ${user2}.`;
+	},
+
+	async unfollowUser(user1, user2) {
+		if(!user1 || !user2)
+			throw "no users supplied";
+
+		if(typeof user1 !== 'string' || typeof user2 !== 'string')
+			throw "invalid data type";
+		
+		if(typeof user1.trim().length === 0 || typeof user2.trim().length === 0)
+			throw "invalid strings";
+
+		const usersCollection = await users();
+		let removeFromFollower = await usersCollection.findOne({ username: user1.trim() });
+		let removeFromFollowing = await usersCollection.findOne({ username: user2.trim() });
+		if(removeFromFollower === null) throw "user not found";
+		if(removeFromFollowing === null) throw "user not found";
+
+		const updatedUser1 = await usersCollection.updateOne(
+			{ username: user1.trim() },
+			{ $pull: { following: user2.trim() } }
+		);
+
+		const updatedUser2 = await usersCollection.updateOne(
+			{ username: user2.trim() },
+			{ $pull: { followers: user1.trim() } }
+		);
+
+		if(updatedUser1.modifiedCount === 0) {
+			throw "no one was removed from following";
+		}
+
+		if(updatedUser2.modifiedCount === 0) {
+			throw "no one was removed from followers";
+		}
+
+		return `${user1} successfully unfollowed ${user2}.`;
 	}
 };

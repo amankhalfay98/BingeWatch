@@ -299,11 +299,33 @@ router.get('/favorite/:id', async (req, res) => {
 	}
 });
 
+//REMOVING MOVIE FROM USER'S FAVE LIST
+router.get('/unfavorite/:id', async (req, res) => {
+	try {
+		const movie = await moviesData.getMovie(req.params.id);
+		const user = await usersData.removeFromFave('royroy', movie['movie_name']);
+		res.status(200).json(user);
+	} catch (e) {
+		res.status(400).render('pages/error', { error: e, title: 'Search Error' });
+	}
+});
+
 //ADDING MOVIE TO USER'S WATCHLIST
 router.get('/watchlist/:id', async (req, res) => {
 	try {
 		const movie = await moviesData.getMovie(req.params.id);
 		const user = await usersData.addToWatch('royroy', movie['movie_name']);
+		res.status(200).json(user);
+	} catch (e) {
+		res.status(400).render('pages/error', { error: e, title: 'Search Error' });
+	}
+});
+
+//REMOVING MOVIE FROM USER'S WATCHLIST
+router.get('/unwatchlist/:id', async (req, res) => {
+	try {
+		const movie = await moviesData.getMovie(req.params.id);
+		const user = await usersData.removeFromWatch('royroy', movie['movie_name']);
 		res.status(200).json(user);
 	} catch (e) {
 		res.status(400).render('pages/error', { error: e, title: 'Search Error' });
