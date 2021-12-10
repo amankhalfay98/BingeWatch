@@ -11,33 +11,32 @@
 </head>
 
 <body>
-	<div class='container'>
-		<nav class='navbar navbar-expand-lg navbar-dark bg-dark'>
-			<div class='container-fluid'>
-				<a href="/">
-					<img src='../../public/images/logo.jpeg' id='navbar-img' alt='binge watch' height='74' width='200'
-						class='fluid-image' />
-				</a>
-				<button class='navbar-toggler' type='button' data-bs-toggle='collapse'
-					data-bs-target='#navbarNavAltMarkup' aria-controls='navbarNavAltMarkup' aria-expanded='false'
-					aria-label='Toggle navigation'>
-					<span class='navbar-toggler-icon'></span>
-				</button>
-				<div class='collapse navbar-collapse' id='navbarNavAltMarkup'>
-					<div class='navbar-nav'>
-						<a class='nav-link active' aria-current='page' href='/'>Home</a>
-						<a class='nav-link' href='/movies/all'>Movies</a>
-						<a class='nav-link' href='#'>My List</a>
-					</div>
-				</div>
-				<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-					<a href="/login" class="btn btn-light me-md-2 border">Login</a>
-					<a href="/signup" class="btn btn-danger">Sign Up</a>
+	<nav class='navbar navbar-expand-lg navbar-dark bg-dark'>
+		<div class='container-fluid'>
+			<a href="/">
+				<img src='../../public/images/logo.jpeg' id='navbar-img' alt='binge watch' height='74' width='200'
+					class='fluid-image' />
+			</a>
+			<button class='navbar-toggler' type='button' data-bs-toggle='collapse' data-bs-target='#navbarNavAltMarkup'
+				aria-controls='navbarNavAltMarkup' aria-expanded='false' aria-label='Toggle navigation'>
+				<span class='navbar-toggler-icon'></span>
+			</button>
+			<div class='collapse navbar-collapse' id='navbarNavAltMarkup'>
+				<div class='navbar-nav'>
+					<a class='nav-link active' aria-current='page' href='/'>Home</a>
+					<a class='nav-link' href='/movies/all'>Movies</a>
+					<a class='nav-link' href='#'>My List</a>
 				</div>
 			</div>
-		</nav>
+			<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+				<a href="/login" class="btn btn-light me-md-2 border">Login</a>
+				<a href="/signup" class="btn btn-danger">Sign Up</a>
+			</div>
+		</div>
+	</nav>
+	<div class='container'>
+		{{{body}}}
 	</div>
-	{{{body}}}
 	<script src='https://code.jquery.com/jquery-2.2.4.min.js'
 		integrity='sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=' crossorigin='anonymous'></script>
 	<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js'

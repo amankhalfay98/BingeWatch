@@ -24,7 +24,7 @@ const create = async (
   if (!validation.validString(review))
     throw "review provided is not a valid string.";
   if (!validation.validRating(rating))
-    throw "review provided is not a valid string.";
+    throw "rating provided is not a valid string.";
   let newReview = {
     user_id,
     username,
@@ -37,7 +37,10 @@ const create = async (
   const reviewsCollection = await reviews();
   const insertInfo = await reviewsCollection.insertOne(newReview);
   if (insertInfo.insertedCount === 0) throw "Could not add Review";
-  movies.updateMovieReviewID(movie_id, insertInfo.insertedId);
+  await movies.updateMovieReviewID(movie_id, insertInfo.insertedId,rating);
+  const reviewAdded = getById(insertInfo.insertedId.toString());
+  return reviewAdded;
+  //return `${review} successfully added!`;
 };
 
 // To get all the reviews for a particular user using user_id
@@ -66,7 +69,12 @@ const getReviewsByMovieId = async (movie_id) => {
     x._id = x._id.toString();
   }
   if (allReviews && allReviews.length > 0) {
-    return allReviews;
+    reviewArray =[]
+    //console.log(Array.isArray(allReviews));
+    for(let i = allReviews.length-1;i>=0;i--){
+    reviewArray.push(allReviews[i]);
+    }
+    return reviewArray;
   } else {
     return "Review Not Found";
   }

@@ -8,6 +8,7 @@
 }
 .card {
   transition: transform 0.3s ease;
+  min-height: auto;
 }
 .gap {
   border: none;

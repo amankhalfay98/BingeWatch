@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 let { ObjectId } = require("mongodb");
 const usersData = require("../data/users");
 const path = require("path");
+const movies = require("../data/movies");
 
 //FOR USERS FOLLOWING OTHER USERS (CHANGE IF NEEDED)
 router.get("/follow/:id", async (req, res) => {
@@ -38,7 +39,12 @@ router.get("/", async (req, res) => {
   if (req.session.user) {
     res.redirect("movies/all");
   } else {
-    res.render("pages/landing", { title: "Binge-Watch" });
+    const trendingMovies = await movies.getTrending();
+    console.log(trendingMovies);
+    res.render("pages/landing", {
+      title: "Binge-Watch",
+      trending: trendingMovies,
+    });
   }
 });
 
@@ -196,6 +202,7 @@ router.post("/signup", async (req, res) => {
 
     //For Sessions
     req.session.user = newUser.username;
+    req.session.id = rev._id;
     //console.log(req.session);
 
     //console.log(rev);
@@ -280,6 +287,9 @@ router.post("/login", async (req, res) => {
     const rev = await usersData.checkUser(username, password);
     if (rev.authenticated) {
       req.session.user = { username: newUser.username };
+      console.log(req.session);
+      req.session.id = rev.id;
+      console.log(req.session.id)
       //console.log(req.session);
       res.redirect("/movies/all");
     }

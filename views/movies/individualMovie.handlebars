@@ -5,7 +5,8 @@
   <img alt="{{movie.movie_name}}"  src= "{{movie.movie_image}}"/><br><br>
   <button type="button">Favorite</button>
   <button type="button">+Watched</button>
-  <button type="button">View</button>
+  <button id='view' type="button">View</button>
+  <label for="view">{{movie.views}}</label>
   <br><br>
   <span title="services">Streaming Services:
     <a href="{{movie.streaming_service.link}}">{{movie.streaming_service.name}}</a> 
@@ -35,7 +36,17 @@
   <span title="cast">Cast: {{movie.cast}}</span>
   <span title="genres">Genres: {{movie.genre}}</span>
   <span title="rating">Rating: {{movie.overall_rating}}</span>
-  <span>Reviews: </span>
+  <span>Reviews:
+    <form action="/reviews/postReview" id="submitReview" method="post">
+      <br><label>Rating: <input id="rating" type="number" min="0" max="5"></label><br>
+      <br><label>Review: <textarea id="review"></textarea></label>
+      <br><button type="button" id="addNewReview" data-movie="{{movie.movie_name}}" data-user="{{../user._id}}">Submit Review</button>
+    </form>
+    <div id="reviews">
+      {{#each reviews}}
+      {{this.username}}<br>{{this.review}}<br>{{this.rating}}</div>
+      {{/each}}
+    </div> </span>
   {{!-- <h2>Comics</h2>
   {{#if char.data.results.[0].comics.items.length}}
     <ul>
