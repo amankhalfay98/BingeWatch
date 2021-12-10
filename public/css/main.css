@@ -1,5 +1,21 @@
-.center{
-    margin-top: 5px;
-    margin-bottom: 5px;
-    text-align: center;
+.center {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  text-align: center;
+}
+.card:hover {
+  transform: scale(1.1);
+}
+.card {
+  transition: transform 0.3s ease;
+  min-height: auto;
+}
+.gap {
+  border: none;
+  margin-top: 10%;
+  background: transparent;
+  color: white;
+}
+.head {
+  font-size: 3.125rem;
 }

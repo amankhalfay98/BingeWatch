@@ -1,71 +1,26 @@
+<style>
+    body {
+        background-image: url('../../public/images/bgimg.jpg');
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    .navbar-default {
+        background: none;
+    }
+</style>
 <div class="container">
-    <div class="center">
-        <button type="button" class="btn btn-light border">Explore More</button>
-    </div>
-    <div class="row">
-        <div class="col">
-            <div class="card">
-                <img class="card-img-top" src="../../public/images/logo.jpeg" alt="Card image cap">
-                <div class="card-body">
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                        card's
-                        content.</p>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card">
-                <img class="card-img-top" src="../../public/images/logo.jpeg" alt="Card image cap">
-                <div class="card-body">
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                        card's
-                        content.</p>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card">
-                <img class="card-img-top" src="../../public/images/logo.jpeg" alt="Card image cap">
-                <div class="card-body">
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                        card's
-                        content.</p>
-                </div>
-            </div>
+    <div class="card text-center gap">
+        <div class="card-body">
+            <h1 class="card-title head">BingeWatch</h1>
+            <h3 class="card-text">One stop place to know what to watch next!</h3>
+            <a href="/" class="btn btn-danger">Get Started</a>
         </div>
     </div>
-    <br>
-    <div class="row">
-        <div class="col">
-            <div class="card">
-                <img class="card-img-top" src="../../public/images/logo.jpeg" alt="Card image cap">
-                <div class="card-body">
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                        card's
-                        content.</p>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card">
-                <img class="card-img-top" src="../../public/images/logo.jpeg" alt="Card image cap">
-                <div class="card-body">
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                        card's
-                        content.</p>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card">
-                <img class="card-img-top" src="../../public/images/logo.jpeg" alt="Card image cap">
-                <div class="card-body">
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                        card's
-                        content.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <br>
+</div>
+<br>
+<div>
+    {{#each trending}}
+    <p>{{username}}</p>
+    {{/each}}
 </div>
