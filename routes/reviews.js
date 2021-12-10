@@ -3,14 +3,6 @@ const router = express.Router();
 const data = require("../data");
 const reviews = data.reviews;
 
-router.post("/:id", async (req, res) => {
-  //let data = req.body;
-  //const { movie_id } = data;
-  //if(req.params.id){
-  const allReviews = await reviews.getReviewsByMovieId(req.params.id);
-  res.json(allReviews);
-  //}
-});
 router.post("/postReview", async (req, res) => {
   let data = req.body;
   const { user_id, username, movie_id, movie_name, review, rating, tag } = data;
@@ -20,12 +12,22 @@ router.post("/postReview", async (req, res) => {
     movie_id,
     movie_name,
     review,
-    rating,
+    parseInt(rating),
     tag
   );
   //   console.log(postReview);
   res.json(postReview);
 });
+
+router.post("/:id", async (req, res) => {
+  //let data = req.body;
+  //const { movie_id } = data;
+  //if(req.params.id){
+  const allReviews = await reviews.getReviewsByMovieId(req.params.id);
+  res.json(allReviews);
+  //}
+});
+
 router.delete("/deleteReview/:id", async (req, res) => {
   let data = req.params.id;
   const deleteReview = await reviews.remove(data);

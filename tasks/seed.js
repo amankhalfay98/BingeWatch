@@ -53,19 +53,19 @@ async function main() {
   } catch (e) {
     console.log(e);
   }
-  // try {
-  //   const review1 = await dbFunctions.reviews.create(
-  //     "61a6cc5f6e136e45be55b692",
-  //     "supersid",
-  //     "61ad788d59a8d9f0e4407f42",
-  //     "Avengers",
-  //     "Good Movie!",
-  //     5
-  //   );
-  //   console.log(review1);
-  // } catch (error) {
-  //   console.log(error);
-  // }
+  try {
+    const review1 = await dbFunctions.reviews.create(
+      "61aec0d0ed09d41d735ae35d",
+      "aaditi",
+      "61ad902c07e0315d139828e1",
+      "Avengers",
+      "Good Movie!",
+      5
+    );
+    console.log(review1);
+  } catch (error) {
+    console.log(error);
+  }
 
   const db = await connection.connectToDb();
   await connection.closeConnection();
