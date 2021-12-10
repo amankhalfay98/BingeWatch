@@ -1,45 +1,62 @@
 <div class="container mt-3 col-5">
     <h1 class="center">Add Movie</h1>
-    <form action="movies/addMovie" id="addMovieForm" method="post" class="needs-validation" novalidate>
+    <form action="/movies/addMovie" id="addMovieForm" method="post" enctype="multipart/form-data">
         <div class="form-group">
-            <label for="search_term">Movie Name:</label>
-            <input type="text" class="form-control" id="search_term" placeholder="Enter movie name" required>
+            <label for="movie_name">Movie Name:</label>
+            <input type="text" class="form-control" id="movie_name" name="movie_name" placeholder="Enter movie name"
+                required>
+            <div class="invalid-feedback">
+                Please provide a valid movie name
+            </div>
         </div>
         <div class="form-group">
             <label for="stream_service">Streaming Service:</label>
-            <select id="stream_service" class="form-control">
+            <select id="stream_service" class="form-control" name="stream_service" required>
                 <option value="all">All</option>
                 <option value="netflix">Netflix</option>
                 <option value="amazon">Amazon</option>
                 <option value="disney">Disney+</option>
                 <option value="hulu">Hulu</option>
             </select>
+            <div class="invalid-feedback">
+                Please select a valid streaming service
+            </div>
         </div>
         <div class="form-group">
-            <label for="stream_service">Streaming Service URL:</label>
-            <input type="url" class="form-control" id="stream_service" placeholder="Enter streaming service link"
-                required>
+            <label for="stream_service_url">Streaming Service URL:</label>
+            <input type="url" class="form-control" id="stream_service_url" name="stream_service_url"
+                placeholder="Enter streaming service link" required>
+            <div class="invalid-feedback">
+                Please provide a valid streaming service url
+            </div>
         </div>
         <div class="form-group">
             <label for="release_year">Release Year:</label>
             <input type="number" class="form-control" min="1888" max="2099" step="1" id="release_year"
-                placeholder="Enter release year" required>
+                placeholder="Enter release year" name="release_year" required>
+            <div class="invalid-feedback">
+                Please provide a valid release year
+            </div>
         </div>
         <div class="form-group">
             <label for="director">Director:</label>
-            <input type="text" class="form-control" id="director" placeholder="Enter director name" required>
-        </div>
-        <div class="form-group">
-            <label for="search_term">Movie Name:</label>
-            <input type="text" class="form-control" id="search_term" placeholder="Enter movie name" required>
+            <input type="text" class="form-control" id="director" placeholder="Enter director name" name="director"
+                required>
+            <div class="invalid-feedback">
+                Please provide a valid director name
+            </div>
         </div>
         <div class="form-group">
             <label for="cast">Cast:</label>
-            <textarea class="form-control" placeholder="Enter cast on new line" id="cast"></textarea>
+            <textarea class="form-control" placeholder="Enter cast on new line" id="cast" required
+                name="cast"></textarea>
+            <div class="invalid-feedback">
+                Please provide cast
+            </div>
         </div>
         <div class="form-group">
-            <label for="genres">Genres:</label>
-            <select id="genres" class="form-control">
+            <label for="genre">Genres:</label>
+            <select id="genre" class="form-control" name="genre" required>
                 <option value="action">Action & Adventure</option>
                 <option value="comedy">Comedy</option>
                 <option value="crime">Crime</option>
@@ -50,10 +67,16 @@
                 <option value="sciFi">Science-Fiction</option>
                 <option value="thriller">Thriller</option>
             </select>
+            <div class="invalid-feedback">
+                Please select a valid genre
+            </div>
         </div>
         <div class="form-group">
-            <label for="poster">Poster:</label>
-            <input type="file" id="poster" accept="image/*" class="form-control">
+            <label for="movie_img">Poster:</label>
+            <input type="file" id="movie_img" accept="image/*" class="form-control" name="movie_img" required>
+            <div class="invalid-feedback">
+                Please provide a valid file
+            </div>
         </div>
         <br>
         <button type="submit" class="btn btn-primary" name="submitButton" id="submitButton">Add Movie</button>

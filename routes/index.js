@@ -3,6 +3,7 @@ const reviewsRoutes = require('./reviews');
 const moviesRoutes = require('./movies');
 
 const constructorMethod = (app) => {
+	//Need '/' page
 	app.use('/', userRoutes);
 	app.use('/reviews', reviewsRoutes);
 	app.use('/movies', moviesRoutes);

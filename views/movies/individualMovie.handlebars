@@ -29,6 +29,13 @@
       {{/each}}
     </ul></span><br><br>
   <span title="rating">Rating: {{movie.rating}}</span><br><br>
+  <img alt="{{movie.movie_name}}"  src= "{{movie.movie_image}}"/>
+  <span title="services">Streaming Services: {{movie.streaming_service}}</span>
+  <span title="release_year">{{movie.release_year}}</span>
+  <span title="director">Director: {{movie.director}}</span>
+  <span title="cast">Cast: {{movie.cast}}</span>
+  <span title="genres">Genres: {{movie.genre}}</span>
+  <span title="rating">Rating: {{movie.overall_rating}}</span>
   <span>Reviews:
     <form action="/reviews/postReview" id="submitReview" method="post">
       <br><label>Rating: <input id="rating" type="number" min="0" max="5"></label><br>
@@ -40,7 +47,6 @@
       {{this.username}}<br>{{this.review}}<br>{{this.rating}}</div>
       {{/each}}
     </div> </span>
-    {{!-- <script src="/public/js/reviews.js"></script> --}}
   {{!-- <h2>Comics</h2>
   {{#if char.data.results.[0].comics.items.length}}
     <ul>

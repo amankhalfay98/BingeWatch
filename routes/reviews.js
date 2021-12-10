@@ -25,15 +25,18 @@ router.post("/:id", async (req, res) => {
   //if(req.params.id){
   const allReviews = await reviews.getReviewsByMovieId(req.params.id);
   res.json(allReviews);
+  } catch (error) {}
   //}
 });
 
 router.delete("/deleteReview/:id", async (req, res) => {
-  let data = req.params.id;
-  const deleteReview = await reviews.remove(data);
-  if (deleteReview.deleted) {
-    res.json(deleteReview);
-  }
+  try {
+    let data = req.params.id;
+    const deleteReview = await reviews.remove(data);
+    if (deleteReview.deleted) {
+      res.json(deleteReview);
+    }
+  } catch (error) {}
 });
 
 module.exports = router;

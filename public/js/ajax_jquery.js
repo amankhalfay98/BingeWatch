@@ -150,11 +150,11 @@ location.reload();
         $('#reviews').before(error);
     }
     })
-            // let loginForm = $('#login-form')
-            // let usernameInput = $('#username');
-            // let passwordInput = $('#password');
-            // let submitButton = $('#submitButton');
-            // let errors = $('.error');
+            //let loginForm = $('#login-form')
+            //let usernameInput = $('#username');
+            //let passwordInput = $('#password');
+            //let submitButton = $('#submitButton');
+            //let errors = $('.error');
              //let genre = $('#genre');
             // let year = $('#release_year');
             // let service = $('#service');
