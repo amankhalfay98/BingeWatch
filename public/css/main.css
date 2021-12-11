@@ -177,3 +177,10 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 }
+.inline-list{
+  display: inline;
+}
+.followers{
+  width: 50%;
+  margin-left: 50%;
+}
