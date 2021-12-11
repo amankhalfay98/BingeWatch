@@ -384,7 +384,7 @@ let getTrending = async () => {
   const moviesArr = await movieCollection
     .find({})
     .sort({ views: -1 })
-    .limit(10)
+    .limit(4)
     .toArray();
   return moviesArr;
 };
