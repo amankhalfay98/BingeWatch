@@ -538,5 +538,22 @@ module.exports = {
 		}
 
 		return `${user1} successfully unfollowed ${user2}.`;
+	},
+
+	async searchByUsername (user) {
+		if (!user) throw "missing input parameters";
+	  
+		if (typeof user !== "string")
+		  throw "invalid data type";
+	  
+		if (user.trim().length === 0)
+		  throw "invalid strings";
+	  
+		let regExTerm = new RegExp(".*" + user.trim() + ".*", "i");
+		const usersCollection = await users();
+		let matched = await usersCollection.find({ username: regExTerm }).toArray();
+		if (matched.length === 0) throw `no users matched to ${user.trim()}.`;
+	  
+		return matched;
 	}
 };
