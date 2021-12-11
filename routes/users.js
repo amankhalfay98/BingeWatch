@@ -328,6 +328,7 @@ router.post('/login', async (req, res) => {
 // To Update a User
 router.post('/private', async (req, res) => {
 	const newUser = req.body;
+	console.log(newUser);
 	//console.log(newUser);
 
 	// // Error handling for name
