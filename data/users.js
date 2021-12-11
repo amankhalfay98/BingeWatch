@@ -17,7 +17,7 @@ module.exports = {
 		return allUsers;
 	},
 
-	async createUser(name, date_of_birth, username, password, email) {
+	async createUser(name, date_of_birth, username, password, email, profile_pic) {
 		//Error Handling
 
 		//For Name
@@ -123,7 +123,7 @@ module.exports = {
 			following: [],
 			reviewId: [],
 			private: false,
-			profile_pic: '',
+			profile_pic: profile_pic,
 			tag: 'user',
 		};
 
