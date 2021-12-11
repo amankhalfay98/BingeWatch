@@ -5,6 +5,18 @@ let { ObjectId } = require("mongodb");
 const usersData = require("../data/users");
 const path = require("path");
 const movies = require("../data/movies");
+const multer = require("multer");
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "profile/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, new Date().toISOString() + file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
 
 //FOR USERS FOLLOWING OTHER USERS (CHANGE IF NEEDED)
 router.get("/follow/:id", async (req, res) => {
@@ -76,8 +88,11 @@ router.get("/signup", async (req, res) => {
 });
 
 // To Sign Up a new User
-router.post("/signup", async (req, res) => {
+router.post("/signup", upload.single("profile_pic"), async (req, res) => {
   const newUser = req.body;
+  if (req && req.file && req.file.fieldname === "profile_pic" && newUser) {
+    newUser.profile_pic = req.file.path;
+  }
   //console.log(newUser);
   //req.session.user = newUser;
 
@@ -198,7 +213,8 @@ router.post("/signup", async (req, res) => {
   }
 
   try {
-    const { name, date_of_birth, username, password, email } = newUser;
+    const { name, date_of_birth, username, password, email, profile_pic } =
+      newUser;
 
     //console.log(newRestaurant);
     const rev = await usersData.createUser(
@@ -206,7 +222,8 @@ router.post("/signup", async (req, res) => {
       date_of_birth,
       username,
       password,
-      email
+      email,
+      profile_pic
     );
 
     //For Sessions
@@ -403,9 +420,9 @@ router.post("/private", async (req, res) => {
 // If authenticated go to Private Route
 router.get("/private", async (req, res) => {
   let rev = await usersData.getUser(req.session.user.username);
-  //console.log(rev._id);
+  console.log(rev);
 
-  res.render("pages/private", { username: rev.username, name: rev.name });
+  res.render("pages/private", { user: rev });
 });
 
 // To Logout
