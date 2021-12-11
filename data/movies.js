@@ -362,14 +362,14 @@ let getAllMovies = async () => {
 };
 
 // A method to add review id to movies collection when new review is added.
-const updateMovieReviewID = async (movie_id, review_id, review_rating) => {
+let updateMovieReviewID = async (movie_id, review_id, review_rating) => {
   if (!ObjectId.isValid(movie_id.trim())) throw "Movie id is not a valid ObjectId";
 
   let parseId = ObjectId(movie_id.trim());
   const movieCollection = await movies();
   let movie = await movieCollection.findOne({ _id: parseId });
   movie.reviews.push(review_id.toString());
-  movie.rating = (movie.rating + parseInt(review_rating))/2
+  movie.rating = review_rating;
   const updatedMovie = await movieCollection.updateOne(
     { _id: parseId },
     { $set: movie }
@@ -379,24 +379,12 @@ const updateMovieReviewID = async (movie_id, review_id, review_rating) => {
   return `${movie.movie_name} with id ${movie._id} successfully updated!`;
 };
 
-// let getByGenre = async (genreSpecified) => {
-//   const movieCollection = await movies();
-//   const moviesArr = await movieCollection.find({genre: genreSpecified}).toArray();
-//   return moviesArr;
-// };
-
-// let sortAlphabetically = async () => {
-//   const movieCollection = await movies();
-//   const moviesArr = await movieCollection.find().sort({movie_name: 1}).toArray();
-//   return moviesArr;
-// };
-
 let getTrending = async () => {
   const movieCollection = await movies();
   const moviesArr = await movieCollection
     .find({})
     .sort({ views: -1 })
-    .limit(10)
+    .limit(4)
     .toArray();
   return moviesArr;
 };
@@ -420,43 +408,6 @@ let getSort = async (value)=> {
     const moviesArr = await movieCollection.find({}).sort({movie_name:1}).toArray();
     return moviesArr;
   }
-};
-
-let updateRating = async (movie) => {
-  if (!movie) throw "missing input parameters";
-
-  if (typeof movie !== "string") throw "invalid data type";
-
-  if (movie.trim().length === 0) throw "invalid strings";
-
-  const moviesCollection = await movies();
-  let currMovie = await moviesCollection.findOne({ movie_name: movie.trim() });
-  if (currMovie === null) throw "movie not found";
-
-  let reviewsArr = currMovie["reviews"];
-  let totalRating = 0;
-  let numOfRatings = reviewsArr.length;
-
-  reviewsArr.forEach((element) => {
-    totalRating += element["rating"];
-  });
-
-  // for(let i = 0; i < reviewsArr.length; i++) {
-  // 	totalRating += reviewsArr[i].
-  // }
-  let avgRating = totalRating / numOfRatings;
-  let newRating = avgRating.toFixed(2);
-
-  const updatedMovie = await moviesCollection.updateOne(
-    { movie_name: movie.trim() },
-    { $set: { rating: newRating } }
-  );
-
-  if (updatedMovie.modifiedCount === 0) {
-    throw "nothing was added into favourites";
-  }
-
-  return `${movie}'s rating successfully updated.`;
 };
 
 let movieWatched = async (user, movie) => {
@@ -492,6 +443,5 @@ module.exports = {
 	getTrending,
 	updateMovieReviewID,
 	getSort,
-  updateRating,
   movieWatched
 };

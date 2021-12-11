@@ -9,13 +9,7 @@
     <label for="view">{{movie.views}}</label>
     <br><br>
     <span title="services">Streaming Services:
-      <a href="{{movie.streaming_service.link}}">{{movie.streaming_service.name}}</a>
-      {{!-- <ul>
-        {{#each movie.streaming_service}}
-        <li>{{@key}}-{{this}}</li>
-        {{/each}}
-        <li><a href="{{this}}">{{this}}</a></li>
-      </ul> --}}
+    <a href="{{movie.streaming_service.link}}">{{movie.streaming_service.name}}</a>
     </span><br><br>
     <span title="release_year">Release Year: {{movie.release_year}}</span><br><br>
     <span title="director">Director: {{movie.director}}</span><br><br>
@@ -29,35 +23,19 @@
         <li>{{this}}</li>
         {{/each}}
       </ul></span><br><br>
-    <span title="rating">Rating: {{movie.rating}}</span><br><br>
-    <img alt="{{movie.movie_name}}" src="{{movie.movie_image}}" />
-    <span title="services">Streaming Services: {{movie.streaming_service}}</span>
-    <span title="release_year">{{movie.release_year}}</span>
-    <span title="director">Director: {{movie.director}}</span>
-    <span title="cast">Cast: {{movie.cast}}</span>
-    <span title="genres">Genres: {{movie.genre}}</span>
-    <span title="rating">Rating: {{movie.overall_rating}}</span>
+    <span title="rating">OverAll Rating: {{movie.rating}}</span><br>
     <span>Reviews:
       <form action="/reviews/postReview" id="submitReview" method="post">
         <br><label>Rating: <input id="rating" type="number" min="0" max="5"></label><br>
         <br><label>Review: <textarea id="review"></textarea></label>
-        <br><button type="button" id="addNewReview" data-movie="{{movie.movie_name}}" data-user="{{../user._id}}">Submit
+        <br><button type="button" id="addNewReview" data-movie="{{movie.movie_name}}" data-user="{{user.username}}">Submit
           Review</button>
       </form>
       <div id="reviews">
         {{#each reviews}}
         {{this.username}}<br>{{this.review}}<br>{{this.rating}}</div>
       {{/each}}
-  </div> </span>
-  {{!-- <h2>Comics</h2>
-  {{#if char.data.results.[0].comics.items.length}}
-  <ul>
-    {{#each char.data.results.[0].comics.items}}
-    <li>{{name}}</li>
-    {{/each}}
-  </ul>
-  {{else}}
-  <h3>No Comic Found</h3>
-  {{/if}} --}}
+  </div>
+   </span>
   </div>
 </main>

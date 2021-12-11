@@ -18,17 +18,16 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 // const usersData = require('../data/users');
 const moviesData = data.movies;
-const reviewData = data.reviews
+const reviewData = data.reviews;
 const usersData = data.users;
 const validation = require("../data/validation");
-
 
 router.get("/all", async (req, res) => {
   try {
     const listRest = await moviesData.getAllMovies();
     res.render("movies/allMovies", {
       movieList: listRest,
-      title: "Movies",
+      title: "All Movies",
     });
   } catch (e) {
     res.status(400).render("pages/error", { error: e, title: "Search Error" });
@@ -42,78 +41,25 @@ router.get("/allMovies", async (req, res) => {
   } catch (error) {}
 });
 
-// router.post('/all/:genre', async (req, res) => {
-//   try {
-//     const sorted = await moviesData.getByGenre(req.params.genre);
-//     res.json(sorted)
-//   } catch (e) {
-//   }
-// });
-
-// router.post('/all/:year', async (req, res) => {
-//   try {
-//     const sorted = await moviesData.getReleaseYear(req.params.year);
-//     res.json(sorted)
-//   } catch (e) {
-//   }
-// });
-
-// router.post('/all/:service', async (req, res) => {
-//   try {
-//     const sorted = await moviesData.getStreamingervice(req.params.service);
-//     res.json(sorted)
-//   } catch (e) {
-//   }
-// });
-
-// router.post('/all/:rate', async (req, res) => {
-//   try {
-//     const sorted = await moviesData.getRating(req.params.rate);
-//     res.json(sorted)
-//   } catch (e) {
-//   }
-// });
-
 router.post("/all/:value", async (req, res) => {
   try {
-    //const sorted = await moviesData.getByGenre(req.params.genre);
-    //res.render('movies/allMovies',{movieList:sorted,title:'Characters Found'});
-    // return sorted;
-    //return sorted;
-    //res.render('movies/allMovies',{movieList:listRest,title:'Characters Found'});
     const sorted = await moviesData.getSort(req.params.value);
     res.json(sorted);
   } catch (e) {}
 });
 
-router.get('/allMovies', async (req, res) => {
-  try{const listMovies = await moviesData.getAllMovies();
-    res.json(listMovies);
+router.get("/addMovie", async (req, res) => {
+  if (req.session.user) {
+    try {
+      res.render("movies/newMovie", { title: "Add Movies" });
+    } catch (e) {
+      res
+        .status(400)
+        .render("pages/error", { error: e, title: "Search Error" });
+    }
+  } else {
+    res.redirect("/");
   }
-  catch{
-
-  }
-  // const filterList = req.body;
-  // try {
-  //   const { genre, year, service, rate} = filterList;
-  //   const filtered = await moviesData.getFilter(genre,year,service,rate);
-  //   res.json(filtered)
-  // } catch (e) {
-  // }
-});
-
-router.get('/addMovie', async (req, res) => {
-	if (req.session.user) {
-		try {
-			res.render('movies/newMovie', { title: 'Characters Found' });
-		} catch (e) {
-			res
-				.status(400)
-				.render('pages/error', { error: e, title: 'Search Error' });
-		}
-	} else {
-		res.redirect('/');
-	}
 });
 
 router.get("/:id", async (req, res) => {
@@ -123,18 +69,20 @@ router.get("/:id", async (req, res) => {
     try {
       const movie = await moviesData.getMovie(req.params.id);
 
-     const reviews = await reviewData.getReviewsByMovieId(req.params.id)
+      const reviews = await reviewData.getReviewsByMovieId(req.params.id);
       //console.log(movie);
-//       res.render('movies/individualMovie',{movie:movie, reviews:reviews, user:req.session.user, title:'Characters Found'});
-//     } catch (e) {
-//       res.status(400).render('pages/error',{error:e, title:'Search Error'});
-//     }
-//   });
+      //       res.render('movies/individualMovie',{movie:movie, reviews:reviews, user:req.session.user, title:'Characters Found'});
+      //     } catch (e) {
+      //       res.status(400).render('pages/error',{error:e, title:'Search Error'});
+      //     }
+      //   });
       let rev = await usersData.getUser(req.session.user.username);
 
       res.render("movies/individualMovie", {
         movie: movie,
-        title: "Characters Found",
+        title: movie.movie_name,
+        reviews:reviews,
+        user:req.session.user
       });
     } catch (e) {
       res
@@ -152,7 +100,7 @@ router.get("/", async (req, res) => {
     const listRest = await moviesData.getTrending();
     res.status(200).render("movies/allMovies", {
       movieList: listRest,
-      title: "Characters Found",
+      title: "Trending Movies",
     });
   } catch (e) {
     res.status(400).render("pages/error", { error: e, title: "Search Error" });
