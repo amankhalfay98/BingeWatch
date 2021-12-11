@@ -43,6 +43,16 @@ router.get("/unfollow/:id", async (req, res) => {
   }
 });
 
+//SEARCH BAR WHEN GIVEN USERNAME
+router.get("/search/user/:term", async (req, res) => {
+  try {
+    const user = await usersData.searchByUsername(req.params.term);
+    res.status(200).json(user);
+  } catch (e) {
+    res.status(400).render("pages/error", { error: e, title: "Search Error" });
+  }
+});
+
 // To go on Landing Page
 router.get("/", async (req, res) => {
   //console.log(req.session);
