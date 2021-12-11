@@ -1,42 +1,90 @@
 (function ($) {
-  let loginForm = $("#login-form");
-  let usernameInput = $("#username");
-  let passwordInput = $("#password");
-  let submitButton = $("#submitButton");
-  let errors = $(".error");
+  var apply = $("#apply");
+  var showList = $("#showList");
 
-  loginForm.submit((event) => {
-    event.preventDefault();
-    usernameInput.removeClass("is-invalid is-valid");
-    passwordInput.removeClass("is-invalid is-valid");
-    submitButton.prop("disabled", true);
-    errors.hide();
-
-    let info = {
-      username: usernameInput.val().trim(),
-      password: passwordInput.val().trim(),
+  //Filter function on All Movies
+  apply.click(function (e) {
+    e.preventDefault();
+    var requestConfig = {
+      type: "Get",
+      url: `/movies/allMovies/`,
+      dataType: "json",
     };
+    $.ajax(requestConfig).then(function (data) {
+      let genre = $("#genres").val().trim();
+      let release_year = $("#release_year").val().trim();
+      //let streaming_service = $("#service").val().trim();
+      let rating = $("#rate").val().trim();
+      let original_data = data;
+      let user_data = original_data;
+      let compare = {};
+      if (genre != "all") {
+        compare["genre"] = genre;
+      }
+      //   if (streaming_service != "all") {
+      //     compare["streaming_service"] = streaming_service;
+      //   }
+      if (rating != "all") {
+        compare["rating"] = rating;
+      }
+      if (release_year != "") {
+        compare["release_year"] = parseInt(release_year);
+      }
 
-    let hasErrors = false;
-    if (!info.username || !info.password) {
-      usernameInput.addClass("is-invalid");
-      passwordInput.addClass("is-invalid");
-      hasErrors = true;
-    }
+      function filterBy(list, criteria) {
+        return list.filter((movie) =>
+          Object.keys(criteria).every((key) => movie[key] == criteria[key])
+        );
+      }
 
-    if (!hasErrors) {
-      loginForm.unbind().submit();
-    } else {
-      submitButton.prop("disabled", false);
-    }
+      user_data = filterBy(original_data, compare);
+      showList.empty();
+      if (!(user_data.length === 0)) {
+        $.each(user_data, function () {
+          // const li = `<li><a href="/movies/${this._id}" class="character-link">${this.movie_name}</a></li>`;
+          const li = `<div class="card mb-3">
+          <div class="row g-0">
+            <div class="col-md-4">
+              <img src="/${this.movie_img}" class="img-fluid rounded-start movie_card_img" alt="${this.movie_name} poster"">
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <a href="/movies/${this._id}">
+                  <h5 class="card-title">${this.movie_name}</h5>
+                </a>
+                <label for="release_year">Release Year: ${this.release_year}</label>
+                <br>
+                <label for="streaming_service">Streaming On: </label>
+                <a href=${this.streaming_service.link}>${this.streaming_service.name}</a>
+                <br>
+                <label for="genre">Genres: ${this.genre}</label>
+                <br>
+                <label for="rate">Rating: ${this.rating}</label>
+                <br>
+                <label for="views">Views: ${this.views}</label>
+              </div>
+            </div>
+          </div>
+        </div>`;
+          showList.append(li);
+        });
+        showList.show();
+      }
+    });
   });
 
-  $("#sort").change(function (event) {
+  //Reset Filtered option
+  var reset = $("#reset");
+  reset.click(function () {
+    location.reload();
+  });
+
+  //Sort function on All Movies
+  var sort1 = $("#sort");
+  sort1.change(function (event) {
     event.preventDefault();
     var sort = $("#sort").val().trim();
     var showList = $("#showList");
-    showList.empty();
-
     var requestConfig = {
       type: "POST",
       url: `/movies/all/${sort}`,
@@ -48,8 +96,31 @@
       showList.empty();
       if (!(data.length === 0)) {
         $.each(data, function () {
-          const li = `<li><a href="/movies/${this._id}" class="character-link">${this.movie_name}</a></li>`;
-          //const li = `<li><a href='${this.show._links.self.href}'>${this.show.name}</a></li>`;
+          // const li = `<li><a href="/movies/${this._id}" class="character-link">${this.movie_name}</a></li>`;
+          const li = `<div class="card mb-3">
+          <div class="row g-0">
+            <div class="col-md-4">
+            <img src="/${this.movie_img}" class="img-fluid rounded-start movie_card_img" alt="${this.movie_name} poster"">
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <a href="/movies/${this._id}">
+                  <h5 class="card-title">${this.movie_name}</h5>
+                </a>
+                <label for="release_year">Release Year: ${this.release_year}</label>
+                <br>
+                <label for="streaming_service">Streaming On: </label>
+                <a href=${this.streaming_service.link}>${this.streaming_service.name}</a>
+                <br>
+                <label for="genre">Genres: ${this.genre}</label>
+                <br>
+                <label for="rate">Rating: ${this.rating}</label>
+                <br>
+                <label for="views">Views: ${this.views}</label>
+              </div>
+            </div>
+          </div>
+        </div>`;
           showList.append(li);
         });
         showList.show();
@@ -61,26 +132,75 @@
     });
   });
 
-  $(document).ready(function () {
-    $.getScript("http://localhost:3000/public/js/newMovieForm.js");
-    var reviews = $("#reviews");
-    // $('.error').empty();
-    reviews.empty();
+  //Add Review Function
+  $("#addNewReview").click(function (event) {
+    event.preventDefault();
+    $(".error").empty();
+    var rating = $("#rating").val();
+    var review = $("#review").val();
+    var movie = $(this).data("movie");
+    var user = $(this).data("user");
     var id = window.location.href.split("/");
     id = id[id.length - 1];
-    //homeLink.hide();
-    var requestConfig = {
-      type: "Post",
-      url: `/reviews/${id}`,
-      dataType: "json",
-    };
+    if (rating || review) {
+      var requestConfig = {
+        method: "POST",
+        url: "/reviews/postReview",
+        contentType: "application/json",
+        data: JSON.stringify({
+          username: user,
+          movie_id: id,
+          movie_name: movie,
+          review: review,
+          rating: rating,
+          tag: "review",
+        }),
+      };
 
-    $.ajax(requestConfig).then(function (data) {
-      $.each(data, function () {
-        const div = `<div>${this.username}<br>${this.review}<br>${this.rating}</div>`; //id='${this.id}'
-        reviews.append(div);
+      $.ajax(requestConfig).then(function () {
+        // const div = `<div>${review.username}<br>${review.review}<br>${review.rating}</div>`;
+        // $('#reviews').prepend(div);
+        location.reload();
       });
-      reviews.show();
-    });
+    } else {
+      const error = '<p class="error">Rating and Review cannot be empty.</p>';
+      $("#reviews").before(error);
+    }
   });
+  //let loginForm = $('#login-form')
+  //let usernameInput = $('#username');
+  //let passwordInput = $('#password');
+  //let submitButton = $('#submitButton');
+  //let errors = $('.error');
+  //let genre = $('#genre');
+  // let year = $('#release_year');
+  // let service = $('#service');
+  // let rate = $('#rate');
+  // //let add = $('#addReview');
+
+  // loginForm.submit((event) => {
+  //     event.preventDefault();
+  //     usernameInput.removeClass('is-invalid is-valid');
+  //     passwordInput.removeClass('is-invalid is-valid');
+  //     submitButton.prop('disabled', true);
+  //     errors.hide();
+
+  //     let info = {
+  //         username: usernameInput.val().trim(),
+  //         password: passwordInput.val().trim()
+  //     };
+
+  //     let hasErrors = false;
+  //     if (!info.username || !info.password) {
+  //         usernameInput.addClass('is-invalid');
+  //         passwordInput.addClass('is-invalid');
+  //         hasErrors = true;
+  //     }
+
+  //     if (!hasErrors) {
+  //         loginForm.unbind().submit();
+  //     } else {
+  //         submitButton.prop('disabled', false);
+  //     }
+  // });
 })(window.jQuery);

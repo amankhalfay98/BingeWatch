@@ -1,4 +1,4 @@
-{{! <head>
+<!-- {{! <head>
 	<meta charset='utf-8' />
 	<title>Login</title>
 
@@ -32,4 +32,44 @@
 	</p>
 </main>
 
-{{! </body> }}
+{{! </body> }} -->
+
+<style>
+	body {
+		background-image: url('../../public/images/loginbg.jpg');
+		background-repeat: no-repeat;
+		background-size: cover;
+		opacity: 0.9;
+	}
+
+	.navbar-default {
+		background: none;
+	}
+</style>
+<div class="card_gap col d-flex justify-content-center">
+	<div class="login card text-white bg-dark w-50">
+		<div class="card-body">
+			<h5 class="card-title head">Login</h5>
+			<form action='/login' method='post' id='login-form'>
+				<div class="form-group">
+					<label for='username'><b>Username</b></label>
+					<input type='text' id='username' placeholder='Enter Username' name='username'
+						class="form-control" />
+				</div>
+				<br />
+				<div class="form-group">
+					<label for='password'><b>Password</b></label>
+					<input type='password' id='password' placeholder='Enter Password' name='password'
+						class="form-control" />
+				</div>
+				<br />
+				<button class="btn btn-danger" type='submit'>Login</button>
+				<br>
+				<a href='/signup'>Need to register? Click here to sign-up</a>
+			</form>
+			<p class='error'>
+				{{error}}
+			</p>
+		</div>
+	</div>
+</div>

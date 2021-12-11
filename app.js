@@ -33,25 +33,25 @@ app.use(
 	})
 );
 
-//NEED TO COMMENT THIS OUT LATER : JUST FOR UNDERSTANDING ROUTES
-app.use((req, res, next) => {
-	if (!req.session.user) {
-		console.log(
-			new Date().toUTCString(),
-			req.method,
-			req.originalUrl,
-			'(Non-Authenticated User)'
-		);
-	} else {
-		console.log(
-			new Date().toUTCString(),
-			req.method,
-			req.originalUrl,
-			'(Authenticated User)'
-		);
-	}
-	next();
-});
+// //NEED TO COMMENT THIS OUT LATER : JUST FOR UNDERSTANDING ROUTES
+// app.use((req, res, next) => {
+// 	if (!req.session.user) {
+// 		console.log(
+// 			new Date().toUTCString(),
+// 			req.method,
+// 			req.originalUrl,
+// 			'(Non-Authenticated User)'
+// 		);
+// 	} else {
+// 		console.log(
+// 			new Date().toUTCString(),
+// 			req.method,
+// 			req.originalUrl,
+// 			'(Authenticated User)'
+// 		);
+// 	}
+// 	next();
+// });
 // ---------------------------------------------------
 
 //if user tries to access private route without being authenicated
