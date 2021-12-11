@@ -319,6 +319,36 @@ router.get("/watched/:id", async (req, res) => {
   }
 });
 
+//SEARCH BAR WHEN GIVEN MOVIE NAME
+router.get("/search/movie/:term", async (req, res) => {
+  try {
+    const movie = await moviesData.searchByMovie(req.params.term);
+    res.status(200).json(movie);
+  } catch (e) {
+    res.status(400).render("pages/error", { error: e, title: "Search Error" });
+  }
+});
+
+//SEARCH BAR WHEN GIVEN DIRECTOR
+router.get("/search/director/:term", async (req, res) => {
+  try {
+    const movie = await moviesData.searchByDirector(req.params.term);
+    res.status(200).json(movie);
+  } catch (e) {
+    res.status(400).render("pages/error", { error: e, title: "Search Error" });
+  }
+});
+
+//SEARCH BAR WHEN GIVEN CAST NAME
+router.get("/search/cast/:term", async (req, res) => {
+  try {
+    const movie = await moviesData.searchByCast(req.params.term);
+    res.status(200).json(movie);
+  } catch (e) {
+    res.status(400).render("pages/error", { error: e, title: "Search Error" });
+  }
+});
+
 // router.post('/addMovie', async (req, res) => {
 //     const moviesDataList = req.body;
 //     if (!moviesDataList.movie_name) {

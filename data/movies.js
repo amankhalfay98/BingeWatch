@@ -435,6 +435,57 @@ let movieWatched = async (user, movie) => {
   return `${movie} successfully marked as watched.`;
 };
 
+let searchByMovie = async (movie) => {
+  if (!movie) throw "missing input parameters";
+
+  if (typeof movie !== "string")
+    throw "invalid data type";
+
+  if (movie.trim().length === 0)
+    throw "invalid strings";
+
+  let regExTerm = new RegExp(".*" + movie.trim() + ".*", "i");
+  const moviesCollection = await movies();
+  let matched = await moviesCollection.find({ movie_name: regExTerm }).toArray();
+  if (matched.length === 0) throw `no movies matched to ${movie.trim()}.`;
+
+  return matched;
+};
+
+let searchByDirector = async (director) => {
+  if (!director) throw "missing input parameters";
+
+  if (typeof director !== "string")
+    throw "invalid data type";
+
+  if (director.trim().length === 0)
+    throw "invalid strings";
+
+  let regExTerm = new RegExp(".*" + director.trim() + ".*", "i");
+  const moviesCollection = await movies();
+  let matched = await moviesCollection.find({ director: regExTerm }).toArray();
+  if (matched.length === 0) throw `no movies matched to ${director.trim()}.`;
+
+  return matched;
+};
+
+let searchByCast = async (name) => {
+  if (!name) throw "missing input parameters";
+
+  if (typeof name !== "string")
+    throw "invalid data type";
+
+  if (name.trim().length === 0)
+    throw "invalid strings";
+
+  let regExTerm = new RegExp(".*" + name.trim() + ".*", "i");
+  const moviesCollection = await movies();
+  let matched = await moviesCollection.find({ cast: { $in: [regExTerm] } }).toArray();
+  if (matched.length === 0) throw `no movies matched to ${director.trim()}.`;
+
+  return matched;
+};
+
 module.exports = {
 	createMovie,
 	updatingMovie,
@@ -443,5 +494,8 @@ module.exports = {
 	getTrending,
 	updateMovieReviewID,
 	getSort,
-  movieWatched
+  movieWatched,
+  searchByMovie,
+  searchByDirector,
+  searchByCast
 };
