@@ -5,9 +5,8 @@ const reviews = data.reviews;
 
 router.post("/postReview", async (req, res) => {
   let data = req.body;
-  const { user_id, username, movie_id, movie_name, review, rating, tag } = data;
+  const { username, movie_id, movie_name, review, rating, tag } = data;
   const postReview = await reviews.create(
-    user_id,
     username,
     movie_id,
     movie_name,

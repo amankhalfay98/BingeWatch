@@ -139,6 +139,7 @@
     var rating = $("#rating").val();
     var review = $("#review").val();
     var movie = $(this).data("movie");
+    var user = $(this).data("user");
     var id = window.location.href.split("/");
     id = id[id.length - 1];
     if (rating || review) {
@@ -147,8 +148,7 @@
         url: "/reviews/postReview",
         contentType: "application/json",
         data: JSON.stringify({
-          user_id: "61aec0d0ed09d41d735ae35d",
-          username: "aaditi",
+          username: user,
           movie_id: id,
           movie_name: movie,
           review: review,
@@ -157,7 +157,7 @@
         }),
       };
 
-      $.ajax(requestConfig).then(function (review) {
+      $.ajax(requestConfig).then(function () {
         // const div = `<div>${review.username}<br>${review.review}<br>${review.rating}</div>`;
         // $('#reviews').prepend(div);
         location.reload();
