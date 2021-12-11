@@ -153,6 +153,7 @@ let createMovie = async (
     watched_list: [],
     movie_img: movie_img,
     tag: "movie",
+    reports: 0
   };
 
   const insertMovie = await movieCollection.insertOne(newMovie);
@@ -274,6 +275,7 @@ let updatingMovie = async (
   let currReviews = [];
   let currWatch = [];
   let oldImg = "";
+  let currRep = 0;
 
   try {
     const findMovie = await movieCollection.findOne({ _id: parseId });
@@ -289,6 +291,7 @@ let updatingMovie = async (
     currReviews = findMovie.reviews;
     currWatch = findMovie.watched_list;
     oldImg = findMovie.movie_img;
+    currRep = findMovie.reports;
   } catch (e) {
     throw "no movie with given id";
   }
@@ -319,6 +322,7 @@ let updatingMovie = async (
     watched_list: currWatch,
     movie_img: movie_img,
     tag: "movie",
+    reports: currRep
   };
 
   const updatedMovie = await movieCollection.updateOne(
@@ -486,6 +490,11 @@ let searchByCast = async (name) => {
   return matched;
 };
 
+//FUNCTION FOR REPORTING AND AUTOMATIC REMOVAL OF MOVIES (EXTRA)
+let reportMovie = async (movie) => {
+  //TODO
+};
+
 module.exports = {
 	createMovie,
 	updatingMovie,
@@ -497,5 +506,6 @@ module.exports = {
   movieWatched,
   searchByMovie,
   searchByDirector,
-  searchByCast
+  searchByCast,
+  reportMovie
 };
