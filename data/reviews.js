@@ -28,7 +28,7 @@ const create = async (
     movie_name,
     review,
     rating,
-    tag: "review"
+    tag: "review",
   };
   const reviewsCollection = await reviews();
   const insertInfo = await reviewsCollection.insertOne(newReview);
