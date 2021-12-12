@@ -567,7 +567,7 @@ const updateMovieReport = async (movieId, username) => {
   return false;
 };
 
-const deleteMovie = async (id) => {
+let deleteMovie = async (id) => {
   if (id === undefined) throw "No id provided";
   //if (!validation.validObjectIdString(id))
     //throw "movie id provided is not a valid object.";
@@ -580,6 +580,128 @@ const deleteMovie = async (id) => {
   } else {
     return { deleted: true };
   }
+};
+
+//set the view count to Math.random for trending page
+let seedCreate = async (
+  username,
+  movie_name,
+  director,
+  release_year,
+  cast,
+  streaming,
+  genre,
+  movie_img
+) => {
+  if (
+    !username ||
+    !movie_name ||
+    !director ||
+    !release_year ||
+    !cast ||
+    !streaming ||
+    !genre ||
+    !movie_img
+  )
+    throw "One or more input parameter missing.";
+
+  if (
+    typeof username !== "string" ||
+    typeof movie_name !== "string" ||
+    typeof director !== "string"
+  )
+    throw "Incorrect data types";
+
+  if (
+    username.trim().length === 0 ||
+    movie_name.trim().length === 0 ||
+    director.trim().length === 0
+  )
+    throw "Strings are just empty spaces";
+
+  //Most likely will need an extra check for director name
+  //Make sure it is a valid name
+  //Can not add the same movie twice
+
+  if (typeof release_year !== "number" || !Number.isInteger(release_year))
+    throw "Incorrect data type";
+
+  //First film produced was 1888
+  if (release_year < 1888 || release_year > new Date().getFullYear())
+    throw "Invalid release year";
+
+  if (!Array.isArray(cast) || !Array.isArray(genre))
+    throw "Incorrect data type";
+
+  //Loop within cast array to check name validity
+  for (i = 0; i < cast.length; i++) {
+    if (typeof cast[i] !== "string" || cast[i].trim().length === 0)
+      throw "cast is not an array of strings or contains empty strings";
+    cast[i] = cast[i].trim();
+  }
+
+  for (i = 0; i < genre.length; i++) {
+    if (typeof genre[i] !== "string" || genre[i].trim().length === 0)
+      throw "genre is not an array of strings or contains empty strings";
+    genre[i] = genre[i].trim();
+  }
+
+  if (typeof streaming !== "object") throw "streaming is not an object";
+
+  if (streaming === null || Array.isArray(streaming))
+    throw "streaming in not a valid object";
+
+  if (!("name" in streaming) || !("link" in streaming))
+    throw "streaming missing important information";
+
+  for (let option in streaming) {
+    if (
+      typeof streaming[option] !== "string" ||
+      streaming[option].trim().length === 0
+    )
+      throw "key/value pair in streaming is invalid";
+  }
+
+  if (!validWebsite(streaming["link"].trim()))
+    throw "link field in streaming is not a valid website";
+
+  //validating img here
+
+  const movieCollection = await movies();
+  try {
+    const findSameMovie = await movieCollection.findOne({
+      movie_name: movie_name.trim(),
+    });
+    if (findSameMovie !== null) throw "movie already exists within database";
+  } catch (e) {
+    throw "movie already exists within database";
+  }
+
+  //username should be already populated when filling form
+  let newMovie = {
+    username: username.trim(),
+    movie_name: movie_name.trim(),
+    director: director.trim(),
+    release_year: release_year,
+    cast: cast,
+    streaming_service: streaming,
+    rating: 0,
+    genre: genre,
+    views: Math.floor(Math.random() * (500 - 0 + 1) + 0),
+    reviews: [],
+    watched_list: [],
+    movie_img: movie_img,
+    tag: "movie",
+    favourite_list:[],
+    toWatch_list:[]
+  };
+
+  const insertMovie = await movieCollection.insertOne(newMovie);
+
+  if (insertMovie.insertedCount === 0) throw "movie could not be added";
+
+  return newMovie;
+  // return `${movie_name} successfully added!`;
 };
 
 module.exports = {
@@ -597,5 +719,6 @@ module.exports = {
   searchByDirector,
   searchByCast,
   updateMovieReport,
-  deleteMovie
+  deleteMovie,
+  seedCreate
 };
