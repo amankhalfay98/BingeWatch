@@ -28,9 +28,17 @@ router.get("/all", async (req, res) => {
     res.render("movies/allMovies", {
       movieList: listRest,
       title: "All Movies",
+      authenticated: req.session.user ? true : false,
+      username: req.session.user.username,
     });
   } catch (e) {
-    res.status(400).render("pages/error", { error: e, title: "Search Error" });
+    res
+      .status(400)
+      .render("pages/error", {
+        error: e,
+        title: "Search Error",
+        authenticated: req.session.user ? true : false,
+      });
   }
 });
 
@@ -51,11 +59,18 @@ router.post("/all/:value", async (req, res) => {
 router.get("/addMovie", async (req, res) => {
   if (req.session.user) {
     try {
-      res.render("movies/newMovie", { title: "Add Movies" });
+      res.render("movies/newMovie", {
+        title: "Add Movies",
+        authenticated: req.session.user ? true : false,
+      });
     } catch (e) {
       res
         .status(400)
-        .render("pages/error", { error: e, title: "Search Error" });
+        .render("pages/error", {
+          error: e,
+          title: "Search Error",
+          authenticated: req.session.user ? true : false,
+        });
     }
   } else {
     res.redirect("/");
@@ -81,16 +96,27 @@ router.get("/:id", async (req, res) => {
       res.render("movies/individualMovie", {
         movie: movie,
         title: movie.movie_name,
-        reviews:reviews,
-        user:req.session.user
+        reviews: reviews,
+        user: req.session.user,
+        authenticated: req.session.user ? true : false,
+        username: req.session.user.username,
       });
     } catch (e) {
       res
         .status(400)
-        .render("pages/error", { error: e, title: "Search Error" });
+        .render("pages/error", {
+          error: e,
+          title: "Search Error",
+          authenticated: req.session.user ? true : false,
+          username: req.session.user.username
+        });
     }
   } else {
-    res.status(403).render("pages/error");
+    res
+      .status(403)
+      .render("pages/error", {
+        authenticated: req.session.user ? true : false,
+      });
   }
 });
 
@@ -101,9 +127,16 @@ router.get("/", async (req, res) => {
     res.status(200).render("movies/allMovies", {
       movieList: listRest,
       title: "Trending Movies",
+      authenticated: req.session.user ? true : false,
     });
   } catch (e) {
-    res.status(400).render("pages/error", { error: e, title: "Search Error" });
+    res
+      .status(400)
+      .render("pages/error", {
+        error: e,
+        title: "Search Error",
+        authenticated: req.session.user ? true : false,
+      });
   }
 });
 
@@ -279,7 +312,13 @@ router.get("/unfavorite/:id", async (req, res) => {
     const user = await usersData.removeFromFave("royroy", movie["movie_name"]);
     res.status(200).json(user);
   } catch (e) {
-    res.status(400).render("pages/error", { error: e, title: "Search Error" });
+    res
+      .status(400)
+      .render("pages/error", {
+        error: e,
+        title: "Search Error",
+        authenticated: req.session.user ? true : false,
+      });
   }
 });
 
@@ -301,7 +340,13 @@ router.get("/unwatchlist/:id", async (req, res) => {
     const user = await usersData.removeFromWatch("royroy", movie["movie_name"]);
     res.status(200).json(user);
   } catch (e) {
-    res.status(400).render("pages/error", { error: e, title: "Search Error" });
+    res
+      .status(400)
+      .render("pages/error", {
+        error: e,
+        title: "Search Error",
+        authenticated: req.session.user ? true : false,
+      });
   }
 });
 
@@ -315,7 +360,13 @@ router.get("/watched/:id", async (req, res) => {
     );
     res.status(200).json(watchMovie);
   } catch (e) {
-    res.status(400).render("pages/error", { error: e, title: "Search Error" });
+    res
+      .status(400)
+      .render("pages/error", {
+        error: e,
+        title: "Search Error",
+        authenticated: req.session.user ? true : false,
+      });
   }
 });
 
@@ -325,7 +376,13 @@ router.get("/search/movie/:term", async (req, res) => {
     const movie = await moviesData.searchByMovie(req.params.term);
     res.status(200).json(movie);
   } catch (e) {
-    res.status(400).render("pages/error", { error: e, title: "Search Error" });
+    res
+      .status(400)
+      .render("pages/error", {
+        error: e,
+        title: "Search Error",
+        authenticated: req.session.user ? true : false,
+      });
   }
 });
 
@@ -335,7 +392,13 @@ router.get("/search/director/:term", async (req, res) => {
     const movie = await moviesData.searchByDirector(req.params.term);
     res.status(200).json(movie);
   } catch (e) {
-    res.status(400).render("pages/error", { error: e, title: "Search Error" });
+    res
+      .status(400)
+      .render("pages/error", {
+        error: e,
+        title: "Search Error",
+        authenticated: req.session.user ? true : false,
+      });
   }
 });
 
@@ -345,7 +408,13 @@ router.get("/search/cast/:term", async (req, res) => {
     const movie = await moviesData.searchByCast(req.params.term);
     res.status(200).json(movie);
   } catch (e) {
-    res.status(400).render("pages/error", { error: e, title: "Search Error" });
+    res
+      .status(400)
+      .render("pages/error", {
+        error: e,
+        title: "Search Error",
+        authenticated: req.session.user ? true : false,
+      });
   }
 });
 

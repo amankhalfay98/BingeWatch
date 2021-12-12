@@ -332,7 +332,13 @@ router.post("/private", async (req, res) => {
 
   // Error handling for name
   if (!newUser.name || newUser.name.trim() == "") {
-    res.status(400).render("pages/private", { error: "Please provide name" });
+    res
+      .status(400)
+      .render("pages/private", {
+        error: "Please provide name",
+        authenticated: req.session.user ? true : false,
+        username: req.session.user.username,
+      });
     return;
   }
   newUser.name = newUser.name.trim();
@@ -343,6 +349,8 @@ router.post("/private", async (req, res) => {
     if (!element.match(/([a-zA-Z])/)) {
       res.status(400).render("pages/private", {
         error: "only characters allowed",
+        authenticated: req.session.user ? true : false,
+        username: req.session.user.username,
       });
       return;
     }
@@ -352,7 +360,11 @@ router.post("/private", async (req, res) => {
   if (!newUser.date_of_birth || newUser.date_of_birth.trim() == "") {
     res
       .status(400)
-      .render("pages/private", { error: "Please provide Date of Birth" });
+      .render("pages/private", {
+        error: "Please provide Date of Birth",
+        authenticated: req.session.user ? true : false,
+        username: req.session.user.username,
+      });
     return;
   }
   newUser.date_of_birth = newUser.date_of_birth.trim();
@@ -361,6 +373,8 @@ router.post("/private", async (req, res) => {
   if (!newUser.date_of_birth.match(/^\d{4}-\d{2}-\d{2}$/)) {
     res.status(400).render("pages/private", {
       error: "Invalid Date of Birth",
+      authenticated: req.session.user ? true : false,
+      username: req.session.user.username,
     });
     return;
   }
@@ -412,7 +426,13 @@ router.post("/private", async (req, res) => {
     if (e == "Internal Server Error") {
       res.status(500).render("pages/private", { error: e });
     } else {
-      res.status(400).render("pages/private", { error: e });
+      res
+        .status(400)
+        .render("pages/private", {
+          error: e,
+          authenticated: req.session.user ? true : false,
+          username: req.session.user.username,
+        });
     }
   }
 });
@@ -422,7 +442,11 @@ router.get("/private", async (req, res) => {
   let rev = await usersData.getUser(req.session.user.username);
   console.log(rev);
 
-  res.render("pages/private", { user: rev });
+  res.render("pages/private", {
+    user: rev,
+    authenticated: req.session.user ? true : false,
+    username: req.session.user.username,
+  });
 });
 
 // To Logout

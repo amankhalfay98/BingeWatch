@@ -98,16 +98,32 @@
 		<div class="card w-50">
 			<div class="card-body">
 				<h5 class="card-title">Favourites</h5>
-				{{user.favourites}}
+				<ul class="list-group">
+					{{#each user.favourites}}
+					<li class="list-group-item d-flex justify-content-between align-items-start">
+						<div class="ms-2 me-auto">
+							<div class="fw-bold">{{this}}</div>
+						</div>
+						<i class="bi bi-trash"></i>
+					</li>
+					{{/each}}
+				</ul>
 				<br>
 				<a href="/movies/all" class="btn btn-outline-danger">Watch Now</a>
 			</div>
 			<hr>
 			<div class="card-body">
 				<h5 class="card-title">Watchlist</h5>
-				{{user.favourites}}
-				<br>
-				<a href="/movies/all" class="btn btn-outline-danger">Watch Now</a>
+				<ul class="list-group">
+					{{#each user.watchlist}}
+					<li class="list-group-item d-flex justify-content-between align-items-start">
+						<div class="ms-2 me-auto">
+							<div class="fw-bold">{{this}}</div>
+						</div>
+						<i class="bi bi-trash"></i>
+					</li>
+					{{/each}}
+				</ul>
 			</div>
 		</div>
 	</div>
