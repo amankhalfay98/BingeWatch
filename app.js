@@ -85,6 +85,7 @@ app.use('/private', (req, res, next) => {
 		next();
 	}
 });
+
 app.use('/uploads', express.static('uploads'));
 app.use('/profile', express.static('profile'));
 

@@ -92,12 +92,39 @@ router.get("/:id", async (req, res) => {
       //     }
       //   });
       let rev = await usersData.getUser(req.session.user.username);
+      let view = ''
+      if(movie.watched_list.includes(req.session.user.username)){
+       view = 'disabled';
+      }
+      if(movie.favourite_list.includes(req.session.user.username)){
+        fav = 'UnFavorite';
+       }
+       else{
+        fav = 'Favorite';
+       }
+       if(movie.toWatch_list.includes(req.session.user.username)){
+        watch = 'Watched';
+       }
+       else{
+        watch = 'Want to Watch';
+       }
+      if(reviews.length>0){
+      for(let i=0;i<reviews.length;i++){
+        if(reviews[i].reported.includes(req.session.user.username)){
+        reviews.splice(i,1);
+        i--;
+        }
+      }
+    }
 
       res.render("movies/individualMovie", {
         movie: movie,
+        view: view,
+        watch: watch,
+        fav: fav,
         title: movie.movie_name,
-        reviews: reviews,
-        user: req.session.user,
+        reviews:reviews,
+        user:rev,
         authenticated: req.session.user ? true : false,
         username: req.session.user.username,
       });
@@ -248,6 +275,28 @@ router.post("/addMovie", upload.single("movie_img"), async (req, res) => {
   }
 });
 
+router.get("/edit/:id", async (req, res) => {
+  if (req.session.user) {
+    try {
+      const movie = await moviesData.getMovie(req.params.id);
+      let rev = await usersData.getUser(req.session.user.username);
+      let cast = movie.cast;
+      cast = cast.toString();
+      movie.cast = cast
+      res.render("movies/updateMovie", {
+        movie: movie,
+        title: "Edit Movies",
+      });
+    } catch (e) {
+      res
+        .status(400)
+        .render("pages/error", { error: e, title: "Update Error" });
+    }
+  } else {
+    res.status(403).render("pages/error");
+  }
+});
+
 router.put("/edit/:id", async (req, res) => {
   const updatedData = req.body;
   if (
@@ -295,69 +344,62 @@ router.put("/edit/:id", async (req, res) => {
 });
 
 //ADDING MOVIE TO USER'S FAVE LIST
-router.get("/favorite/:id", async (req, res) => {
+router.post("/favorite/:id", async (req, res) => {
+  const movie = req.body;
   try {
-    const movie = await moviesData.getMovie(req.params.id);
-    const user = await usersData.addToFave("royroy", movie["movie_name"]);
-    res.status(200).json(user);
+    const{username,movie_name} = movie;
+    //const movie = await moviesData.getMovie(req.params.id);
+    let userFav = await usersData.addToFave(username, movie_name);
+    res.status(200).json(userFav);
   } catch (e) {
-    res.status(400).render("pages/error", { error: e, title: "Search Error" });
+    res.status(400).render("pages/error", { error: e, title: "Error" });
   }
 });
 
 //REMOVING MOVIE FROM USER'S FAVE LIST
-router.get("/unfavorite/:id", async (req, res) => {
-  try {
-    const movie = await moviesData.getMovie(req.params.id);
-    const user = await usersData.removeFromFave("royroy", movie["movie_name"]);
-    res.status(200).json(user);
-  } catch (e) {
-    res
-      .status(400)
-      .render("pages/error", {
-        error: e,
-        title: "Search Error",
-        authenticated: req.session.user ? true : false,
-      });
-  }
-});
+// router.post("/unfavorite/:id", async (req, res) => {
+//   const movie = req.body;
+//   try {
+//     const{username,movie_name} = movie;
+//     //const movie = await moviesData.getMovie(req.params.id);
+//     const user = await usersData.removeFromFave(username,movie_name);
+//     res.status(200).json(user);
+//   } catch (e) {
+//     res.status(400).render("pages/error", { error: e, title: "Search Error" });
+//   }
+// });
 
 //ADDING MOVIE TO USER'S WATCHLIST
-router.get("/watchlist/:id", async (req, res) => {
+router.post("/watchlist/:id", async (req, res) => {
+  const movie = req.body;
   try {
-    const movie = await moviesData.getMovie(req.params.id);
-    const user = await usersData.addToWatch("royroy", movie["movie_name"]);
-    res.status(200).json(user);
+    const{username,movie_name} = movie;
+    //const movie = await moviesData.getMovie(req.params.id);
+    let userWatch = await usersData.addToWatch(username,movie_name);
+    res.status(200).json(userWatch);
   } catch (e) {
-    res.status(400).render("pages/error", { error: e, title: "Search Error" });
+    res.status(400).render("pages/error", { error: e, title: "Error" });
   }
 });
 
 //REMOVING MOVIE FROM USER'S WATCHLIST
-router.get("/unwatchlist/:id", async (req, res) => {
-  try {
-    const movie = await moviesData.getMovie(req.params.id);
-    const user = await usersData.removeFromWatch("royroy", movie["movie_name"]);
-    res.status(200).json(user);
-  } catch (e) {
-    res
-      .status(400)
-      .render("pages/error", {
-        error: e,
-        title: "Search Error",
-        authenticated: req.session.user ? true : false,
-      });
-  }
-});
+// router.get("/unwatchlist/:id", async (req, res) => {
+//   try {
+//     const movie = await moviesData.getMovie(req.params.id);
+//     const user = await usersData.removeFromWatch("royroy", movie["movie_name"]);
+//     res.status(200).json(user);
+//   } catch (e) {
+//     res.status(400).render("pages/error", { error: e, title: "Search Error" });
+//   }
+// });
 
 //MARKING MOVIE AS WATCHED
-router.get("/watched/:id", async (req, res) => {
+router.post("/watched/:id", async (req, res) => {
+  const movie = req.body;
   try {
-    const movie = await moviesData.getMovie(req.params.id);
-    const watchMovie = await moviesData.movieWatched(
-      "royroy",
-      movie["movie_name"]
-    );
+    const{username,movie_name} = movie;
+    //const movie = await moviesData.getMovie(req.params.id);
+    const watchMovie = await moviesData.movieWatched( username, movie_name);
     res.status(200).json(watchMovie);
   } catch (e) {
     res
@@ -366,6 +408,7 @@ router.get("/watched/:id", async (req, res) => {
         error: e,
         title: "Search Error",
         authenticated: req.session.user ? true : false,
+        username: req.session.username,
       });
   }
 });
@@ -382,6 +425,7 @@ router.get("/search/movie/:term", async (req, res) => {
         error: e,
         title: "Search Error",
         authenticated: req.session.user ? true : false,
+        username: req.session.username,
       });
   }
 });
@@ -398,6 +442,7 @@ router.get("/search/director/:term", async (req, res) => {
         error: e,
         title: "Search Error",
         authenticated: req.session.user ? true : false,
+        username: req.session.username
       });
   }
 });
@@ -414,6 +459,7 @@ router.get("/search/cast/:term", async (req, res) => {
         error: e,
         title: "Search Error",
         authenticated: req.session.user ? true : false,
+        username: req.session.username
       });
   }
 });
@@ -458,51 +504,51 @@ router.get("/search/cast/:term", async (req, res) => {
 //     }
 //   });
 
-router.put("/edit/:id", async (req, res) => {
-  const updatedData = req.body;
-  if (
-    !updatedData.movie_name ||
-    !updatedData.director ||
-    !updatedData.release_year ||
-    !updatedData.cast ||
-    !updatedData.genre ||
-    !updatedData.streaming_services
-  ) {
-    res.status(400).json({ error: "You must Supply All fields" });
-    return;
-  }
-  try {
-    await moviesData.getMovie(req.params.id);
-  } catch (e) {
-    res.status(404).json({ error: "Movie/TV Show not found" });
-    return;
-  }
+// router.put("/edit/:id", async (req, res) => {
+//   const updatedData = req.body;
+//   if (
+//     !updatedData.movie_name ||
+//     !updatedData.director ||
+//     !updatedData.release_year ||
+//     !updatedData.cast ||
+//     !updatedData.genre ||
+//     !updatedData.streaming_services
+//   ) {
+//     res.status(400).json({ error: "You must Supply All fields" });
+//     return;
+//   }
+//   try {
+//     await moviesData.getMovie(req.params.id);
+//   } catch (e) {
+//     res.status(404).json({ error: "Movie/TV Show not found" });
+//     return;
+//   }
 
-  try {
-    const {
-      movie_name,
-      director,
-      release_year,
-      cast,
-      streaming_services,
-      genre,
-      movie_img,
-    } = updatedData;
-    const updatedMovie = await moviesData.updatingMovie(
-      req.params.id,
-      movie_name,
-      director,
-      release_year,
-      cast,
-      streaming_services,
-      genre,
-      movie_img
-    );
-    res.status(200).json(updatedMovie);
-  } catch (e) {
-    res.status(500).json({ error: e });
-  }
-});
+//   try {
+//     const {
+//       movie_name,
+//       director,
+//       release_year,
+//       cast,
+//       streaming_services,
+//       genre,
+//       movie_img,
+//     } = updatedData;
+//     const updatedMovie = await moviesData.updatingMovie(
+//       req.params.id,
+//       movie_name,
+//       director,
+//       release_year,
+//       cast,
+//       streaming_services,
+//       genre,
+//       movie_img
+//     );
+//     res.status(200).json(updatedMovie);
+//   } catch (e) {
+//     res.status(500).json({ error: e });
+//   }
+// });
 
 // router.delete('/:id', async (req, res) => {
 //     if (!req.params.id) {

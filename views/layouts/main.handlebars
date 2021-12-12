@@ -28,6 +28,16 @@
 					<a class='nav-link active' aria-current='page' href='/'>Home</a>
 					<a class='nav-link active' href='/movies/all'>Movies</a>
 					<a class='nav-link active' href='#'>My List</a>
+					<form id="searchBar">
+						<select id="searchType">
+							<option value="movie name"> Movie Name </option>
+							<option value="director"> Director </option>
+							<option value="cast"> Cast Member </option>
+							<option value="username"> Username </option>
+						</select>
+            			<input id="searchTerm" type="text" placeholder="Type in keyword"/>
+        				<button type="submit" value="Submit"> Enter </button>
+    				</form>
 				</div>
 				{{#if authenticated}}
 				<!-- <div class="dropdown ms-auto">
@@ -67,6 +77,7 @@
 	<script src='https://code.jquery.com/jquery-2.2.4.min.js'
 		integrity='sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=' crossorigin='anonymous'></script>
 	<script src='/public/js/ajax_jquery.js'></script>
+	<script src='/public/js/searchBar.js'></script>
 </body>
 
 </html>
