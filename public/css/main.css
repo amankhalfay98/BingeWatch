@@ -211,3 +211,7 @@ input:checked + .slider:before {
   width: 400px;
   border: 1px solid gray;
 }
+
+.dropdown-menu[data-bs-popper] {
+  left: -50px;
+}

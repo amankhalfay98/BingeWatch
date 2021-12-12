@@ -9,7 +9,9 @@ const multer = require("multer");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "profile/");
+    const path = "profile/";
+    fs.mkdirSync(path, { recursive: true });
+    cb(null, path);
   },
   filename: function (req, file, cb) {
     cb(null, new Date().toISOString() + file.originalname);
@@ -129,7 +131,7 @@ router.post("/signup", upload.single("profile_pic"), async (req, res) => {
   if (req && req.file && req.file.fieldname === "profile_pic" && newUser) {
     newUser.profile_pic = "/" + req.file.path;
   } else {
-    newUser.profile_pic = '/public/images/abstract-user-flat-4.png';
+    newUser.profile_pic = "/public/images/abstract-user-flat-4.png";
   }
   //console.log(newUser);
   //req.session.user = newUser;
@@ -458,20 +460,20 @@ router.post("/private", async (req, res) => {
 });
 
 // If authenticated go to Private Route
-router.get('/private', async (req, res) => {
-	let rev = await usersData.getUser(req.session.user.username);
-	//console.log(rev);
-	let checked = ''
-	if(rev.private){
-		checked = 'checked';
-	}
+router.get("/private", async (req, res) => {
+  let rev = await usersData.getUser(req.session.user.username);
+  //console.log(rev);
+  let checked = "";
+  if (rev.private) {
+    checked = "checked";
+  }
 
-	res.render('pages/private', {
-		user: rev,
-		authenticated: req.session.user ? true : false,
-		username: req.session.user.username,
-		checked:checked
-	});
+  res.render("pages/private", {
+    user: rev,
+    authenticated: req.session.user ? true : false,
+    username: req.session.user.username,
+    checked: checked,
+  });
 });
 
 // Individual User Page Route
@@ -506,10 +508,12 @@ router.get("/private/:username", async (req, res) => {
   }
 });
 
-router.post('/profile/:username/:checked', async (req, res)=>{
-const private = await usersData.setPrivate(req.params.username,req.params.checked);
-res.json(private);
-
+router.post("/profile/:username/:checked", async (req, res) => {
+  const private = await usersData.setPrivate(
+    req.params.username,
+    req.params.checked
+  );
+  res.json(private);
 });
 
 // To Logout
