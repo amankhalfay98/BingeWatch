@@ -1,3 +1,7 @@
+html body {
+  height: 100%;
+  width: 100%;
+}
 .center {
   margin-top: 5px;
   margin-bottom: 5px;
@@ -32,6 +36,13 @@
   background-image: url("../images/bgimg.jpg");
   position: relative;
   height: 80vh;
+  width: 100%;
+}
+
+.showcaseFull {
+  background-image: url("../images/bgimg.jpg");
+  position: relative;
+  height: 92vh;
   width: 100%;
 }
 
@@ -188,11 +199,6 @@ input:checked + .slider:before {
   right: auto;
   left: 0;
 }
-
-html body {
-  height: 100%;
-  width: 100%;
-}
 .report {
   height: 20px;
   width: 40px;
@@ -200,4 +206,12 @@ html body {
   padding: 0;
   display: block;
 }
+.indmovie {
+  height: 500px;
+  width: 400px;
+  border: 1px solid gray;
+}
 
+.dropdown-menu[data-bs-popper] {
+  left: -50px;
+}

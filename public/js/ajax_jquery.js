@@ -164,7 +164,7 @@
       });
     } else {
       const error = '<p class="error">Rating and Review cannot be empty.</p>';
-      $("#reviews").before(error);
+      $("#error").append(error);
     }
   });
 

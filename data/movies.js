@@ -2,22 +2,8 @@ const mongoCollections = require("../config/mongoCollections");
 const movies = mongoCollections.movies;
 //const reviewCollection = require('./reviews');
 const { ObjectId } = require("mongodb");
-
-// let validNames = (input) => {
-//     //First take out any whitespace within word
-//     //Then set word equal to a temp
-//     //Strip away any non-alpha chars
-//     //compare length
-//     //myString.replace(/ /g,''); <-- strips all whitespace
-//     let originalInput = input;
-//     const alphabet = /[^A-Za-z]/g;
-//     let alphaInput = input.replace(alphabet, "");
-
-//     if(input.length !== alphaInput.length)
-//         return false;
-
-//     return true;
-// };
+const validate = require('./validation');
+const users = require('./users');
 
 let validWebsite = (website) => {
   let lowCaseWeb = website.toLowerCase();
@@ -70,20 +56,21 @@ let createMovie = async (
   if (
     typeof username !== "string" ||
     typeof movie_name !== "string" ||
-    typeof director !== "string"
+    typeof director !== "string" ||
+    typeof genre !== "string"
   )
     throw "Incorrect data types";
 
   if (
     username.trim().length === 0 ||
     movie_name.trim().length === 0 ||
-    director.trim().length === 0
+    director.trim().length === 0 ||
+    genre.trim().length === 0
   )
     throw "Strings are just empty spaces";
 
-  //Most likely will need an extra check for director name
-  //Make sure it is a valid name
-  //Can not add the same movie twice
+  if(!validate.validName(director))
+    throw "Invalid director name";
 
   if (typeof release_year !== "number" || !Number.isInteger(release_year))
     throw "Incorrect data type";
@@ -92,20 +79,14 @@ let createMovie = async (
   if (release_year < 1888 || release_year > new Date().getFullYear())
     throw "Invalid release year";
 
-  if (!Array.isArray(cast) || !Array.isArray(genre))
+  if (!Array.isArray(cast))
     throw "Incorrect data type";
 
   //Loop within cast array to check name validity
   for (i = 0; i < cast.length; i++) {
-    if (typeof cast[i] !== "string" || cast[i].trim().length === 0)
+    if (typeof cast[i] !== "string" || cast[i].trim().length === 0 || !validate.validName(cast[i]))
       throw "cast is not an array of strings or contains empty strings";
     cast[i] = cast[i].trim();
-  }
-
-  for (i = 0; i < genre.length; i++) {
-    if (typeof genre[i] !== "string" || genre[i].trim().length === 0)
-      throw "genre is not an array of strings or contains empty strings";
-    genre[i] = genre[i].trim();
   }
 
   if (typeof streaming !== "object") throw "streaming is not an object";
@@ -139,7 +120,6 @@ let createMovie = async (
     throw "movie already exists within database";
   }
 
-  //username should be already populated when filling form
   let newMovie = {
     username: username.trim(),
     movie_name: movie_name.trim(),
@@ -148,7 +128,7 @@ let createMovie = async (
     cast: cast,
     streaming_service: streaming,
     rating: 0,
-    genre: genre,
+    genre: genre.trim(),
     views: 0,
     reviews: [],
     watched_list: [],
@@ -167,7 +147,6 @@ let createMovie = async (
   //return `${movie_name} successfully added!`;
 };
 
-//username should not be editable
 let updatingMovie = async (
   id,
   username,
@@ -201,39 +180,37 @@ let updatingMovie = async (
   if (
     typeof username !== "string" ||
     typeof movie_name !== "string" ||
-    typeof director !== "string"
+    typeof director !== "string" ||
+    typeof genre !== "string"
   )
     throw "Incorrect data types";
 
   if (
     username.trim().length === 0 ||
     movie_name.trim().length === 0 ||
-    director.trim().length === 0
+    director.trim().length === 0 ||
+    genre.trim().length === 0
   )
     throw "Strings are just empty spaces";
 
-  //Most likely will need an extra check for director name
-  //Make sure it is a valid name
+  if(!validate.validName(director))
+    throw "Invalid director name";
 
-  if (typeof release_year !== "number") throw "Incorrect data type";
+  if (typeof release_year !== "number" || !Number.isInteger(release_year))
+    throw "Incorrect data type";
 
   //First film produced was 1888
   if (release_year < 1888 || release_year > new Date().getFullYear())
     throw "Invalid release year";
 
-  if (!Array.isArray(cast) || !Array.isArray(genre))
+  if (!Array.isArray(cast))
     throw "Incorrect data type";
 
+  //Loop within cast array to check name validity
   for (i = 0; i < cast.length; i++) {
-    if (typeof cast[i] !== "string" || cast[i].trim().length === 0)
+    if (typeof cast[i] !== "string" || cast[i].trim().length === 0 || !validate.validName(cast[i]))
       throw "cast is not an array of strings or contains empty strings";
     cast[i] = cast[i].trim();
-  }
-
-  for (i = 0; i < genre.length; i++) {
-    if (typeof genre[i] !== "string" || genre[i].trim().length === 0)
-      throw "genre is not an array of strings or contains empty strings";
-    genre[i] = genre[i].trim();
   }
 
   if (typeof streaming !== "object") throw "streaming is not an object";
@@ -274,7 +251,7 @@ let updatingMovie = async (
   let oldCast = [];
   let oldStream = {};
   let currRating = 0;
-  let oldGenre = [];
+  let oldGenre = "";
   let currViews = 0;
   let currReviews = [];
   let currWatch = [];
@@ -318,7 +295,7 @@ let updatingMovie = async (
     cast: cast,
     streaming_service: streaming,
     rating: currRating,
-    genre: genre,
+    genre: genre.trim(),
     views: currViews,
     reviews: currReviews,
     watched_list: currWatch,
@@ -337,7 +314,6 @@ let updatingMovie = async (
 };
 
 let getMovie = async (id) => {
-  //console.log(id);
   if (!id) throw "no id is given.";
 
   if (typeof id !== "string") throw "id is of invalid type";
@@ -351,8 +327,6 @@ let getMovie = async (id) => {
   const wantedMovie = await movieCollection.findOne({ _id: parseId });
 
   if (wantedMovie === null) throw "no movie with given id";
-
-  //console.log(wantedMovie);
 
   return wantedMovie;
 };
@@ -414,7 +388,14 @@ let getTrending = async () => {
   return moviesArr;
 };
 
+//error check needed
 let getSort = async (value)=> {
+  if(!value)
+    throw "missing input parameter";
+  
+  if(typeof value !== "string" || value.trim().length === 0)
+    throw "invalid input";
+  
   const movieCollection = await movies();
   if (value === "watchCount") {
     const moviesArr = await movieCollection
@@ -567,10 +548,30 @@ let searchByCast = async (name) => {
 };
 
 const updateMovieReport = async (movieId, username) => {
+  // ------------------- ERROR CHANGES ----------------------
+  if(!movieId || !username)
+    throw "no movieId was supplied";
+    
+  if(typeof movieId !== "string" || typeof username !== "string")
+    throw "movieId is of invalid type";
+
+  if(movieId.trim().length === 0 || username.trim().length === 0)
+    throw "movieId supplied is just an empty string";
+      
+  if(!ObjectId.isValid(id.trim()))
+    throw "movieId is not a valid ObjectId";
+
+  let findUser = await users.getUser(username);
+
+  if(findUser === null)
+    throw "username not in database"; 
+  
+  // ----------------------------DELETE IF IT BREAKS APP -----------------------
+
   //if (!validation.validString(movieId)) throw 'Review id is not a valid string.';
   //if (!validation.validString(userId)) throw 'User id is not a valid string.';
   
-  const objMovieId = ObjectId(movieId);
+  const objMovieId = ObjectId(movieId.trim());
   //const uid = ObjectId(userId)
 
   const moviesCollection = await movies();
@@ -589,14 +590,23 @@ const updateMovieReport = async (movieId, username) => {
 };
 
 let deleteMovie = async (id) => {
-  if (id === undefined) throw "No id provided";
+  if(!id)
+    throw "no id was supplied";
+    
+  if(typeof id !== "string")
+    throw "id is of invalid type";
+
+  if(id.trim().length === 0)
+    throw "id supplied is just an empty string";
+    
+  if(!ObjectId.isValid(id.trim()))
+    throw "id is not a valid ObjectId";
   //if (!validation.validObjectIdString(id))
     //throw "movie id provided is not a valid object.";
-  id = new ObjectId(id.trim());
-  //const deletedReview = await reviewCollection.removeAllMovieReviews(id);
-  //if(deletedReview){
+  let parseId = new ObjectId(id.trim());
+
   const moviesCollection = await movies();
-  const deletionInfo = await moviesCollection.deleteOne({ _id: id });
+  const deletionInfo = await moviesCollection.deleteOne({ _id: parseId });
 
   if (deletionInfo.deletedCount === 0) {
     throw `Could not delete movie with id of ${id}`;
@@ -632,20 +642,21 @@ let seedCreate = async (
   if (
     typeof username !== "string" ||
     typeof movie_name !== "string" ||
-    typeof director !== "string"
+    typeof director !== "string" ||
+    typeof genre !== "string"
   )
     throw "Incorrect data types";
 
   if (
     username.trim().length === 0 ||
     movie_name.trim().length === 0 ||
-    director.trim().length === 0
+    director.trim().length === 0 ||
+    genre.trim().length === 0
   )
     throw "Strings are just empty spaces";
 
-  //Most likely will need an extra check for director name
-  //Make sure it is a valid name
-  //Can not add the same movie twice
+    if(!validate.validName(director))
+    throw "Invalid director name";
 
   if (typeof release_year !== "number" || !Number.isInteger(release_year))
     throw "Incorrect data type";
@@ -654,20 +665,14 @@ let seedCreate = async (
   if (release_year < 1888 || release_year > new Date().getFullYear())
     throw "Invalid release year";
 
-  if (!Array.isArray(cast) || !Array.isArray(genre))
+  if (!Array.isArray(cast))
     throw "Incorrect data type";
 
   //Loop within cast array to check name validity
   for (i = 0; i < cast.length; i++) {
-    if (typeof cast[i] !== "string" || cast[i].trim().length === 0)
+    if (typeof cast[i] !== "string" || cast[i].trim().length === 0 || !validate.validName(cast[i]))
       throw "cast is not an array of strings or contains empty strings";
     cast[i] = cast[i].trim();
-  }
-
-  for (i = 0; i < genre.length; i++) {
-    if (typeof genre[i] !== "string" || genre[i].trim().length === 0)
-      throw "genre is not an array of strings or contains empty strings";
-    genre[i] = genre[i].trim();
   }
 
   if (typeof streaming !== "object") throw "streaming is not an object";
