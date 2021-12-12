@@ -220,8 +220,6 @@
       });
   });
 
-  //watchlist
-
   //Add Remove Movie from watchlist
   var watch = $('#watched');
   watch.click(function(){
@@ -250,6 +248,43 @@
       });
   });
 
+  //follow unfollow user functionality
+  var follow = $('#follow');
+  follow.click(function(){
+    let username = window.location.href.split("/");
+    var folw = $(this).html();
+    let user = $(this).data("user");
+    username = username[username.length - 1];
+    // let url = `/follow/${username}`;
+    // if(folw ==='Follow'){
+    //     let url = `/follow/${username}`;  
+    // }
+    // else{
+    //     let url = `/unfollow/${username}`;
+    // }
+
+    var requestConfig = {
+        method: "Post",
+        url: `/${folw}/${username}`,
+        contentType: "application/json",
+        data: JSON.stringify({
+          user: user,
+          username: username,
+          
+        }),
+      };
+      $.ajax(requestConfig).then(function (response) {
+        //console.log(response)
+        if(response){
+            location.reload();
+        }
+        // else{
+        //     follow.html("Follow");
+        // }
+      });
+  });
+
+
   //report Review Functionality
   var report = $('.report');
   report.click(function(){
@@ -262,6 +297,32 @@
         contentType: "application/json",
         data: JSON.stringify({
             reviewId: revid, 
+            username: username, 
+            //checked:check
+        }),
+      };
+      $.ajax(requestConfig).then(function (response) {
+          console.log(response);
+        // const div = `<div>${review.username}<br>${review.review}<br>${review.rating}</div>`;
+        // $('#reviews').prepend(div);
+        //if(response){
+        location.reload();
+       // }
+      });
+  });
+
+  //reportMovie
+  var reportMovie = $('.reportMovie');
+  reportMovie.click(function(){
+      var movid = $(this).data('movid');
+      var username = $(this).data('username');
+      //var check = this.checked
+      var requestConfig = {
+        method: "POST",
+        url: "/movies/report",
+        contentType: "application/json",
+        data: JSON.stringify({
+            movieId: movid, 
             username: username, 
             //checked:check
         }),
