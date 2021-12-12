@@ -165,6 +165,7 @@ router.get("/", async (req, res) => {
       movieList: listMovies,
       title: "Trending Movies",
       authenticated: req.session.user ? true : false,
+      username: req.session.user.username,
     });
   } catch (e) {
     res.status(400).render("pages/error", {
@@ -443,6 +444,8 @@ router.get("/search/movie/:term", async (req, res) => {
       movieList: movie,
       title: "All Movies",
       user: req.session.user.username,
+      authenticated: req.session.user ? true : false,
+      username: req.session.user.username,
     });
   } catch (e) {
     res.status(400).render("pages/error", {
@@ -462,6 +465,8 @@ router.get("/search/director/:term", async (req, res) => {
       movieList: movie,
       title: "All Movies",
       user: req.session.user.username,
+      authenticated: req.session.user ? true : false,
+      username: req.session.user.username,
     });
   } catch (e) {
     res.status(400).render("pages/error", {
@@ -481,6 +486,8 @@ router.get("/search/cast/:term", async (req, res) => {
       movieList: movie,
       title: "All Movies",
       user: req.session.user.username,
+      authenticated: req.session.user ? true : false,
+      username: req.session.user.username,
     });
   } catch (e) {
     res.status(400).render("pages/error", {

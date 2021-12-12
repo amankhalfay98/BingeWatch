@@ -415,7 +415,7 @@
       };
 
       reader.readAsDataURL(input.files[0]);
-      $('label[for=profile_pic]').remove();
+      // $('label[for=profile_pic]').remove();
   }
   })
 

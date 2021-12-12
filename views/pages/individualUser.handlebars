@@ -8,13 +8,16 @@
 				| Following:
 				{{user.following.length}}</p>
 			<div class='user-avatar'>
-				<img class='img-avatar' src='/{{user.profile_pic}}' alt='User avatar' />
+				<img class='img-avatar' src='{{user.profile_pic}}' alt='User avatar' />
 			</div>
 
 		</div>
 	</div>
 	<br />
-	<button id="follow" {{hidden}} name="follow" type="button" data-user="{{user1}}">{{follow}}</button>
+	<div class="text-center">
+		<button class="btn btn-primary" id="follow" {{hidden}} name="follow" type="button"
+			data-user="{{user1}}">{{follow}}</button>
+	</div>
 	{{#if_eq follow 'Unfollow'}}
 	<div id='stats' class='row justify-content-center'>
 		<div class='card w-50'>
@@ -34,7 +37,7 @@
 		</div>
 	</div>
 	{{else}}
-{{#if user.private}}
+	{{#if user.private}}
 	{{else}}
 	<div id='stats' class='row justify-content-center'>
 		<div class='card w-50'>
