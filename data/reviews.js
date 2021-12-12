@@ -85,7 +85,7 @@ const getReviewsByMovieId = async (movie_id) => {
     // }
     return allReviews;
   } else {
-    return "Review Not Found";
+    return [];
   }
 };
 
