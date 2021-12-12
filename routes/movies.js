@@ -22,32 +22,29 @@ const reviewData = data.reviews;
 const usersData = data.users;
 const validation = require('../data/validation');
 
-
-router.get("/all", async (req, res) => {
-  try {
-    const listMovies = await moviesData.getAllMovies();
-    res.render("movies/allMovies", {
-      movieList: listMovies,
-      title: "All Movies",
-      authenticated: req.session.user ? true : false,
-      username: req.session.user.username,
-    });
-  } catch (e) {
-    res
-      .status(400)
-      .render("pages/error", {
-        error: e,
-        title: "Search Error",
-        authenticated: req.session.user ? true : false,
-      });
-  }
+router.get('/all', async (req, res) => {
+	try {
+		const listMovies = await moviesData.getAllMovies();
+		res.render('movies/allMovies', {
+			movieList: listMovies,
+			title: 'All Movies',
+			authenticated: req.session.user ? true : false,
+			username: req.session.user.username,
+		});
+	} catch (e) {
+		res.status(400).render('pages/error', {
+			error: e,
+			title: 'Search Error',
+			authenticated: req.session.user ? true : false,
+		});
+	}
 });
 
-router.get("/allMovies", async (req, res) => {
-  try {
-    const listMovies = await moviesData.getAllMovies();
-    res.json(listMovies);
-  } catch (error) {}
+router.get('/allMovies', async (req, res) => {
+	try {
+		const listMovies = await moviesData.getAllMovies();
+		res.json(listMovies);
+	} catch (error) {}
 });
 
 router.post('/all/:value', async (req, res) => {
@@ -57,117 +54,107 @@ router.post('/all/:value', async (req, res) => {
 	} catch (e) {}
 });
 
-router.get("/addMovie", async (req, res) => {
-  if (req.session.user) {
-    try {
-      res.render("movies/newMovie", {
-        title: "Add Movies",
-        authenticated: req.session.user ? true : false,
-      });
-    } catch (e) {
-      res
-        .status(400)
-        .render("pages/error", {
-          error: e,
-          title: "Search Error",
-          authenticated: req.session.user ? true : false,
-          username: req.session.user.username
-        });
-    }
-  } else {
-    res.redirect("/");
-  }
+router.get('/addMovie', async (req, res) => {
+	if (req.session.user) {
+		try {
+			res.render('movies/newMovie', {
+				title: 'Add Movies',
+				authenticated: req.session.user ? true : false,
+			});
+		} catch (e) {
+			res.status(400).render('pages/error', {
+				error: e,
+				title: 'Search Error',
+				authenticated: req.session.user ? true : false,
+				username: req.session.user.username,
+			});
+		}
+	} else {
+		res.redirect('/');
+	}
 });
 
-router.get("/:id", async (req, res) => {
-  //console.log(req.params.id);
-  //console.log(req.session);
-  if (req.session.user) {
-    try {
-      const movie = await moviesData.getMovie(req.params.id);
+router.get('/:id', async (req, res) => {
+	//console.log(req.params.id);
+	//console.log(req.session);
+	if (req.session.user) {
+		try {
+			const movie = await moviesData.getMovie(req.params.id);
 
-      const reviews = await reviewData.getReviewsByMovieId(req.params.id);
-      //console.log(movie);
-      //       res.render('movies/individualMovie',{movie:movie, reviews:reviews, user:req.session.user, title:'Characters Found'});
-      //     } catch (e) {
-      //       res.status(400).render('pages/error',{error:e, title:'Search Error'});
-      //     }
-      //   });
-      let rev = await usersData.getUser(req.session.user.username);
-      let view = ''
-      if(movie.watched_list.includes(req.session.user.username)){
-       view = 'disabled';
-      }
-      if(movie.favourite_list.includes(req.session.user.username)){
-        fav = 'UnFavorite';
-       }
-       else{
-        fav = 'Favorite';
-       }
-       if(movie.toWatch_list.includes(req.session.user.username)){
-        watch = 'Watched';
-       }
-       else{
-        watch = 'Want to Watch';
-       }
-      if(reviews.length>0){
-      for(let i=0;i<reviews.length;i++){
-        if(reviews[i].reported.includes(req.session.user.username)){
-        reviews.splice(i,1);
-        i--;
-        }
-      }
-    }
+			const reviews = await reviewData.getReviewsByMovieId(req.params.id);
+			//console.log(movie);
+			//       res.render('movies/individualMovie',{movie:movie, reviews:reviews, user:req.session.user, title:'Characters Found'});
+			//     } catch (e) {
+			//       res.status(400).render('pages/error',{error:e, title:'Search Error'});
+			//     }
+			//   });
+			let rev = await usersData.getUser(req.session.user.username);
+			let view = '';
+			if (movie.watched_list.includes(req.session.user.username)) {
+				view = 'disabled';
+			}
+			if (movie.favourite_list.includes(req.session.user.username)) {
+				fav = 'UnFavorite';
+			} else {
+				fav = 'Favorite';
+			}
+			if (movie.toWatch_list.includes(req.session.user.username)) {
+				watch = 'Watched';
+			} else {
+				watch = 'Want to Watch';
+			}
+			if (reviews.length > 0) {
+				for (let i = 0; i < reviews.length; i++) {
+					if (reviews[i].reported.includes(req.session.user.username)) {
+						reviews.splice(i, 1);
+						i--;
+					}
+				}
+			}
 
-      res.render("movies/individualMovie", {
-        movie: movie,
-        view: view,
-        watch: watch,
-        fav: fav,
-        title: movie.movie_name,
-        reviews:reviews,
-        user:rev,
-        authenticated: req.session.user ? true : false,
-        username: req.session.user.username,
-      });
-    } catch (e) {
-      res
-        .status(400)
-        .render("pages/error", {
-          error: e,
-          title: "Search Error",
-          authenticated: req.session.user ? true : false,
-          username: req.session.user.username
-        });
-    }
-  } else {
-    res
-      .status(403)
-      .render("pages/error", {
-        authenticated: req.session.user ? true : false,
-      });
-  }
+			res.render('movies/individualMovie', {
+				movie: movie,
+				view: view,
+				watch: watch,
+				fav: fav,
+				title: movie.movie_name,
+				reviews: reviews,
+				user: rev,
+				authenticated: req.session.user ? true : false,
+				username: req.session.user.username,
+			});
+		} catch (e) {
+			res.status(400).render('pages/error', {
+				error: e,
+				title: 'Search Error',
+				authenticated: req.session.user ? true : false,
+				username: req.session.user.username,
+			});
+		}
+	} else {
+		res.status(403).render('pages/error', {
+			authenticated: req.session.user ? true : false,
+		});
+	}
 });
 
 //WIP!!!!!
 
-router.get("/", async (req, res) => {
-  try {
-    const listMovies = await moviesData.getTrending();
-    res.status(200).render("movies/allMovies", {
-      movieList: listMovies,
-      title: "Trending Movies",
-      authenticated: req.session.user ? true : false,
-    });
-  } catch (e) {
-    res
-      .status(400)
-      .render("pages/error", {
-        error: e,
-        title: "Search Error",
-        authenticated: req.session.user ? true : false,
-      });
-  }
+router.get('/', async (req, res) => {
+	try {
+		const listMovies = await moviesData.getTrending();
+		res.status(200).render('movies/allMovies', {
+			movieList: listMovies,
+			title: 'Trending Movies',
+			authenticated: req.session.user ? true : false,
+		});
+	} catch (e) {
+		res.status(400).render('pages/error', {
+			error: e,
+			title: 'Search Error',
+			authenticated: req.session.user ? true : false,
+		});
+	}
 });
 
 // //TESTS ALPHABETICAL SORT
@@ -346,12 +333,12 @@ router.put('/edit/:id', async (req, res) => {
 	}
 });
 
-router.post('/report', async function (req, res){
-  let data = req.body;
-  const { movieId, username } = data;
-  const reported = await reviews.updateReviewReport(movieId,username);
-  res.json(reported);
-})
+router.post('/report', async function (req, res) {
+	let data = req.body;
+	const { movieId, username } = data;
+	const reported = await reviews.updateReviewReport(movieId, username);
+	res.json(reported);
+});
 
 //ADDING MOVIE TO USER'S FAVE LIST
 router.post('/favorite/:id', async (req, res) => {
@@ -404,74 +391,78 @@ router.post('/watchlist/:id', async (req, res) => {
 // });
 
 //MARKING MOVIE AS WATCHED
-router.post("/watched/:id", async (req, res) => {
-  const movie = req.body;
-  try {
-    const{username,movie_name} = movie;
-    //const movie = await moviesData.getMovie(req.params.id);
-    const watchMovie = await moviesData.movieWatched( username, movie_name);
-    res.status(200).json(watchMovie);
-  } catch (e) {
-    res
-      .status(400)
-      .render("pages/error", {
-        error: e,
-        title: "Search Error",
-        authenticated: req.session.user ? true : false,
-        username: req.session.username,
-      });
-  }
+router.post('/watched/:id', async (req, res) => {
+	const movie = req.body;
+	try {
+		const { username, movie_name } = movie;
+		//const movie = await moviesData.getMovie(req.params.id);
+		const watchMovie = await moviesData.movieWatched(username, movie_name);
+		res.status(200).json(watchMovie);
+	} catch (e) {
+		res.status(400).render('pages/error', {
+			error: e,
+			title: 'Search Error',
+			authenticated: req.session.user ? true : false,
+			username: req.session.username,
+		});
+	}
 });
 
 //SEARCH BAR WHEN GIVEN MOVIE NAME
-router.get("/search/movie/:term", async (req, res) => {
-  try {
-    const movie = await moviesData.searchByMovie(req.params.term);
-    res.status(200).json(movie);
-  } catch (e) {
-    res
-      .status(400)
-      .render("pages/error", {
-        error: e,
-        title: "Search Error",
-        authenticated: req.session.user ? true : false,
-        username: req.session.username,
-      });
-  }
+router.get('/search/movie/:term', async (req, res) => {
+	try {
+		const movie = await moviesData.searchByMovie(req.params.term);
+		res.render('movies/allMovies', {
+			movieList: movie,
+			title: 'All Movies',
+			user: req.session.user.username,
+		});
+	} catch (e) {
+		res.status(400).render('pages/error', {
+			error: e,
+			title: 'Search Error',
+			authenticated: req.session.user ? true : false,
+			username: req.session.username,
+		});
+	}
 });
 
 //SEARCH BAR WHEN GIVEN DIRECTOR
-router.get("/search/director/:term", async (req, res) => {
-  try {
-    const movie = await moviesData.searchByDirector(req.params.term);
-    res.status(200).json(movie);
-  } catch (e) {
-    res
-      .status(400)
-      .render("pages/error", {
-        error: e,
-        title: "Search Error",
-        authenticated: req.session.user ? true : false,
-        username: req.session.username
-      });
-  }
+router.get('/search/director/:term', async (req, res) => {
+	try {
+		const movie = await moviesData.searchByDirector(req.params.term);
+		res.render('movies/allMovies', {
+			movieList: movie,
+			title: 'All Movies',
+			user: req.session.user.username,
+		});
+	} catch (e) {
+		res.status(400).render('pages/error', {
+			error: e,
+			title: 'Search Error',
+			authenticated: req.session.user ? true : false,
+			username: req.session.username,
+		});
+	}
 });
 
 //SEARCH BAR WHEN GIVEN CAST NAME
-router.get("/search/cast/:term", async (req, res) => {
-  try {
-    const movie = await moviesData.searchByCast(req.params.term);
-    res.status(200).json(movie);
-  } catch (e) {
-    res
-      .status(400)
-      .render("pages/error", {
-        error: e,
-        title: "Search Error",
-        authenticated: req.session.user ? true : false,
-        username: req.session.username
-      });
-  }
+router.get('/search/cast/:term', async (req, res) => {
+	try {
+		const movie = await moviesData.searchByCast(req.params.term);
+		res.render('movies/allMovies', {
+			movieList: movie,
+			title: 'All Movies',
+			user: req.session.user.username,
+		});
+	} catch (e) {
+		res.status(400).render('pages/error', {
+			error: e,
+			title: 'Search Error',
+			authenticated: req.session.user ? true : false,
+			username: req.session.username,
+		});
+	}
 });
 
 // router.post('/addMovie', async (req, res) => {

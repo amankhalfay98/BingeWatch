@@ -15,7 +15,7 @@ $(function () {
 		var url = '';
 
 		if (typeOfSearch === 'movie name') {
-			url = '/search/movie/' + word;
+			url = '/movies/search/movie/' + word;
 		}
 
 		if (typeOfSearch === 'director') {
