@@ -141,7 +141,8 @@ module.exports = {
 			throw 'User could not be added';
 		}
 
-		return `${name} successfully added!`;
+		return userDetails;
+		// return `${name} successfully added!`;
 		// let userId = userInserted.insertedId;
 
 		// //convert ObjectID to String
