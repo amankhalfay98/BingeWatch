@@ -45,11 +45,17 @@ router.get("/unfollow/:id", async (req, res) => {
 
 //SEARCH BAR WHEN GIVEN USERNAME
 router.get("/search/user/:term", async (req, res) => {
-  try {
-    const user = await usersData.searchByUsername(req.params.term);
-    res.status(200).json(user);
-  } catch (e) {
-    res.status(400).render("pages/error", { error: e, title: "Search Error" });
+  if (req.session.user) {
+    try {
+      const user = await usersData.searchByUsername(req.params.term);
+      res.status(200).json(user);
+    } catch (e) {
+      res
+        .status(400)
+        .render("pages/error", { error: e, title: "Search Error" });
+    }
+  } else {
+    res.status(403).render("pages/error");
   }
 });
 
