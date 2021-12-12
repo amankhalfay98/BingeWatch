@@ -142,7 +142,7 @@
     let user = $(this).data("user");
     var id = window.location.href.split("/");
     id = id[id.length - 1];
-    if (rating || review) {
+    if (rating && review) {
       var requestConfig = {
         method: "POST",
         url: "/reviews/postReview",
@@ -223,9 +223,9 @@
   //Add Remove Movie from watchlist
   var watch = $('#watched');
   watch.click(function(){
-    let id = window.location.href.split("/");
     let movie = $(this).data("movie");
     let user = $(this).data("user");
+    let id = window.location.href.split("/");
     id = id[id.length - 1];
     var requestConfig = {
         method: "Post",
@@ -314,6 +314,8 @@
   report.click(function(){
       var revid = $(this).data('revid');
       var username = $(this).data('username');
+      let id = window.location.href.split("/");
+      id = id[id.length - 1];
       //var check = this.checked
       var requestConfig = {
         method: "POST",
@@ -322,6 +324,7 @@
         data: JSON.stringify({
             reviewId: revid, 
             username: username, 
+            movie_id: id,
             //checked:check
         }),
       };

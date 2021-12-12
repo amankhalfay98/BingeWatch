@@ -1,5 +1,6 @@
 const mongoCollections = require("../config/mongoCollections");
 const movies = mongoCollections.movies;
+//const reviewCollection = require('./reviews');
 const { ObjectId } = require("mongodb");
 
 // let validNames = (input) => {
@@ -373,15 +374,35 @@ let updateMovieReviewID = async (movie_id, review_id, review_rating) => {
   const movieCollection = await movies();
   let movie = await movieCollection.findOne({ _id: parseId });
   movie.reviews.push(review_id.toString());
+  if(movie.rating !== rating){
   movie.rating = review_rating;
   const updatedMovie = await movieCollection.updateOne(
     { _id: parseId },
     { $set: movie }
   );
   if (updatedMovie.modifiedCount === 0) throw "nothing was updated";
-
+  }
   return `${movie.movie_name} with id ${movie._id} successfully updated!`;
 };
+
+let updateMovieRating = async (movie_id,rating)=>{
+  if (!ObjectId.isValid(movie_id.trim())) throw "Movie id is not a valid ObjectId";
+
+  let parseId = ObjectId(movie_id.trim());
+  const movieCollection = await movies();
+  let movie = await movieCollection.findOne({ _id: parseId });
+  //movie.reviews.push(review_id.toString());
+  if(movie.rating !== rating){
+  movie.rating = rating;
+  const updatedMovie = await movieCollection.updateOne(
+    { _id: parseId },
+    { $set: movie }
+  );
+  if (updatedMovie.modifiedCount === 0){ throw "nothing was updated";}
+}
+
+  return `${movie.movie_name} with id ${movie._id} successfully updated!`;
+}
 
 let getTrending = async () => {
   const movieCollection = await movies();
@@ -561,7 +582,7 @@ const updateMovieReport = async (movieId, username) => {
 
   const myMovieUpdated = await getMovie(movieId);
   if (myMovieUpdated.reported.length == 5){
-      await this.deleteMovie(movieId);
+      await deleteMovie(movieId);
       return true;
   }
   return false;
@@ -572,6 +593,8 @@ let deleteMovie = async (id) => {
   //if (!validation.validObjectIdString(id))
     //throw "movie id provided is not a valid object.";
   id = new ObjectId(id.trim());
+  //const deletedReview = await reviewCollection.removeAllMovieReviews(id);
+  //if(deletedReview){
   const moviesCollection = await movies();
   const deletionInfo = await moviesCollection.deleteOne({ _id: id });
 
@@ -580,6 +603,7 @@ let deleteMovie = async (id) => {
   } else {
     return { deleted: true };
   }
+//}
 };
 
 //set the view count to Math.random for trending page
@@ -720,5 +744,6 @@ module.exports = {
   searchByCast,
   updateMovieReport,
   deleteMovie,
-  seedCreate
+  seedCreate,
+  updateMovieRating
 };
