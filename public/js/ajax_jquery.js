@@ -276,6 +276,32 @@
       });
   });
 
+  //reportMovie
+  var reportMovie = $('.reportMovie');
+  reportMovie.click(function(){
+      var movid = $(this).data('movid');
+      var username = $(this).data('username');
+      //var check = this.checked
+      var requestConfig = {
+        method: "POST",
+        url: "/movies/report",
+        contentType: "application/json",
+        data: JSON.stringify({
+            movieId: movid, 
+            username: username, 
+            //checked:check
+        }),
+      };
+      $.ajax(requestConfig).then(function (response) {
+          console.log(response);
+        // const div = `<div>${review.username}<br>${review.review}<br>${review.rating}</div>`;
+        // $('#reviews').prepend(div);
+        //if(response){
+        location.reload();
+       // }
+      });
+  });
+
   //let loginForm = $('#login-form')
   //let usernameInput = $('#username');
   //let passwordInput = $('#password');
