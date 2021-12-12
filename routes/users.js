@@ -425,6 +425,14 @@ router.get('/private', async (req, res) => {
 	res.render('pages/private', { user: rev });
 });
 
+// Individual User Page Route
+router.get('/private/:username', async (req, res) => {
+	let rev = await usersData.getUser(req.params.username);
+	console.log(rev);
+
+	res.render('pages/individualUser', { user: rev });
+});
+
 // To Logout
 router.get('/logout', async (req, res) => {
 	req.session.destroy();
