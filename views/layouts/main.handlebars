@@ -24,10 +24,10 @@
 				<span class='navbar-toggler-icon'></span>
 			</button>
 			<div class='collapse navbar-collapse' id='navbarNavAltMarkup'>
+				{{#if authenticated}}
 				<div class='navbar-nav'>
 					<a class='nav-link active' href='/movies/all'>Movies</a>
 				</div>
-				{{#if authenticated}}
 					<form id="searchBar">
 						<select id="searchType">
 							<option value="movie name"> Movie Name </option>

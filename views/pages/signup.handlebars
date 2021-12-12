@@ -74,31 +74,31 @@
 							src="https://png.pngtree.com/png-vector/20191027/ourlarge/pngtree-avatar-vector-icon-white-background-png-image_1884971.jpg"
 							alt="User avatar" id="img_avatar">
 						<br>
-						<label class="centered" for="profile_pic">Choose Photo</label>
 					</div>
+						<label class="btn btn-secondary centered" for="profile_pic">Choose Photo</label>
 					<!-- <label class="" for="profile">Choose Photo</label> -->
 					<br>
 					<input type="file" name="profile_pic" id="profile_pic" class="form-control">
 				</div>
 				<div class="form-group">
 					<label for='name'><b>Name:</b></label>
-					<input type='text' id='name' placeholder='Enter Your Name' name='name' class="form-control" />
+					<input type='text' id='name' placeholder='Enter Your Name' name='name' value="{{newUser.name}}" class="form-control" />
 				</div>
 				<br />
 				<div class="form-group">
 					<label for='email'><b>Email:</b></label>
-					<input type='text' id='email' placeholder='Enter Email' name='email' class="form-control" />
+					<input type='text' id='email' placeholder='Enter Email' name='email' value="{{newUser.email}}" class="form-control" />
 				</div>
 				<br />
 				<div class="form-group">
 					<label for='date_of_birth'><b>DOB:</b></label>
-					<input type='date' min='1920-09-08' max='2012-09-08' id='date_of_birth' name='date_of_birth'
+					<input type='date' min='1920-09-08' max='2012-09-08' id='date_of_birth' value="{{newUser.date_of_birth}}" name='date_of_birth'
 						class="form-control" />
 				</div>
 				<br />
 				<div class="form-group">
 					<label for='username'><b>Username:</b></label>
-					<input type='text' id='username' placeholder='Enter Username' name='username'
+					<input type='text' id='username' placeholder='Enter Username' value="{{newUser.username}}" name='username'
 						class="form-control" />
 				</div>
 				<br />

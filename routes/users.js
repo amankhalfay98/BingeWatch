@@ -9,7 +9,9 @@ const multer = require("multer");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "profile/");
+    const path = "profile/";
+    fs.mkdirSync(path, { recursive: true });
+    cb(null, path);
   },
   filename: function (req, file, cb) {
     cb(null, new Date().toISOString() + file.originalname);
@@ -129,14 +131,14 @@ router.post("/signup", upload.single("profile_pic"), async (req, res) => {
   if (req && req.file && req.file.fieldname === "profile_pic" && newUser) {
     newUser.profile_pic = "/" + req.file.path;
   } else {
-    newUser.profile_pic = '/public/images/abstract-user-flat-4.png';
+    newUser.profile_pic = "/public/images/abstract-user-flat-4.png";
   }
   //console.log(newUser);
   //req.session.user = newUser;
 
   // Error handling for name
   if (!newUser.name || newUser.name.trim() == "") {
-    res.status(400).render("pages/signup", { error: "Please provide name" });
+    res.status(400).render("pages/signup", { error: "Please provide name", newUser: newUser });
     return;
   }
   newUser.name = newUser.name.trim();
@@ -147,6 +149,7 @@ router.post("/signup", upload.single("profile_pic"), async (req, res) => {
     if (!element.match(/([a-zA-Z])/)) {
       res.status(400).render("pages/signup", {
         error: "only characters allowed",
+        newUser: newUser
       });
       return;
     }
@@ -156,7 +159,7 @@ router.post("/signup", upload.single("profile_pic"), async (req, res) => {
   if (!newUser.date_of_birth || newUser.date_of_birth.trim() == "") {
     res
       .status(400)
-      .render("pages/signup", { error: "Please provide Date of Birth" });
+      .render("pages/signup", { error: "Please provide Date of Birth", newUser: newUser });
     return;
   }
   newUser.date_of_birth = newUser.date_of_birth.trim();
@@ -165,6 +168,7 @@ router.post("/signup", upload.single("profile_pic"), async (req, res) => {
   if (!newUser.date_of_birth.match(/^\d{4}-\d{2}-\d{2}$/)) {
     res.status(400).render("pages/signup", {
       error: "Invalid Date of Birth",
+      newUser: newUser
     });
     return;
   }
@@ -173,7 +177,7 @@ router.post("/signup", upload.single("profile_pic"), async (req, res) => {
   if (!newUser.username || newUser.username.trim() == "") {
     res
       .status(400)
-      .render("pages/signup", { error: "Please provide username" });
+      .render("pages/signup", { error: "Please provide username", newUser: newUser });
     return;
   }
 
@@ -181,6 +185,7 @@ router.post("/signup", upload.single("profile_pic"), async (req, res) => {
   if (newUser.username.length < 4) {
     res.status(400).render("pages/signup", {
       error: "username should be at least 4 characters long",
+      newUser: newUser
     });
     return;
   }
@@ -191,13 +196,14 @@ router.post("/signup", upload.single("profile_pic"), async (req, res) => {
     if (/\s+/g.test(element)) {
       res
         .status(400)
-        .render("pages/signup", { error: "spaces not allowed in username" });
+        .render("pages/signup", { error: "spaces not allowed in username", newUser: newUser });
       return;
     }
 
     if (!element.match(/([a-z0-9])/)) {
       res.status(400).render("pages/signup", {
         error: "only alphanumeric characters allowed",
+        newUser: newUser
       });
       return;
     }
@@ -207,7 +213,7 @@ router.post("/signup", upload.single("profile_pic"), async (req, res) => {
   if (!newUser.email || newUser.email.trim() == "") {
     res
       .status(400)
-      .render("pages/signup", { error: "Please provide valid emailId" });
+      .render("pages/signup", { error: "Please provide valid emailId", newUser: newUser });
     return;
   }
   newUser.email = newUser.email.trim();
@@ -219,6 +225,7 @@ router.post("/signup", upload.single("profile_pic"), async (req, res) => {
   ) {
     res.status(400).render("pages/signup", {
       error: "Invalid Email Address",
+      newUser: newUser
     });
     return;
   }
@@ -228,13 +235,14 @@ router.post("/signup", upload.single("profile_pic"), async (req, res) => {
   if (!newUser.password || newUser.password.trim() == "") {
     res
       .status(400)
-      .render("pages/signup", { error: "Please provide password" });
+      .render("pages/signup", { error: "Please provide password" , newUser: newUser});
     return;
   }
 
   if (newUser.password.length < 6) {
     res.status(400).render("pages/signup", {
       error: "password should be at least 6 characters long",
+      newUser: newUser
     });
     return;
   }
@@ -245,7 +253,7 @@ router.post("/signup", upload.single("profile_pic"), async (req, res) => {
     if (/\s+/g.test(element)) {
       res
         .status(400)
-        .render("pages/signup", { error: "spaces not allowed in password" });
+        .render("pages/signup", { error: "spaces not allowed in password" , newUser: newUser});
       return;
     }
   }
@@ -269,7 +277,7 @@ router.post("/signup", upload.single("profile_pic"), async (req, res) => {
     //console.log(req.session);
 
     //console.log(rev);
-    res.status(200).redirect("/");
+    res.status(200).render("pages/login");
   } catch (e) {
     //console.log(e);
     if (e == "Internal Server Error") {
@@ -458,20 +466,20 @@ router.post("/private", async (req, res) => {
 });
 
 // If authenticated go to Private Route
-router.get('/private', async (req, res) => {
-	let rev = await usersData.getUser(req.session.user.username);
-	//console.log(rev);
-	let checked = ''
-	if(rev.private){
-		checked = 'checked';
-	}
+router.get("/private", async (req, res) => {
+  let rev = await usersData.getUser(req.session.user.username);
+  //console.log(rev);
+  let checked = "";
+  if (rev.private) {
+    checked = "checked";
+  }
 
-	res.render('pages/private', {
-		user: rev,
-		authenticated: req.session.user ? true : false,
-		username: req.session.user.username,
-		checked:checked
-	});
+  res.render("pages/private", {
+    user: rev,
+    authenticated: req.session.user ? true : false,
+    username: req.session.user.username,
+    checked: checked,
+  });
 });
 
 // Individual User Page Route
@@ -506,10 +514,12 @@ router.get("/private/:username", async (req, res) => {
   }
 });
 
-router.post('/profile/:username/:checked', async (req, res)=>{
-const private = await usersData.setPrivate(req.params.username,req.params.checked);
-res.json(private);
-
+router.post("/profile/:username/:checked", async (req, res) => {
+  const private = await usersData.setPrivate(
+    req.params.username,
+    req.params.checked
+  );
+  res.json(private);
 });
 
 // To Logout
