@@ -188,3 +188,16 @@ input:checked + .slider:before {
   right: auto;
   left: 0;
 }
+
+html body {
+  height: 100%;
+  width: 100%;
+}
+.report {
+  height: 20px;
+  width: 40px;
+  font-size: x-small;
+  padding: 0;
+  display: block;
+}
+
