@@ -93,12 +93,14 @@ router.get("/:id", async (req, res) => {
        else{
         watch = 'Want to Watch';
        }
+      if(reviews.length>0){
       for(let i=0;i<reviews.length;i++){
         if(reviews[i].reported.includes(req.session.user.username)){
         reviews.splice(i,1);
         i--;
         }
       }
+    }
 
       res.render("movies/individualMovie", {
         movie: movie,
