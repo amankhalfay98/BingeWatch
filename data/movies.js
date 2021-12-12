@@ -154,7 +154,8 @@ let createMovie = async (
     movie_img: movie_img,
     tag: "movie",
     favourite_list:[],
-    toWatch_list:[]
+    toWatch_list:[],
+    reported:[]
   };
 
   const insertMovie = await movieCollection.insertOne(newMovie);
@@ -543,6 +544,43 @@ let searchByCast = async (name) => {
   return matched;
 };
 
+const updateMovieReport = async (movieId, username) => {
+  if (!validation.validString(movieId)) throw 'Review id is not a valid string.';
+  //if (!validation.validString(userId)) throw 'User id is not a valid string.';
+  
+  const objMovieId = ObjectId(movieId);
+  //const uid = ObjectId(userId)
+
+  const moviesCollection = await movies();
+  let movie = await moviesCollection.findOne({ _id: objMovieId });
+  if (movie === null) throw 'No movie with that id.';
+  
+      const updateInfo = await moviesCollection.updateOne({_id: objReviewId},{$addToSet: {reported: username}});
+      if (!updateInfo.matchedCount && !updateInfo.modifiedCount) return false;
+
+  const myMovieUpdated = await getById(movieId);
+  if (myMovieUpdated.reported.length == 5){
+      await this.deleteMovie(movieId);
+      return true;
+  }
+  return false;
+};
+
+const deleteMovie = async (id) => {
+  if (id === undefined) throw "No id provided";
+  if (!validation.validObjectIdString(id))
+    throw "movie id provided is not a valid object.";
+  id = new ObjectId(id.trim());
+  const moviesCollection = await movies();
+  const deletionInfo = await moviesCollection.deleteOne({ _id: id });
+
+  if (deletionInfo.deletedCount === 0) {
+    throw `Could not delete movie with id of ${id}`;
+  } else {
+    return { deleted: true };
+  }
+};
+
 module.exports = {
 	createMovie,
 	updatingMovie,
@@ -556,5 +594,7 @@ module.exports = {
   toWatchMovies,
   searchByMovie,
   searchByDirector,
-  searchByCast
+  searchByCast,
+  updateMovieReport,
+  deleteMovie
 };
