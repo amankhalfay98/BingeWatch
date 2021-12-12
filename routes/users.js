@@ -18,45 +18,75 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+//FOR USERS NOT HAVING SESSION
+router.get('/noSession', async (req, res) => {
+	res
+		.status(400)
+		.render('pages/error', { error: 'You are not Logged In', title: 'Error' });
+});
+
 //FOR USERS FOLLOWING OTHER USERS (CHANGE IF NEEDED)
-router.get('/follow/:id', async (req, res) => {
+router.post('/follow/:username', async (req, res) => {
+	const follow = req.body;
 	try {
-		const getUser = await usersData.get(req.params.id);
-		const addFollow = await usersData.followUser('royroy', getUser['username']);
-		res.status(200).json(addFollow);
+		const { user, username } = follow;
+		//const movie = await moviesData.getMovie(req.params.id);
+		let userFollow = await usersData.followUser(user, username);
+		res.status(200).json(userFollow);
 	} catch (e) {
-		res.status(400).render('pages/error', { error: e, title: 'Search Error' });
+		res.status(400).render('pages/error', { error: e, title: 'Error' });
 	}
+
+	// try {
+	// 	const getUser = await usersData.getUser(req.params.username);
+	// 	const addFollow = await usersData.followUser('royroy', getUser['username']);
+	// 	res.status(200).json(addFollow);
+	// } catch (e) {
+	// 	res.status(400).render('pages/error', { error: e, title: 'Search Error' });
+	// }
 });
 
 //FOR USERS UNFOLLOWING OTHER USERS
-router.get('/unfollow/:id', async (req, res) => {
+router.post('/unfollow/:username', async (req, res) => {
+	const unfollow = req.body;
 	try {
-		const getUser = await usersData.get(req.params.id);
-		const unfollow = await usersData.unfollowUser(
-			'royroy',
-			getUser['username']
-		);
-		res.status(200).json(unfollow);
+		const { user, username } = unfollow;
+		//const movie = await moviesData.getMovie(req.params.id);
+		let userUnfollow = await usersData.unfollowUser(user, username);
+		res.status(200).json(userUnfollow);
 	} catch (e) {
-		res.status(400).render('pages/error', { error: e, title: 'Search Error' });
+		res.status(400).render('pages/error', { error: e, title: 'Error' });
 	}
+	// try {
+	// 	const getUser = await usersData.get(req.params.username);
+	// 	const unfollow = await usersData.unfollowUser(
+	// 		'royroy',
+	// 		getUser['username']
+	// 	);
+	// 	res.status(200).json(unfollow);
+	// } catch (e) {
+	// 	res.status(400).render('pages/error', { error: e, title: 'Search Error' });
+	// }
 });
 
 //SEARCH BAR WHEN GIVEN USERNAME
-router.get("/search/user/:term", async (req, res) => {
-  if (req.session.user) {
-    try {
-      const user = await usersData.searchByUsername(req.params.term);
-      res.status(200).json(user);
-    } catch (e) {
-      res
-        .status(400)
-        .render("pages/error", { error: e, title: "Search Error" });
-    }
-  } else {
-    res.status(403).render("pages/error");
-  }
+router.get('/private/:username', async (req, res) => {
+	if (req.session.user) {
+		try {
+			let rev = await usersData.getUser(req.params.username);
+			if (rev.username == req.session.user.username) {
+				res.render('pages/private', { user: rev });
+			} else {
+				res.render('pages/individualUser', { user: rev });
+			}
+		} catch (e) {
+			res
+				.status(400)
+				.render('pages/error', { error: e, title: 'Search Error' });
+		}
+	} else {
+		res.status(403).render('pages/error');
+	}
 });
 
 // To go on Landing Page
@@ -334,7 +364,7 @@ router.post('/login', async (req, res) => {
 // To Update a User
 router.post('/private', async (req, res) => {
 	const newUser = req.body;
-	console.log(newUser);
+	//console.log(newUser);
 	//console.log(newUser);
 
 	// // Error handling for name
@@ -405,14 +435,22 @@ router.post('/private', async (req, res) => {
 		//console.log(newUser);
 		let current = await usersData.getUser(req.session.user.username);
 		let rev = await usersData.update(current.username, name, newpass, password);
-		console.log(rev);
+		//console.log(rev);
 		res.status(200).redirect('/');
 	} catch (e) {
 		console.log(e);
 		if (e == 'Internal Server Error') {
-			res.status(500).render('pages/private', { error: e });
+			res.status(500).render('pages/private', {
+				error: e,
+				authenticated: req.session.user ? true : false,
+				username: req.session.user.username,
+			});
 		} else {
-			res.status(400).render('pages/private', { error: e });
+			res.status(400).render('pages/private', {
+				error: e,
+				authenticated: req.session.user ? true : false,
+				username: req.session.user.username,
+			});
 		}
 	}
 });
@@ -422,15 +460,36 @@ router.get('/private', async (req, res) => {
 	let rev = await usersData.getUser(req.session.user.username);
 	//console.log(rev);
 
-	res.render('pages/private', { user: rev });
+	res.render('pages/private', {
+		user: rev,
+		authenticated: req.session.user ? true : false,
+		username: req.session.user.username,
+	});
 });
 
 // Individual User Page Route
 router.get('/private/:username', async (req, res) => {
 	let rev = await usersData.getUser(req.params.username);
-	console.log(rev);
+	//console.log(rev);
+	let hidden = '';
+	if (req.params.username == req.session.user.username) {
+		hidden = 'hidden';
+	}
+	let follow = 'Follow';
+	if (rev.followers.includes(req.session.user.username)) {
+		follow = 'Unfollow';
+	} else {
+		follow = 'Follow';
+	}
 
-	res.render('pages/individualUser', { user: rev });
+	res.render('pages/individualUser', {
+		user: rev,
+		user1: req.session.user.username,
+		hidden: hidden,
+		follow: follow,
+		authenticated: req.session.user ? true : false,
+		username: req.session.user.username,
+	});
 });
 
 // To Logout

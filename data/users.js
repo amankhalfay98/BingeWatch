@@ -543,7 +543,7 @@ module.exports = {
 			throw 'no one was added to followers';
 		}
 
-		return `${user1} successfully following ${user2}.`;
+		return true;
 	},
 
 	async unfollowUser(user1, user2) {
@@ -583,7 +583,7 @@ module.exports = {
 			throw 'no one was removed from followers';
 		}
 
-		return `${user1} successfully unfollowed ${user2}.`;
+		return true;
 	},
 
 	async searchByUsername(user) {
