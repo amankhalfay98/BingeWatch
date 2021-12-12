@@ -95,16 +95,16 @@ router.get("/:id", async (req, res) => {
       //   });
       let rev = await usersData.getUser(req.session.user.username);
       let view = ''
-      if(movie.watched_list.includes(req.session.user.username)){
+      if(movie.watched_list && movie.watched_list.includes(req.session.user.username)){
        view = 'disabled';
       }
-      if(movie.favourite_list.includes(req.session.user.username)){
+      if(movie.favourite_list && movie.favourite_list.includes(req.session.user.username)){
         fav = 'UnFavorite';
        }
        else{
         fav = 'Favorite';
        }
-       if(movie.toWatch_list.includes(req.session.user.username)){
+       if(movie.toWatch_list && movie.toWatch_list.includes(req.session.user.username)){
         watch = 'Watched';
        }
        else{
