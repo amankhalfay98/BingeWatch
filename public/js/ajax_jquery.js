@@ -220,8 +220,6 @@
       });
   });
 
-  //watchlist
-
   //Add Remove Movie from watchlist
   var watch = $('#watched');
   watch.click(function(){
@@ -249,6 +247,43 @@
         }
       });
   });
+
+  //follow unfollow user functionality
+  var follow = $('#follow');
+  follow.click(function(){
+    let username = window.location.href.split("/");
+    var folw = $(this).html();
+    let user = $(this).data("user");
+    username = username[username.length - 1];
+    // let url = `/follow/${username}`;
+    // if(folw ==='Follow'){
+    //     let url = `/follow/${username}`;  
+    // }
+    // else{
+    //     let url = `/unfollow/${username}`;
+    // }
+
+    var requestConfig = {
+        method: "Post",
+        url: `/${folw}/${username}`,
+        contentType: "application/json",
+        data: JSON.stringify({
+          user: user,
+          username: username,
+          
+        }),
+      };
+      $.ajax(requestConfig).then(function (response) {
+        //console.log(response)
+        if(response){
+            location.reload();
+        }
+        // else{
+        //     follow.html("Follow");
+        // }
+      });
+  });
+
 
   //report Review Functionality
   var report = $('.report');
