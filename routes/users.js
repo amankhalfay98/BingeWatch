@@ -509,6 +509,7 @@ router.get("/private/:username", async (req, res) => {
 router.post('/profile/:username/:checked', async (req, res)=>{
 const private = await usersData.setPrivate(req.params.username,req.params.checked);
 res.json(private);
+
 });
 
 // To Logout
