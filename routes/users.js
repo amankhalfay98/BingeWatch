@@ -70,24 +70,24 @@ router.post('/unfollow/:username', async (req, res) => {
 });
 
 //SEARCH BAR WHEN GIVEN USERNAME
-router.get('/private/:username', async (req, res) => {
-	if (req.session.user) {
-		try {
-			let rev = await usersData.getUser(req.params.username);
-			if (rev.username == req.session.user.username) {
-				res.render('pages/private', { user: rev });
-			} else {
-				res.render('pages/individualUser', { user: rev });
-			}
-		} catch (e) {
-			res
-				.status(400)
-				.render('pages/error', { error: e, title: 'Search Error' });
-		}
-	} else {
-		res.status(403).render('pages/error');
-	}
-});
+// router.get('/private/:username', async (req, res) => {
+// 	if (req.session.user) {
+// 		try {
+// 			let rev = await usersData.getUser(req.params.username);
+// 			if (rev.username == req.session.user.username) {
+// 				res.render('pages/private', { user: rev });
+// 			} else {
+// 				res.render('pages/individualUser', { user: rev });
+// 			}
+// 		} catch (e) {
+// 			res
+// 				.status(400)
+// 				.render('pages/error', { error: e, title: 'Search Error' });
+// 		}
+// 	} else {
+// 		res.status(403).render('pages/error');
+// 	}
+// });
 
 // To go on Landing Page
 router.get('/', async (req, res) => {
@@ -469,8 +469,9 @@ router.get('/private', async (req, res) => {
 
 // Individual User Page Route
 router.get('/private/:username', async (req, res) => {
+	if (req.session.user) {
+	try {
 	let rev = await usersData.getUser(req.params.username);
-	//console.log(rev);
 	let hidden = '';
 	if (req.params.username == req.session.user.username) {
 		hidden = 'hidden';
@@ -490,6 +491,14 @@ router.get('/private/:username', async (req, res) => {
 		authenticated: req.session.user ? true : false,
 		username: req.session.user.username,
 	});
+} catch (e) {
+				res
+					.status(400)
+					.render('pages/error', { error: e, title: 'User Error' });
+			}
+		} else {
+			res.status(403).render('pages/error');
+		}
 });
 
 // To Logout
