@@ -8,6 +8,7 @@ app.use(express.urlencoded({ extended: true }));
 
 const configRoutes = require('./routes');
 const exphbs = require('express-handlebars');
+const Handlebars = require('handlebars');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -32,6 +33,14 @@ app.use(
 		saveUninitialized: true,
 	})
 );
+
+Handlebars.registerHelper('if_eq', function(a, b, opts) {
+    if (a == b) {
+        return opts.fn(this);
+    } else {
+        return opts.inverse(this);
+    }
+});
 
 // //NEED TO COMMENT THIS OUT LATER : JUST FOR UNDERSTANDING ROUTES
 // app.use((req, res, next) => {

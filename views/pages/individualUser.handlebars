@@ -15,6 +15,7 @@
 	</div>
 	<br />
 	<button id="follow" {{hidden}} name="follow" type="button" data-user="{{user1}}">{{follow}}</button>
+	{{#if_eq follow 'Unfollow'}}
 	<div id='stats' class='row justify-content-center'>
 		<div class='card w-50'>
 			<div class='card-body'>
@@ -32,4 +33,46 @@
 			</div>
 		</div>
 	</div>
+	{{else}}
+{{#if user.private}}
+	{{else}}
+	<div id='stats' class='row justify-content-center'>
+		<div class='card w-50'>
+			<div class='card-body'>
+				<h5 class='card-title'>Favourites</h5>
+				{{user.favourites}}
+				<br />
+				<a href='/movies/all' class='btn btn-outline-danger'>Watch Now</a>
+			</div>
+			<hr />
+			<div class='card-body'>
+				<h5 class='card-title'>Watchlist</h5>
+				{{user.watchlist}}
+				<br />
+				<a href='/movies/all' class='btn btn-outline-danger'>Watch Now</a>
+			</div>
+		</div>
+	</div>
+	{{/if}}
+	{{/if_eq}}
+	{{!-- {{#if user.private}}
+	{{else}}
+	<div id='stats' class='row justify-content-center'>
+		<div class='card w-50'>
+			<div class='card-body'>
+				<h5 class='card-title'>Favourites</h5>
+				{{user.favourites}}
+				<br />
+				<a href='/movies/all' class='btn btn-outline-danger'>Watch Now</a>
+			</div>
+			<hr />
+			<div class='card-body'>
+				<h5 class='card-title'>Watchlist</h5>
+				{{user.watchlist}}
+				<br />
+				<a href='/movies/all' class='btn btn-outline-danger'>Watch Now</a>
+			</div>
+		</div>
+	</div>
+	{{/if}} --}}
 </div>

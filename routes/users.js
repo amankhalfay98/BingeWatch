@@ -458,15 +458,20 @@ router.post("/private", async (req, res) => {
 });
 
 // If authenticated go to Private Route
-router.get("/private", async (req, res) => {
-  let rev = await usersData.getUser(req.session.user.username);
-  //console.log(rev);
+router.get('/private', async (req, res) => {
+	let rev = await usersData.getUser(req.session.user.username);
+	//console.log(rev);
+	let checked = ''
+	if(rev.private){
+		checked = 'checked';
+	}
 
-  res.render("pages/private", {
-    user: rev,
-    authenticated: req.session.user ? true : false,
-    username: req.session.user.username,
-  });
+	res.render('pages/private', {
+		user: rev,
+		authenticated: req.session.user ? true : false,
+		username: req.session.user.username,
+		checked:checked
+	});
 });
 
 // Individual User Page Route
@@ -499,6 +504,11 @@ router.get("/private/:username", async (req, res) => {
   } else {
     res.status(403).render("pages/error");
   }
+});
+
+router.post('/profile/:username/:checked', async (req, res)=>{
+const private = await usersData.setPrivate(req.params.username,req.params.checked);
+res.json(private);
 });
 
 // To Logout
