@@ -35,18 +35,18 @@ const create = async (
   const insertInfo = await reviewsCollection.insertOne(newReview);
   if (insertInfo.insertedCount === 0) throw "Could not add Review";
   let reviewArray = await getReviewsByMovieId(movie_id);
+  let overAllRating = 0;
   if(reviewArray.length>0){
-    let overAllRating = 0;
     reviewArray.forEach(element => {
       overAllRating += element.rating;
     }); 
-    overAllRating = parseFloat((overAllRating/reviewArray.length).toFixed(2));
-    await moviesData.updateMovieReviewID(movie_id,insertInfo.insertedId,overAllRating);
+    overAllRating = Math.round(overAllRating/reviewArray.length);
+    //await moviesData.updateMovieReviewID(movie_id,insertInfo.insertedId,overAllRating);
   }
   else{
-    let overAllRating = rating;
-    await moviesData.updateMovieReviewID(movie_id,insertInfo.insertedId,overAllRating);
+   overAllRating = rating; 
   }
+  const update = await moviesData.updateMovieReviewID(movie_id,insertInfo.insertedId.toString(),overAllRating);
   //const reviewAdded = getById(insertInfo.insertedId.toString());
   //return reviewAdded;
   return `${review} successfully added!`;
@@ -78,12 +78,12 @@ const getReviewsByMovieId = async (movie_id) => {
     x._id = x._id.toString();
   }
   if (allReviews && allReviews.length > 0) {
-    // reviewArray =[]
-    // //console.log(Array.isArray(allReviews));
-    // for(let i = allReviews.length-1;i>=0;i--){
-    // reviewArray.push(allReviews[i]);
-    // }
-    return allReviews;
+    reviewArray =[]
+    //console.log(Array.isArray(allReviews));
+    for(let i = allReviews.length-1;i>=0;i--){
+    reviewArray.push(allReviews[i]);
+    }
+    return reviewArray;
   } else {
     return [];
   }
@@ -158,7 +158,22 @@ const remove = async (id) => {
   }
 };
 
-const updateReviewReport = async (reviewId, username) => {
+const removeAllMovieReviews = async (movie_id) => {
+  if (movie_id === undefined) throw "No id provided";
+  if (!validation.validObjectIdString(movie_id))
+    throw "user id provided is not a valid object.";
+    movie_id = new ObjectId(movie_id.trim());
+  const reviewsCollection = await reviews();
+  const deletionInfo = await reviewsCollection.deleteMany({ movie_id: movie_id });
+
+  if (deletionInfo.deletedCount === 0) {
+    throw `Could not delete reviews of Movie with id of ${movie_id}`;
+  } else {
+    return true;
+  }
+};
+
+const updateReviewReport = async (reviewId, username, movie_id) => {
   if (!validation.validString(reviewId)) throw 'Review id is not a valid string.';
   //if (!validation.validString(userId)) throw 'User id is not a valid string.';
   
@@ -188,8 +203,21 @@ const updateReviewReport = async (reviewId, username) => {
   // }
   const myRevUpdated = await getById(reviewId);
   if (myRevUpdated.reported.length == 5){
-      await this.remove(reviewId);
-      return true;
+    await remove(reviewId);
+    let reviewArray = await getReviewsByMovieId(movie_id);
+  if(reviewArray.length>0){
+    let overAllRating = 0;
+    reviewArray.forEach(element => {
+      overAllRating += element.rating;
+    }); 
+    overAllRating = Math.round(overAllRating/reviewArray.length);
+    await moviesData.updateMovieRating(movie_id,overAllRating);
+  }
+  else{
+    let overAllRating = rating;
+    await moviesData.updateMovieRating(movie_id,overAllRating);
+  }
+    return true;
   }
   return false;
 };
@@ -201,5 +229,6 @@ module.exports = {
   getReviewsByMovieId,
   update,
   remove,
-  updateReviewReport
+  updateReviewReport,
+  removeAllMovieReviews
 };
