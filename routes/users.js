@@ -277,7 +277,7 @@ router.post("/signup", upload.single("profile_pic"), async (req, res) => {
     //console.log(req.session);
 
     //console.log(rev);
-    res.status(200).redirect("/");
+    res.status(200).render("pages/login");
   } catch (e) {
     //console.log(e);
     if (e == "Internal Server Error") {
