@@ -63,19 +63,23 @@ router.post('/unfollow/:username', async (req, res) => {
 });
 
 //SEARCH BAR WHEN GIVEN USERNAME
-router.get("/search/user/:term", async (req, res) => {
-  if (req.session.user) {
-    try {
-      const user = await usersData.searchByUsername(req.params.term);
-      res.status(200).json(user);
-    } catch (e) {
-      res
-        .status(400)
-        .render("pages/error", { error: e, title: "Search Error" });
-    }
-  } else {
-    res.status(403).render("pages/error");
-  }
+router.get('/private/:username', async (req, res) => {
+	if (req.session.user) {
+		try {
+			let rev = await usersData.getUser(req.params.username);
+			if (rev.username == req.session.user.username) {
+				res.render('pages/private', { user: rev });
+			} else {
+				res.render('pages/individualUser', { user: rev });
+			}
+		} catch (e) {
+			res
+				.status(400)
+				.render('pages/noResults', { error: e, title: 'Search Error' });
+		}
+	} else {
+		res.status(403).render('pages/error');
+	}
 });
 
 // To go on Landing Page
