@@ -9,11 +9,14 @@ async function main() {
   const db = await connection.connectToDb();
   await db.dropDatabase();
 
-  const user1 = await users.createUser("Roy Rogers", "1984-12-12", "royRoy", "123456yes", "royrogers@gmail.com");
-  const user2 = await users.createUser("Mary Shelley", "1959-01-12", "MaryLovely", "marylamb", "shelleylovely@yahoo.com");
-  const user3 = await users.createUser("Rich Jackson", "2000-07-19", "AllDaMoney", "gogogo", "richboi@hotmail.com");
-  const user4 = await users.createUser("Mike Jorgan", "2005-10-18", "MJGoat", "forthewin", "mjorgan@gmail.com");
-  const user5 = await users.createUser("Lilly Potter", "1997-04-13", "harryfangirl", "abracadabra", "potterforlife@yahoo.com");
+  const user1 = await users.createUser("Roy Rogers", "12/12/1984", "royRoy", "123456yes", "royrogers@gmail.com");
+  const user2 = await users.createUser("Mary Shelley", "01/12/1959", "MaryLovely", "marylamb", "shelleylovely@yahoo.com");
+  const user3 = await users.createUser("Rich Jackson", "07/19/2000", "AllDaMoney", "gogogo", "richboi@hotmail.com");
+  const user4 = await users.createUser("Mike Jorgan", "10/18/2005", "MJGoat", "forthewin", "mjorgan@gmail.com");
+  const user5 = await users.createUser("Lilly Potter", "04/13/1997", "harryfangirl", "abracadabra", "potterforlife@yahoo.com");
+
+  //DON'T DELETE, WILL MANUALLY TEST FAIL CASES LATER
+  // const user6 = await users.createUser("Lilly Potter", "08/13/2018", "harryfangirl", "abracadabra", "potterforlife@yahoo.com");
   
   const avengers = await movies.seedCreate(user1.username, "Avengers", "Joss Whedon", 2012, 
     ["Robert Downey Jr.", "Chris Evans", "Mark Ruffalo"],
@@ -21,7 +24,7 @@ async function main() {
       name: "Disney+",
       link: "https://www.disneyplus.com/movies/marvel-studios-the-avengers/2h6PcHFDbsPy",
     },
-    ["Action", "Thriller"],
+    "Action",
     "image"
   );
 
@@ -31,7 +34,7 @@ async function main() {
       name: "Hulu",
       link: "https://www.hulu.com/movie/inception-5519f425-9b21-48fb-8e67-aef24c76604a?entity_id=5519f425-9b21-48fb-8e67-aef24c76604a",
     },
-    ["Action", "Science-Fiction"],
+    "Science-Fiction",
     "image"
   );
 
@@ -41,7 +44,7 @@ async function main() {
       name: "YouTube",
       link: "https://www.youtube.com/watch?v=hf_lCA-T99c",
     },
-    ["Comedy", "Drama"],
+    "Comedy",
     "image"
   );
 
@@ -51,7 +54,7 @@ async function main() {
       name: "Disney+",
       link: "https://www.disneyplus.com/movies/marvel-studios-avengers-age-of-ultron/76IUxY0rNHzt?irclickid=WD-U-91IHxyITsK194zLNw5PUkGzPYzFo2Su2A0&irgwc=1&cid=DSS-Affiliate-Impact-Content-New%20York%20Post%20Network-564546",
     },
-    ["Action", "Thriller"],
+    "Action",
     "image"
   );
 
@@ -61,7 +64,7 @@ async function main() {
       name: "Disney+",
       link: "https://www.disneyplus.com/movies/marvel-studios-avengers-infinity-war/1WEuZ7H6y39v",
     },
-    ["Action", "Thriller"],
+    "Action",
     "image"
   );
 
@@ -71,7 +74,7 @@ async function main() {
       name: "Disney+",
       link: "https://www.disneyplus.com/movies/marvel-studios-avengers-endgame/aRbVJUb2h2Rf",
     },
-    ["Action", "Thriller"],
+    "Action",
     "image"
   );
 
@@ -81,7 +84,7 @@ async function main() {
       name: "Amazon",
       link: "https://www.amazon.com/White-Chicks-Shawn-Wayans/dp/B000I9YV62",
     },
-    ["Comedy", "Action", "Crime"],
+    "Comedy",
     "image"
   );
 
@@ -91,7 +94,7 @@ async function main() {
       name: "Amazon",
       link: "https://www.amazon.com/Us-Lupita-Nyongo/dp/B07PH2LGM2",
     },
-    ["Horror", "Thriller"],
+    "Horror",
     "image"
   );
 
@@ -101,7 +104,7 @@ async function main() {
       name: "Youtube",
       link: "https://www.youtube.com/watch?v=HaLOu5EB_L8",
     },
-    ["Romance", "Drama"],
+    "Romance",
     "image"
   );
 
@@ -111,7 +114,7 @@ async function main() {
       name: "Amazon",
       link: "https://www.amazon.com/Citizen-Kane-Orson-Welles/dp/B00GJBCMB4",
     },
-    ["Romance", "Drama"],
+    "Mystery",
     "image"
   );
 

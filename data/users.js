@@ -2,6 +2,7 @@ let { ObjectId } = require('mongodb');
 const mongoCollections = require('../config/mongoCollections');
 const users = mongoCollections.users;
 const movieData = require('./movies');
+const validate = require('./validation');
 const bcrypt = require('bcryptjs');
 const saltRounds = 12;
 
@@ -28,9 +29,11 @@ module.exports = {
 	) {
 		//Error Handling
 
+		// --------------------CHANGES---------------------------------------
+
 		//For Name
-		if (!name || typeof name !== 'string' || name.trim().length === 0) {
-			throw 'User name is invalid';
+		if (!name || typeof name !== 'string' || name.trim().length === 0 || !validate.validName(name.trim())) {
+			throw 'Name given is invalid';
 		}
 
 		//REWORK ERROR CHECKS
@@ -49,9 +52,14 @@ module.exports = {
 			throw 'Please provide Date of Birth';
 		}
 		date_of_birth = date_of_birth.trim();
+		let birthYear = parseInt(date_of_birth.slice(-4));
 		// console.log('In Data', date_of_birth);
-		if (!date_of_birth.match(/^\d{4}-\d{2}-\d{2}$/))
-			throw 'Invalid Date of Birth';
+		// if (!date_of_birth.match(/^\d{2}-\d{2}-\d{4}$/))
+		// 	throw 'Invalid Date of Birth';
+		if(!validate.validAge((new Date().getFullYear()) - birthYear))
+			throw "Invalid date of birth";
+
+		// --------------------CHANGES---------------------------------------
 
 		// For Username
 		if (
@@ -153,8 +161,11 @@ module.exports = {
 	},
 
 	async checkUser(username, password) {
+
+		// --------------------CHANGES---------------------------------------
+
 		// Error handling for username
-		if (!username || username.trim() == '') throw 'Please provide username';
+		if (!username || typeof username !== "string" || username.trim().length === 0) throw 'Please provide username';
 
 		username = username.trim().toLowerCase();
 		if (username.length < 4)
@@ -170,7 +181,9 @@ module.exports = {
 
 		// Error handling for password
 
-		if (!password || password.trim() == '') throw 'Please provide password';
+		if (!password || typeof password !== "string" || password.trim().length === 0) throw 'Please provide password';
+
+		// --------------------CHANGES---------------------------------------
 
 		if (password.length < 6)
 			throw 'password should be at least 6 characters long';
@@ -205,7 +218,11 @@ module.exports = {
 	},
 
 	async getUser(username) {
-		if (!username || username.trim() == '') throw 'Please provide username';
+		// --------------------CHANGES---------------------------------------
+
+		if (!username || typeof username !== "string" || username.trim().length === 0) throw 'Please provide username';
+
+		// --------------------CHANGES---------------------------------------
 
 		username = username.trim().toLowerCase();
 		if (username.length < 4)
@@ -227,23 +244,26 @@ module.exports = {
 
 	async get(id) {
 		//console.log('Inside the ID function');
+		// --------------------CHANGES---------------------------------------
+
 		//Error Handeling
-		if (!id) {
-			throw 'Input Id field is required.';
-		}
+		if (!id) throw "no id is given.";
 
-		// if (typeof id !== 'string' || id.trim().length === 0) {
-		// 	throw 'Id can only be of type String.';
-		// }
+ 	 	if (typeof id !== "string") throw "id is of invalid type";
 
-		if (!ObjectId.isValid(id)) throw 'Invalid id';
+  		if (id.trim().length === 0) throw "id supplied is just an empty string";
+
+  		if (!ObjectId.isValid(id.trim())) throw "id is not a valid ObjectId";
+
+		let parseId = ObjectId(id.trim());
+		// --------------------CHANGES---------------------------------------
 
 		//Converting String ID to ObjectID
 		// let objParseID = ObjectId(id);
 
 		const collectionOfUsers = await users();
-		const user = await collectionOfUsers.findOne({ _id: ObjectId(id.trim()) });
-		if (!user) {
+		const user = await collectionOfUsers.findOne({ _id: parseId });
+		if (user === null) {
 			throw 'User could not be found with the supplied ID.';
 		}
 		// let getIndex = user._id.toString();
@@ -253,19 +273,25 @@ module.exports = {
 
 	async remove(id) {
 		//Error Handeling
-		if (!id) {
-			throw 'Input id must be provided.';
-		}
-		if (typeof id !== 'string' || id.trim().length === 0) {
-			throw new 'Id can only be of type String.'();
-		}
-		//Converting String ID to ObjectID
-		let objParseID = ObjectId(id);
+		// --------------------CHANGES---------------------------------------
+
+		if (!id) throw "no id is given.";
+
+ 	 	if (typeof id !== "string") throw "id is of invalid type";
+
+  		if (id.trim().length === 0) throw "id supplied is just an empty string";
+
+  		if (!ObjectId.isValid(id.trim())) throw "id is not a valid ObjectId";
+
+		let parseId = ObjectId(id.trim());
+
+		// --------------------CHANGES---------------------------------------
+
 		//let delrest = await this.get(id);
 		const collectionOfUsers = await users();
 		//Delete Supplied Data ID object
 		const userToBeDeleted = await collectionOfUsers.deleteOne({
-			_id: objParseID,
+			_id: parseId,
 		});
 
 		if (userToBeDeleted.deletedCount === 0) {
@@ -290,39 +316,36 @@ module.exports = {
 		// if (!ObjectId.isValid(id) || ObjectId(id).toString() !== id)
 		// 	throw 'Invalid id';
 
+		// --------------------CHANGES---------------------------------------
 		// For Name
-		if (!name || typeof name !== 'string' || name.trim().length === 0) {
-			throw 'User name is invalid';
+		if (!name || typeof name !== 'string' || name.trim().length === 0 || !validate.validName(name.trim())) {
+			throw 'Name given is invalid';
 		}
 
+		//REWORK ERROR CHECKS
+		// for (let i = 0; i < name.length; i++) {
+		// 	const element = name[i];
+		// 	//console.log(element);
+		// 	if (!element.match(/([a-zA-Z])/)) throw 'only characters allowed';
+		// }
+
 		// For DOB
-		// if (
-		// 	!date_of_birth ||
-		// 	typeof date_of_birth !== 'string' ||
-		// 	date_of_birth.trim().length === 0
-		// ) {
-		// 	throw 'Please provide Date of Birth';
-		// }
-		// date_of_birth = date_of_birth.trim();
-		// // console.log('In Data', date_of_birth);
-		// if (!date_of_birth.match(/^\d{4}-\d{2}-\d{2}$/))
+		if (
+			!date_of_birth ||
+			typeof date_of_birth !== 'string' ||
+			date_of_birth.trim().length === 0
+		) {
+			throw 'Please provide Date of Birth';
+		}
+		date_of_birth = date_of_birth.trim();
+		let birthYear = parseInt(date_of_birth.slice(-4));
+		// console.log('In Data', date_of_birth);
+		// if (!date_of_birth.match(/^\d{2}-\d{2}-\d{4}$/))
 		// 	throw 'Invalid Date of Birth';
+		if(!validate.validAge((new Date().getFullYear()) - birthYear))
+			throw "Invalid date of birth";
 
-		// if (
-		// 	typeof profile_pic !== 'string' ||
-		// 	profile_pic.trim().length === 0
-		// ) {
-		// 	throw 'Please provide Date of Birth';
-		// }
-
-		// For Private or Non-Private Account
-		// if (!private) {
-		// 	private = false;
-		// }
-
-		// if (typeof private !== 'boolean') {
-		// 	throw 'Please provide privacy setting';
-		// }
+		// --------------------CHANGES---------------------------------------
 
 		if (
 			!newpass ||

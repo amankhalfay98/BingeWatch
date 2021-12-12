@@ -7,6 +7,9 @@ function validString(str) {
   return true;
 }
 
+function validName(str) {
+  return /^[A-Za-z-'. ]+$/.test(str);
+}
 // Takes in a string argument.
 // Return true if the argument is a valid object id type
 function validObjectIdString(str) {
@@ -32,9 +35,9 @@ function convertId(doc) {
 }
 
 // Takes in a number argument.
-// Return true if the argument is above 0 and is a positive integer, false otherwise.
+// Return true if the argument is above 13 and is a positive integer, false otherwise.
 function validAge(age) {
-  if (!age || typeof age != "number" || !Number.isInteger(age) || age < 1)
+  if (!age || typeof age != "number" || !Number.isInteger(age) || age < 13)
     return false;
   return true;
 }
@@ -67,5 +70,6 @@ module.exports = {
   validEmail,
   validBoolean,
   validRating,
-  validObjectIdString,
+  validObjectIdString, 
+  validName
 };
