@@ -1,91 +1,8 @@
-<!-- <main>
-  <div class='char'>
-    <h1>{{movie.movie_name}}</h1>
-    <a href="/">Home Page</a><br><br>
-    <img alt="{{movie.movie_name}}" src="/{{movie.movie_img}}" /><br><br>
-    <button id="fav" name="fav" type="button" data-movie="{{movie.movie_name}}" data-user="{{user.username}}">{{fav}}</button>
-    <button id="watched" name="watched" type="button" data-movie="{{movie.movie_name}}" data-user="{{user.username}}">{{watch}}</button>
-    <button id='view' {{view}} data-movie="{{movie.movie_name}}" data-user="{{user.username}}" name="view" type="button">Seen</button>
-    <label for="view">{{movie.views}}</label>
-    <button id='edit' name="edit" type="button" onclick="window.location.href='edit/{{movie._id}}'">Edit</button>
-    <br><br>
-    <span title="services">Streaming Services:
-    <a href="{{movie.streaming_service.link}}">{{movie.streaming_service.name}}</a>
-    </span><br><br>
-    <span title="release_year">Release Year: {{movie.release_year}}</span><br><br>
-    <span title="director">Director: {{movie.director}}</span><br><br>
-    <span title="cast">Cast: <ul>
-        {{#each movie.cast}}
-        <li>{{this}}</li>
-        {{/each}}
-      </ul></span><br><br>
-    <span title="genres">Genres: <ul>
-        {{#each movie.genre}}
-        <li>{{this}}</li>
-        {{/each}}
-      </ul></span><br><br>
-    <span title="rating">OverAll Rating: {{movie.rating}}</span><br>
-    <span>Reviews:
-      <form action="/reviews/postReview" id="submitReview" method="post">
-        <br><label>Rating: <input id="rating" type="number" min="0" max="5"></label><br>
-        <br><label>Review: <textarea id="review"></textarea></label>
-        <br><button type="button" id="addNewReview" data-movie="{{movie.movie_name}}" data-user="{{user.username}}">Submit
-          Review</button>
-      </form>
-      <div id="reviews">
-        {{#each reviews}}
-        <div>{{this.username}}<br>{{this.review}}<br>{{this.rating}}
-         <button name="report" class="report" data-username="{{../user.username}}" data-revid="{{this._id}}">Report</button>
-       </div> 
-      {{/each}}
-  </div>
-   </span>
-  </div>
-</main> -->
-
-<!-- <div class="container">
-  <div class="row">
-    <div class="col">
-      <div class="border-bottom">
-        <h1 class="display-5 font-weight-bold"><a href="{{movie.streaming_service.link}}">{{movie.movie_name}}
-          </a></h1>
-        <img class="poster" src="/{{movie.movie_img}}" alt="{{movie.movie_name}} poster">
-      </div>
-    </div>
-      <div class="container shadow-sm p-3 mb-5 border border-light rounded">
-        <div class="mt-3">
-          <div class="row mb-4">
-            <div class="col-3">
-              <h3 class="font-weight-bold mb-4">Reviews</h3>
-            </div>
-            <div class="col">
-              <a href="/reviews/writeareview/{{restaurant._id}}" class="btn btn-primary">Write a Review</a>
-            </div>
-          </div>
-          <ul class="list-group list-group-flush">
-            {{#each reviews}}
-            <li class="list-group-item d-flex justify-content-between align-items-start">
-              <div class="ms-2 me-auto">
-                <div class="fw-bold">{{this.username}}</div>
-                <div class="fw-bold">{{this.review}}</div>
-                <div class="fw-bold">{{this.rating}}</div>
-              </div>
-              <i class="bi bi-trash"></i>
-            </li>
-            {{/each}}
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-</div> -->
-
-
 <div class="container">
   <div class="row">
-    <div class="col-4">
+    <div class="col-4 me-2">
       <h1>{{movie.movie_name}}</h1>
-      <img src="/{{movie.movie_img}}" alt="{{movie.movie_img}} poster">
+      <img class="indmovie" src="{{movie.movie_img}}" alt="{{movie.movie_name}} poster">
     </div>
     <div class="col-6 mt-5 ms-auto">
       <div class="card">
@@ -182,6 +99,9 @@
               <button class="btn btn-primary" type="button" id="addNewReview" data-movie="{{movie.movie_name}}"
                 data-user="{{user.username}}">Post Review</button>
             </div>
+          </div>
+          <div id="error">
+
           </div>
       </div>
       </form>

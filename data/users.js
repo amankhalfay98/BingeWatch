@@ -600,4 +600,35 @@ module.exports = {
 
 		return matched;
 	},
+
+	async setPrivate(user, private) {
+		if (!user || !private) throw 'missing input parameters';
+
+		if (typeof user !== 'string' || typeof private !== 'string')
+			throw 'invalid data type';
+
+		if (user.trim().length === 0 || private.trim().length === 0)
+			throw 'invalid strings';
+
+		const usersCollection = await users();
+		let currUser = await usersCollection.findOne({ username: user.trim() });
+		if (currUser === null) throw 'user not found';
+
+		if(private ==='true'){
+			private = true;
+		}
+		else{
+			private = false;
+		}
+		const updatedUser = await usersCollection.updateOne(
+			{ username: user.trim() },
+			{ $set: { private: private } }
+		);
+
+		if (updatedUser.modifiedCount === 0) {
+			throw 'privacy status is unchanged';
+		}
+
+		return `${user} profile is private? ${private}`;
+	},
 };

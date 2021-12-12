@@ -1,42 +1,3 @@
-<!-- <style>
-    body {
-        background-image: url('../../public/images/bgimg.jpg');
-        background-repeat: no-repeat;
-        background-size: cover;
-        width: 100%;
-        height: 100%;
-        position: relative;
-    }
-
-    .navbar-default {
-        background: none;
-    }
-</style> -->
-<!-- <div class="page">
-    <div class="container">
-        <div class="card text-center gap">
-            <div class="card-body">
-                <h1 class="card-title head">BingeWatch</h1>
-                <h3 class="card-text">One stop place to know what to watch next!</h3>
-                <a href="/login" class="btn btn-danger">Get Started</a>
-            </div>
-        </div>
-    </div>
-</div>
-<br>
-<div>
-    {{#each trending}}
-    <p>{{username}}</p>
-    {{/each}}
-</div> -->
-
-{{!-- <ul class="navbar-nav ms-auto">
-					<li class="nav-item">
-						<a href="/login" class="btn btn-light me-md-2 border">Login</a>
-						<a href="/signup" class="btn btn-danger me-md-2">Sign Up</a>
-					</li>
-				</ul> --}}
-
 <div class="showcase">
     <div class="container">
         <div class="card-tansparent text-center">
@@ -55,7 +16,7 @@
             {{#each trending}}
             <div class="col-3">
                 <div class="card mh-100 main-content">
-                    <img src="/{{movie_img}}" class="card-img-top movie_card_img" alt="{{movie_name}} poster">
+                    <img src="{{movie_img}}" class="card-img-top movie_card_img" alt="{{movie_name}} poster">
                     <div class="card-body">
                         <h5 class="card-title">{{movie_name}}</h5>
                         <div class="extra">

@@ -142,7 +142,7 @@
     let user = $(this).data("user");
     var id = window.location.href.split("/");
     id = id[id.length - 1];
-    if (rating || review) {
+    if (rating && review) {
       var requestConfig = {
         method: "POST",
         url: "/reviews/postReview",
@@ -164,7 +164,7 @@
       });
     } else {
       const error = '<p class="error">Rating and Review cannot be empty.</p>';
-      $("#reviews").before(error);
+      $("#error").append(error);
     }
   });
 
@@ -255,13 +255,6 @@
     var folw = $(this).html();
     let user = $(this).data("user");
     username = username[username.length - 1];
-    // let url = `/follow/${username}`;
-    // if(folw ==='Follow'){
-    //     let url = `/follow/${username}`;  
-    // }
-    // else{
-    //     let url = `/unfollow/${username}`;
-    // }
 
     var requestConfig = {
         method: "Post",
@@ -280,6 +273,37 @@
         }
         // else{
         //     follow.html("Follow");
+        // }
+      });
+  });
+
+  //private
+  var private = $('#private');
+  private.click(function(){
+    let user = $(this).data("user");
+    let private = $(this).data("private");
+    if(private ===''){
+        private = 'true';
+    }
+    else{
+        private = 'false';
+    }
+    //username = username[username.length - 1];
+
+    var requestConfig = {
+        method: "Post",
+        url: `/profile/${user}/${private}`,
+        contentType: "application/json",
+        data: JSON.stringify({
+          user: user,
+          private: private,
+          
+        }),
+      };
+      $.ajax(requestConfig).then(function (response) {
+          console.log(response);
+        // if(response){
+        //     location.reload();
         // }
       });
   });
