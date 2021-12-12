@@ -85,7 +85,9 @@ app.use('/private', (req, res, next) => {
 		next();
 	}
 });
+
 app.use('/uploads', express.static('uploads'));
+app.use('/profile', express.static('profile'));
 
 // app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
 // app.set('view engine', 'handlebars');

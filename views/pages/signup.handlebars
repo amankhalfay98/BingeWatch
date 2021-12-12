@@ -1,4 +1,4 @@
-{{! <head>
+<!-- {{! <head>
 	<meta charset='utf-8' />
 
 	<title>Sign Up</title>
@@ -49,4 +49,73 @@
 		{{error}}
 	</p>
 </main>
-{{! </body> }}
+{{! </body> }} -->
+
+<style>
+	body {
+		background-image: url('../../public/images/loginbg.jpg');
+		background-repeat: no-repeat;
+		background-size: cover;
+		opacity: 0.9;
+	}
+
+	.navbar-default {
+		background: none;
+	}
+</style>
+<div class="card_gap col d-flex justify-content-center">
+	<div class="login card text-white bg-dark w-50">
+		<div class="card-body">
+			<h5 class="card-title head text-center">SignUp</h5>
+			<form action='/signup' method='post' id='signup-form' enctype="multipart/form-data">
+				<div class="form-group">
+					<div class="user-avatar">
+						<img class="img-avatar"
+							src="https://png.pngtree.com/png-vector/20191027/ourlarge/pngtree-avatar-vector-icon-white-background-png-image_1884971.jpg"
+							alt="User avatar" id="img_avatar">
+						<br>
+						<label class="centered" for="profile_pic">Choose Photo</label>
+					</div>
+					<!-- <label class="" for="profile">Choose Photo</label> -->
+					<br>
+					<input type="file" name="profile_pic" id="profile_pic" class="form-control">
+				</div>
+				<div class="form-group">
+					<label for='name'><b>Name:</b></label>
+					<input type='text' id='name' placeholder='Enter Your Name' name='name' class="form-control" />
+				</div>
+				<br />
+				<div class="form-group">
+					<label for='email'><b>Email:</b></label>
+					<input type='text' id='email' placeholder='Enter Email' name='email' class="form-control" />
+				</div>
+				<br />
+				<div class="form-group">
+					<label for='date_of_birth'><b>DOB:</b></label>
+					<input type='date' min='1920-09-08' max='2012-09-08' id='date_of_birth' name='date_of_birth'
+						class="form-control" />
+				</div>
+				<br />
+				<div class="form-group">
+					<label for='username'><b>Username:</b></label>
+					<input type='text' id='username' placeholder='Enter Username' name='username'
+						class="form-control" />
+				</div>
+				<br />
+				<div class="form-group">
+					<label for='password'><b>Password:</b></label>
+					<input type='password' id='password' placeholder='Enter Password' name='password'
+						class="form-control" />
+				</div>
+				<br />
+				<button class="btn btn-danger" type='submit'>Sign Up</button>
+				<br>
+				<a href='/login'>Already have an account? Click here to log-in</a>
+				<br />
+			</form>
+			<p class='error'>
+				{{error}}
+			</p>
+		</div>
+	</div>
+</div>

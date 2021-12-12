@@ -384,7 +384,7 @@ let getTrending = async () => {
   const moviesArr = await movieCollection
     .find({})
     .sort({ views: -1 })
-    .limit(10)
+    .limit(4)
     .toArray();
   return moviesArr;
 };
@@ -490,6 +490,57 @@ let toWatchMovies = async (user, movie) => {
   return watch;
 };
 
+let searchByMovie = async (movie) => {
+  if (!movie) throw "missing input parameters";
+
+  if (typeof movie !== "string")
+    throw "invalid data type";
+
+  if (movie.trim().length === 0)
+    throw "invalid strings";
+
+  let regExTerm = new RegExp(".*" + movie.trim() + ".*", "i");
+  const moviesCollection = await movies();
+  let matched = await moviesCollection.find({ movie_name: regExTerm }).toArray();
+  if (matched.length === 0) throw `no movies matched to ${movie.trim()}.`;
+
+  return matched;
+};
+
+let searchByDirector = async (director) => {
+  if (!director) throw "missing input parameters";
+
+  if (typeof director !== "string")
+    throw "invalid data type";
+
+  if (director.trim().length === 0)
+    throw "invalid strings";
+
+  let regExTerm = new RegExp(".*" + director.trim() + ".*", "i");
+  const moviesCollection = await movies();
+  let matched = await moviesCollection.find({ director: regExTerm }).toArray();
+  if (matched.length === 0) throw `no movies matched to ${director.trim()}.`;
+
+  return matched;
+};
+
+let searchByCast = async (name) => {
+  if (!name) throw "missing input parameters";
+
+  if (typeof name !== "string")
+    throw "invalid data type";
+
+  if (name.trim().length === 0)
+    throw "invalid strings";
+
+  let regExTerm = new RegExp(".*" + name.trim() + ".*", "i");
+  const moviesCollection = await movies();
+  let matched = await moviesCollection.find({ cast: { $in: [regExTerm] } }).toArray();
+  if (matched.length === 0) throw `no movies matched to ${director.trim()}.`;
+
+  return matched;
+};
+
 module.exports = {
 	createMovie,
 	updatingMovie,
@@ -500,5 +551,8 @@ module.exports = {
 	getSort,
   movieWatched,
   favMovies,
-  toWatchMovies
+  toWatchMovies,
+  searchByMovie,
+  searchByDirector,
+  searchByCast
 };

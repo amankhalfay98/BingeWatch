@@ -312,5 +312,23 @@
   //         submitButton.prop('disabled', false);
   //     }
   // });
+  
+  var image_input = $('#profile_pic');
+  image_input.change(function(){
+    var input = document.getElementById('profile_pic');
+    if (input.files && input.files[0]) {
+      var reader = new FileReader();
+
+      reader.onload = function (e) {
+          $('#img_avatar')
+              .attr('src', e.target.result)
+              .width(150)
+              .height(200);
+      };
+
+      reader.readAsDataURL(input.files[0]);
+      $('label[for=profile_pic]').remove();
+  }
+  })
 
 })(window.jQuery);

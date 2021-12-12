@@ -371,6 +371,56 @@ router.post("/watched/:id", async (req, res) => {
   }
 });
 
+//SEARCH BAR WHEN GIVEN MOVIE NAME
+router.get("/search/movie/:term", async (req, res) => {
+  if (req.session.user) {
+    try {
+      let moviesMatched = await moviesData.searchByMovie(req.params.term);
+      res.render("movies/movieResults", {
+        movieList: moviesMatched
+      });
+    } catch (e) {
+      res
+        .status(400)
+        .render("pages/error", { error: e, title: "Search Error" });
+    }
+  } else {
+    res.status(403).render("pages/error");
+  }
+});
+
+//SEARCH BAR WHEN GIVEN DIRECTOR
+router.get("/search/director/:term", async (req, res) => {
+  if (req.session.user) {
+    try {
+      const movie = await moviesData.searchByDirector(req.params.term);
+      res.status(200).json(movie);
+    } catch (e) {
+      res
+        .status(400)
+        .render("pages/error", { error: e, title: "Search Error" });
+    }
+  } else {
+    res.status(403).render("pages/error");
+  }
+});
+
+//SEARCH BAR WHEN GIVEN CAST NAME
+router.get("/search/cast/:term", async (req, res) => {
+  if (req.session.user) {
+    try {
+      const movie = await moviesData.searchByCast(req.params.term);
+      res.status(200).json(movie);
+    } catch (e) {
+      res
+        .status(400)
+        .render("pages/error", { error: e, title: "Search Error" });
+    }
+  } else {
+    res.status(403).render("pages/error");
+  }
+});
+
 // router.post('/addMovie', async (req, res) => {
 //     const moviesDataList = req.body;
 //     if (!moviesDataList.movie_name) {
