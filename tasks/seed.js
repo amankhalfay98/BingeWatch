@@ -56,82 +56,82 @@ async function main() {
   } catch (e) {
     console.log(e);
   }
-  // try {
-  //   const user1 = await dbFunctions.users.createUser(
-  //     "Roy Rogers",
-  //     "1984-12-12",
-  //     "royRoy",
-  //     "123456yes",
-  //     "royrogers@gmail.com"
-  //   );
-  //   console.log(user1);
-  // } catch (e) {
-  //   console.log(e);
-  // }
-  // try {
-  //   const user2 = await dbFunctions.users.createUser(
-  //     "Mary Shelley",
-  //     "1959-01-12",
-  //     "MaryLovely",
-  //     "marylamb",
-  //     "shelleylovely@yahoo.com"
-  //   );
-  //   console.log(user2);
-  // } catch (e) {
-  //   console.log(e);
-  // }
-  // try {
-  //   const user3 = await dbFunctions.users.createUser(
-  //     "Rich Jackson",
-  //     "2000-07-19",
-  //     "AllDaMoney",
-  //     "gogogo",
-  //     "richboi@hotmail.com"
-  //   );
-  //   console.log(user3);
-  // } catch (e) {
-  //   console.log(e);
-  // }
-  // try {
-  //   const addFave = await dbFunctions.users.addToFave(
-  //     "royroy",
-  //     "Avengers"
-  //   );
-  //   console.log(addFave);
-  // } catch (e) {
-  //   console.log(e);
-  // }
-  // try {
-  //   const addFollow = await dbFunctions.users.followUser(
-  //     "royroy",
-  //     "marylovely"
-  //   );
-  //   console.log(addFollow);
-  // } catch (e) {
-  //   console.log(e);
-  // }
-  // try {
-  //   const watchMovie = await dbFunctions.movies.movieWatched(
-  //     "royroy",
-  //     "Avengers"
-  //   );
-  //   console.log(watchMovie);
-  // } catch (e) {
-  //   console.log(e);
-  // }
-  // try {
-  //   const review1 = await dbFunctions.reviews.create(
-  //     "61a6cc5f6e136e45be55b692",
-  //     "supersid",
-  //     "61ad788d59a8d9f0e4407f42",
-  //     "Avengers",
-  //     "Good Movie!",
-  //     5
-  //   );
-  //   console.log(review1);
-  // } catch (error) {
-  //   console.log(error);
-  // }
+  try {
+    const user1 = await dbFunctions.users.createUser(
+      "Roy Rogers",
+      "1984-12-12",
+      "royRoy",
+      "123456yes",
+      "royrogers@gmail.com"
+    );
+    console.log(user1);
+  } catch (e) {
+    console.log(e);
+  }
+  try {
+    const user2 = await dbFunctions.users.createUser(
+      "Mary Shelley",
+      "1959-01-12",
+      "MaryLovely",
+      "marylamb",
+      "shelleylovely@yahoo.com"
+    );
+    console.log(user2);
+  } catch (e) {
+    console.log(e);
+  }
+  try {
+    const user3 = await dbFunctions.users.createUser(
+      "Rich Jackson",
+      "2000-07-19",
+      "AllDaMoney",
+      "gogogo",
+      "richboi@hotmail.com"
+    );
+    console.log(user3);
+  } catch (e) {
+    console.log(e);
+  }
+  try {
+    const addFave = await dbFunctions.users.addToFave(
+      "royroy",
+      "Avengers"
+    );
+    console.log(addFave);
+  } catch (e) {
+    console.log(e);
+  }
+  try {
+    const addFollow = await dbFunctions.users.followUser(
+      "royroy",
+      "marylovely"
+    );
+    console.log(addFollow);
+  } catch (e) {
+    console.log(e);
+  }
+  try {
+    const watchMovie = await dbFunctions.movies.movieWatched(
+      "royroy",
+      "Avengers"
+    );
+    console.log(watchMovie);
+  } catch (e) {
+    console.log(e);
+  }
+  try {
+    const review1 = await dbFunctions.reviews.create(
+      "61a6cc5f6e136e45be55b692",
+      "supersid",
+      "61ad788d59a8d9f0e4407f42",
+      "Avengers",
+      "Good Movie!",
+      5
+    );
+    console.log(review1);
+  } catch (error) {
+    console.log(error);
+  }
 
   const db = await connection.connectToDb();
   await connection.closeConnection();
