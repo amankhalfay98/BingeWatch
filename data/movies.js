@@ -161,9 +161,9 @@ let createMovie = async (
   const insertMovie = await movieCollection.insertOne(newMovie);
 
   if (insertMovie.insertedCount === 0) throw "movie could not be added";
-
-  return newMovie;
-  // return `${movie_name} successfully added!`;
+  const addedMovie = getMovie(insertMovie.insertedId.toString());
+  return addedMovie;
+  //return `${movie_name} successfully added!`;
 };
 
 //username should not be editable
@@ -545,8 +545,8 @@ let searchByCast = async (name) => {
   return matched;
 };
 
-let updateMovieReport = async (movieId, username) => {
-  if (!validation.validString(movieId)) throw 'Review id is not a valid string.';
+const updateMovieReport = async (movieId, username) => {
+  //if (!validation.validString(movieId)) throw 'Review id is not a valid string.';
   //if (!validation.validString(userId)) throw 'User id is not a valid string.';
   
   const objMovieId = ObjectId(movieId);
@@ -556,10 +556,10 @@ let updateMovieReport = async (movieId, username) => {
   let movie = await moviesCollection.findOne({ _id: objMovieId });
   if (movie === null) throw 'No movie with that id.';
   
-      const updateInfo = await moviesCollection.updateOne({_id: objReviewId},{$addToSet: {reported: username}});
+      const updateInfo = await moviesCollection.updateOne({_id: objMovieId},{$addToSet: {reported: username}});
       if (!updateInfo.matchedCount && !updateInfo.modifiedCount) return false;
 
-  const myMovieUpdated = await getById(movieId);
+  const myMovieUpdated = await getMovie(movieId);
   if (myMovieUpdated.reported.length == 5){
       await this.deleteMovie(movieId);
       return true;
@@ -569,8 +569,8 @@ let updateMovieReport = async (movieId, username) => {
 
 let deleteMovie = async (id) => {
   if (id === undefined) throw "No id provided";
-  if (!validation.validObjectIdString(id))
-    throw "movie id provided is not a valid object.";
+  //if (!validation.validObjectIdString(id))
+    //throw "movie id provided is not a valid object.";
   id = new ObjectId(id.trim());
   const moviesCollection = await movies();
   const deletionInfo = await moviesCollection.deleteOne({ _id: id });
