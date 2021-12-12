@@ -138,8 +138,8 @@
     $(".error").empty();
     var rating = $("#rating").val();
     var review = $("#review").val();
-    var movie = $(this).data("movie");
-    var user = $(this).data("user");
+    let movie = $(this).data("movie");
+    let user = $(this).data("user");
     var id = window.location.href.split("/");
     id = id[id.length - 1];
     if (rating || review) {
@@ -167,6 +167,115 @@
       $("#reviews").before(error);
     }
   });
+
+  //Increment Views on Movies
+  var view = $('#view');
+  view.click(function(){
+    var id = window.location.href.split("/");
+    let movie = $(this).data("movie");
+    let user = $(this).data("user");
+    id = id[id.length - 1];
+    var requestConfig = {
+        method: "Post",
+        url: `/movies/watched/${id}`,
+        contentType: "application/json",
+        data: JSON.stringify({
+          username: user,
+          movie_id: id,
+          movie_name: movie,
+        }),
+      };
+      $.ajax(requestConfig).then(function (response) {
+        if(response){
+            location.reload();
+        } 
+      });
+  });
+
+  //Add Remove Movie from Fav list
+  var fav = $('#fav');
+  fav.click(function(){
+    let id = window.location.href.split("/");
+    let movie = $(this).data("movie");
+    let user = $(this).data("user");
+    id = id[id.length - 1];
+    var requestConfig = {
+        method: "Post",
+        url: `/movies/favorite/${id}`,
+        contentType: "application/json",
+        data: JSON.stringify({
+          username: user,
+          movie_id: id,
+          movie_name: movie,
+        }),
+      };
+      $.ajax(requestConfig).then(function (response) {
+        //console.log(response)
+        if(response){
+            fav.html("UnFavorite");
+        }
+        else{
+            fav.html("Favorite");
+        }
+      });
+  });
+
+  //watchlist
+
+  //Add Remove Movie from watchlist
+  var watch = $('#watched');
+  watch.click(function(){
+    let id = window.location.href.split("/");
+    let movie = $(this).data("movie");
+    let user = $(this).data("user");
+    id = id[id.length - 1];
+    var requestConfig = {
+        method: "Post",
+        url: `/movies/watchlist/${id}`,
+        contentType: "application/json",
+        data: JSON.stringify({
+          username: user,
+          movie_id: id,
+          movie_name: movie,
+        }),
+      };
+      $.ajax(requestConfig).then(function (response) {
+        //console.log(response)
+        if(response){
+            watch.html("Watched");
+        }
+        else{
+            watch.html("Want to watch");
+        }
+      });
+  });
+
+  //report Review Functionality
+  var report = $('.report');
+  report.click(function(){
+      var revid = $(this).data('revid');
+      var username = $(this).data('username');
+      //var check = this.checked
+      var requestConfig = {
+        method: "POST",
+        url: "/reviews/report",
+        contentType: "application/json",
+        data: JSON.stringify({
+            reviewId: revid, 
+            username: username, 
+            //checked:check
+        }),
+      };
+      $.ajax(requestConfig).then(function (response) {
+          console.log(response);
+        // const div = `<div>${review.username}<br>${review.review}<br>${review.rating}</div>`;
+        // $('#reviews').prepend(div);
+        //if(response){
+        location.reload();
+       // }
+      });
+  });
+
   //let loginForm = $('#login-form')
   //let usernameInput = $('#username');
   //let passwordInput = $('#password');
@@ -203,6 +312,7 @@
   //         submitButton.prop('disabled', false);
   //     }
   // });
+  
   var image_input = $('#profile_pic');
   image_input.change(function(){
     var input = document.getElementById('profile_pic');
@@ -220,4 +330,5 @@
       $('label[for=profile_pic]').remove();
   }
   })
+
 })(window.jQuery);

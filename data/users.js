@@ -1,6 +1,7 @@
 let { ObjectId } = require('mongodb');
 const mongoCollections = require('../config/mongoCollections');
 const users = mongoCollections.users;
+const movieData = require('./movies');
 const bcrypt = require('bcryptjs');
 const saltRounds = 12;
 
@@ -394,28 +395,33 @@ module.exports = {
 	},
 
 	async addToFave(user, movie) {
-		if (!user || !movie) throw 'missing input parameters';
+		if(!user || ! movie)
+			{throw "missing input parameters";}
+		
+		if(typeof user !== 'string' || typeof movie !== 'string')
+			{throw "invalid data type";}
 
-		if (typeof user !== 'string' || typeof movie !== 'string')
-			throw 'invalid data type';
+		if(user.trim().length === 0 || movie.trim().length === 0)
+			{throw "invalid strings";}
 
-		if (user.trim().length === 0 || movie.trim().length === 0)
-			throw 'invalid strings';
-
+		let isFav=false;
 		const usersCollection = await users();
 		let currUser = await usersCollection.findOne({ username: user.trim() });
 		if (currUser === null) throw 'user not found';
 
-		const updatedUser = await usersCollection.updateOne(
-			{ username: user.trim() },
-			{ $push: { favourites: movie.trim() } }
-		);
-
-		if (updatedUser.modifiedCount === 0) {
-			throw 'nothing was added into favourites';
-		}
-
-		return `${movie} successfully added to ${user}'s favourites.`;
+		if (currUser.favourites.includes(movie)){
+            const updatedUser = await usersCollection.updateOne({ username: user.trim() },{$pull: { favourites: movie.trim() }});
+            if (updatedUser.matchedCount && updatedUser.modifiedCount) {isFav = false};
+        }
+        else{
+            const updatedUser = await usersCollection.updateOne(
+				{ username: user.trim() },
+				{ $addToSet: { favourites: movie.trim() } }
+			);
+            if (updatedUser.matchedCount && updatedUser.modifiedCount) {isFav = true};
+        }
+		await movieData.favMovies(user, movie);
+		return isFav;
 	},
 
 	async removeFromFave(user, movie) {
@@ -444,28 +450,34 @@ module.exports = {
 	},
 
 	async addToWatch(user, movie) {
-		if (!user || !movie) throw 'missing input parameters';
 
-		if (typeof user !== 'string' || typeof movie !== 'string')
-			throw 'invalid data type';
+		if(!user || ! movie)
+			{throw "missing input parameters";}
+		
+		if(typeof user !== 'string' || typeof movie !== 'string')
+			{throw "invalid data type";}
 
-		if (user.trim().length === 0 || movie.trim().length === 0)
-			throw 'invalid strings';
+		if(user.trim().length === 0 || movie.trim().length === 0)
+			{throw "invalid strings";}
 
-		const usersCollection = await users();
-		let currUser = await usersCollection.findOne({ username: user.trim() });
-		if (currUser === null) throw 'user not found';
-
-		const updatedUser = await usersCollection.updateOne(
-			{ username: user.trim() },
-			{ $push: { watchlist: movie.trim() } }
-		);
-
-		if (updatedUser.modifiedCount === 0) {
-			throw 'nothing was added into favourites';
-		}
-
-		return `${movie} successfully added to ${user}'s watchlist.`;
+			let isWatched=false;
+			const usersCollection = await users();
+			let currUser = await usersCollection.findOne({ username: user.trim() });
+			if(currUser === null) {throw "user not found";}
+	
+			if (currUser.watchlist.includes(movie)){
+				const updatedUser = await usersCollection.updateOne({ username: user.trim() },{$pull: { watchlist: movie.trim() }});
+				if (updatedUser.matchedCount && updatedUser.modifiedCount) {isWatched = false};
+			}
+			else{
+				const updatedUser = await usersCollection.updateOne(
+					{ username: user.trim() },
+					{ $addToSet: { watchlist: movie.trim() } }
+				);
+				if (updatedUser.matchedCount && updatedUser.modifiedCount) {isWatched = true};
+			}
+			await movieData.toWatchMovies(user, movie);
+			return isWatched;
 	},
 
 	async removeFromWatch(user, movie) {
