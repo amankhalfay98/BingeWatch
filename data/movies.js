@@ -432,7 +432,62 @@ let movieWatched = async (user, movie) => {
     throw "nothing was added into favourites";
   }
 
-  return `${movie} successfully marked as watched.`;
+  return true;
+};
+
+let favMovies = async (user, movie) => {
+  if (!user || !movie) throw "missing input parameters";
+
+  if (typeof user !== "string" || typeof movie !== "string")
+    throw "invalid data type";
+
+  if (user.trim().length === 0 || movie.trim().length === 0)
+    throw "invalid strings";
+
+  const moviesCollection = await movies();
+  let currMovie = await moviesCollection.findOne({ movie_name: movie.trim() });
+  if (currMovie === null) throw "movie not found";
+
+  let fav = false
+  if (currMovie.favourite_list.includes(user)){
+    const updatedUser = await moviesCollection.updateOne({ movie_name: movie.trim() },{$pull: { favourite_list: user.trim() }});
+    if (updatedUser.matchedCount && updatedUser.modifiedCount) {fav = false};
+  }
+  else{
+    const updatedUser = await moviesCollection.updateOne(
+      { movie_name: movie.trim() },
+      { $addToSet: { favourite_list: user.trim() } }
+    );
+    if (updatedUser.matchedCount && updatedUser.modifiedCount) {fav = true};
+  }
+  return fav;
+};
+
+let toWatchMovies = async (user, movie) => {
+  if (!user || !movie) throw "missing input parameters";
+
+  if (typeof user !== "string" || typeof movie !== "string")
+    throw "invalid data type";
+
+  if (user.trim().length === 0 || movie.trim().length === 0)
+    throw "invalid strings";
+
+  const moviesCollection = await movies();
+  let currMovie = await moviesCollection.findOne({ movie_name: movie.trim() });
+  if (currMovie === null) throw "movie not found";
+  let watch = false
+  if (currMovie.toWatch_list.includes(user)){
+    const updatedUser = await moviesCollection.updateOne({ movie_name: movie.trim() },{$pull: { toWatch_list: user.trim() }});
+    if (updatedUser.matchedCount && updatedUser.modifiedCount) {watch = false};
+  }
+  else{
+    const updatedUser = await moviesCollection.updateOne(
+      { movie_name: movie.trim() },
+      { $addToSet: { toWatch_list: user.trim() } }
+    );
+    if (updatedUser.matchedCount && updatedUser.modifiedCount) {watch = true};
+  }
+  return watch;
 };
 
 module.exports = {
@@ -443,5 +498,7 @@ module.exports = {
 	getTrending,
 	updateMovieReviewID,
 	getSort,
-  movieWatched
+  movieWatched,
+  favMovies,
+  toWatchMovies
 };

@@ -18,6 +18,13 @@ router.post("/postReview", async (req, res) => {
   res.json(postReview);
 });
 
+router.post('/report', async function (req, res){
+  let data = req.body;
+  const { reviewId, username } = data;
+  const reported = await reviews.updateReviewReport(reviewId,username);
+  res.json(reported);
+})
+
 router.post("/:id", async (req, res) => {
   //let data = req.body;
   //const { movie_id } = data;
