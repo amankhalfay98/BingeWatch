@@ -25,9 +25,11 @@ const validation = require("../data/validation");
 router.get("/all", async (req, res) => {
   try {
     const listMovies = await moviesData.getAllMovies();
+    let rev = await usersData.getUser(req.session.user.username);
     res.render("movies/allMovies", {
       movieList: listMovies,
       title: "All Movies",
+      user:rev,
       authenticated: req.session.user ? true : false,
       username: req.session.user.username,
     });
@@ -346,7 +348,7 @@ router.put("/edit/:id", async (req, res) => {
 router.post("/report", async function (req, res) {
   let data = req.body;
   const { movieId, username } = data;
-  const reported = await reviews.updateReviewReport(movieId, username);
+  const reported = await moviesData.updateMovieReport(movieId,username);
   res.json(reported);
 });
 
