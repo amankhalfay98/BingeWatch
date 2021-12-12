@@ -22,6 +22,7 @@
 		"axios": "^0.23.0",
 		"bcryptjs": "^2.4.3",
 		"blueimp-md5": "^2.19.0",
+		"bootstrap-icons": "^1.7.2",
 		"ejs": "^2.6.2",
 		"express": "^4.17.1",
 		"express-handlebars": "^3.1.0",
