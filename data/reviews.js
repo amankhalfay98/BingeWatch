@@ -40,7 +40,7 @@ const create = async (
     reviewArray.forEach(element => {
       overAllRating += element.rating;
     }); 
-    overAllRating = Math.round(overAllRating/reviewArray.length);
+    overAllRating = parseFloat((overAllRating/reviewArray.length).toFixed(2));
     await moviesData.updateMovieReviewID(movie_id,insertInfo.insertedId,overAllRating);
   }
   else{
