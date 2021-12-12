@@ -82,63 +82,67 @@
 					</label>
 				</div>
 			</form>
-			<form
-				action='/private'
-				method='post'
-				id='userEdit-form'
-				class='mt-4 mb-2'
-			>
+			<form action='/private' method='post' id='userEdit-form' class='mt-4 mb-2'>
 				<div class='form-group'>
 					<label for='name'>Name</label>
-					<input
-						type='text'
-						class='form-control'
-						id='name'
-						name='name'
-						value='{{user.name}}'
-					/>
+					<input type='text' class='form-control' id='name' name='name' value='{{user.name}}' />
 				</div>
 
 				<div class='form-group'>
 					<label for='newpass'>New Password</label>
-					<input
-						type='password'
-						class='form-control'
-						id='newpass'
-						placeholder='Enter your new password'
-						name='password'
-					/>
+					<input type='password' class='form-control' id='newpass' placeholder='Enter your new password'
+						name='password' />
 				</div>
 				<div class='form-group'>
 					<label for='password'>Confirm Password</label>
-					<input
-						type='password'
-						class='form-control'
-						id='password'
-						name='newpass'
-						placeholder='Confirm your new password'
-					/>
+					<input type='password' class='form-control' id='password' name='newpass'
+						placeholder='Confirm your new password' />
 				</div>
 
 				<button type='submit' class='btn btn-danger'>Update Account Details</button>
 			</form>
 		</div>
 	</div>
-	<br />
-	<div class='row justify-content-center'>
-		<div class='card w-50'>
-			<div class='card-body'>
-				<h5 class='card-title'>Favourites</h5>
-				{{user.favourites}}
-				<br />
-				<a href='/movies/all' class='btn btn-outline-danger'>Watch Now</a>
+	<br>
+	<div class="row justify-content-center mb-5">
+		<div class="card w-50">
+			<div class="card-body">
+				<h5 class="card-title">Favourites</h5>
+				<ul class="list-group">
+					{{#if user.favourites.length}}
+					{{#each user.favourites}}
+					<li class="list-group-item d-flex justify-content-between align-items-start">
+						<div class="ms-2 me-auto">
+							<div class="fw-bold">{{this}}</div>
+						</div>
+						<i class="bi bi-trash"></i>
+					</li>
+					{{/each}}
+				</ul>
+				<br>
+				<a href="/movies/all" class="btn btn-outline-danger">Watch Now</a>
+				{{else}}
+				<p>No Movies in Favourite List</p>
+				{{/if}}
 			</div>
-			<hr />
-			<div class='card-body'>
-				<h5 class='card-title'>Watchlist</h5>
-				{{user.watchlist}}
-				<br />
-				<a href='/movies/all' class='btn btn-outline-danger'>Watch Now</a>
+			<hr>
+			<div class="card-body">
+				<h5 class="card-title">Watchlist</h5>
+				<ul class="list-group">
+					{{#if user.watchlist.length}}
+					{{#each user.watchlist}}
+					<li class="list-group-item d-flex justify-content-between align-items-start">
+						<div class="ms-2 me-auto">
+							<div class="fw-bold">{{this}}</div>
+						</div>
+						<i class="bi bi-trash"></i>
+					</li>
+					{{/each}}
+				</ul>
+				<a href="/movies/all" class="btn btn-outline-danger">Watch Now</a>
+				{{else}}
+				<p>No Movies in Watchlist</p>
+				{{/if}}
 			</div>
 		</div>
 	</div>
