@@ -1,30 +1,47 @@
 <main class="container">
         <header>
-        <h1 id="the-heading">Add a new Movie</h1>
+        <h1 id="the-heading">Edit Movie</h1>
         </header><br>
         <form id="addMovieForm" method="post">
             <label for="search_term"> Movie Name
-            <input type="search" id="search_term" placeholder="Enter Movie Name...">
+            <input type="search" id="search_term" value="{{movie.movie_name}}">
             </label>
             <label for="stream_service"> Streaming Service
-            <input type="url" id="stream_service"> 
+            <input type="url" id="stream_service" value="{{movie.streaming_service.name}}"> 
             </label>
             <label for="release_year"> Release Year
-                <input type="date" id="release_year"> 
+                <input type="number" class="form-control" value="{{movie.release_year}}" min="1888" max="2099" step="1" id="release_year"
+                 name="release_year" required> 
             </label>
             <label for="director"> Director
-                <input type="text" id="director"> 
+                <input type="text" id="director" value="{{movie.director}}"> 
             </label>
             <label for="cast"> Cast
-                <textarea id="cast"></textarea> 
+                <textarea id="cast">{{movie.cast}}</textarea> 
             </label>
-            <label> Genres
-                <input type="checkbox"> 
-            </label>
-            <label> Poster
-                <input type="image"> 
-            </label>
-            <button type="submit">Add Movie</button>
+            <div class="form-group">
+            <label for="genre">Genres:</label>
+            <select value='{{movie.genre}}' id="genre" class="form-control" name="genre" required>
+                <option value="action">Action & Adventure</option>
+                <option value="comedy">Comedy</option>
+                <option value="crime">Crime</option>
+                <option value="drama">Drama</option>
+                <option value="horror">Horror</option>
+                <option value="mystery">Mystery</option>
+                <option value="romance">Romance</option>
+                <option value="sciFi">Science-Fiction</option>
+                <option value="thriller">Thriller</option>
+            </select>
+            <div class="invalid-feedback">
+                Please select a valid genre
+            </div>
+        </div>
+            <label> Poster</label>
+            <input type="file" id="movie_img" accept="image/*" class="form-control" name="movie_img" required>
+            <div class="invalid-feedback">
+                Please provide a valid file
+            </div>
+            <button type="submit" id="updateMovie">Update Movie</button>
         </form>
         <br>
         <a href="/" id="homeLink">Home Page</a><br><br>

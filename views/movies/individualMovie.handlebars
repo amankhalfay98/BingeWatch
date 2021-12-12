@@ -3,10 +3,11 @@
     <h1>{{movie.movie_name}}</h1>
     <a href="/">Home Page</a><br><br>
     <img alt="{{movie.movie_name}}" src="/{{movie.movie_img}}" /><br><br>
-    <button type="button">Favorite</button>
-    <button type="button">+Watched</button>
-    <button id='view' type="button">View</button>
+    <button id="fav" name="fav" type="button" data-movie="{{movie.movie_name}}" data-user="{{user.username}}">{{fav}}</button>
+    <button id="watched" name="watched" type="button" data-movie="{{movie.movie_name}}" data-user="{{user.username}}">{{watch}}</button>
+    <button id='view' {{view}} data-movie="{{movie.movie_name}}" data-user="{{user.username}}" name="view" type="button">Seen</button>
     <label for="view">{{movie.views}}</label>
+    <button id='edit' name="edit" type="button" onclick="window.location.href='edit/{{movie._id}}'">Edit</button>
     <br><br>
     <span title="services">Streaming Services:
     <a href="{{movie.streaming_service.link}}">{{movie.streaming_service.name}}</a>
@@ -33,7 +34,9 @@
       </form>
       <div id="reviews">
         {{#each reviews}}
-        {{this.username}}<br>{{this.review}}<br>{{this.rating}}</div>
+        <div>{{this.username}}<br>{{this.review}}<br>{{this.rating}}
+         <button name="report" class="report" data-username="{{../user.username}}" data-revid="{{this._id}}">Report</button>
+       </div> 
       {{/each}}
   </div>
    </span>

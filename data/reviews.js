@@ -29,6 +29,7 @@ const create = async (
     review,
     rating,
     tag: "review",
+    reported:[]
   };
   const reviewsCollection = await reviews();
   const insertInfo = await reviewsCollection.insertOne(newReview);
@@ -77,14 +78,14 @@ const getReviewsByMovieId = async (movie_id) => {
     x._id = x._id.toString();
   }
   if (allReviews && allReviews.length > 0) {
-    reviewArray =[]
-    //console.log(Array.isArray(allReviews));
-    for(let i = allReviews.length-1;i>=0;i--){
-    reviewArray.push(allReviews[i]);
-    }
-    return reviewArray;
+    // reviewArray =[]
+    // //console.log(Array.isArray(allReviews));
+    // for(let i = allReviews.length-1;i>=0;i--){
+    // reviewArray.push(allReviews[i]);
+    // }
+    return allReviews;
   } else {
-    return "Review Not Found";
+    return [];
   }
 };
 
@@ -157,6 +158,42 @@ const remove = async (id) => {
   }
 };
 
+const updateReviewReport = async (reviewId, username) => {
+  if (!validation.validString(reviewId)) throw 'Review id is not a valid string.';
+  //if (!validation.validString(userId)) throw 'User id is not a valid string.';
+  
+  const objReviewId = ObjectId(reviewId);
+  //const uid = ObjectId(userId)
+
+  const reviewCollection = await reviews();
+  let review = await reviewCollection.findOne({ _id: objReviewId });
+  if (review === null) throw 'No review with that id.';
+  
+  //const myRev = await this.getById(reviewId);
+  //if(myRev === null) throw 'No review with that id.';
+
+  //if (myRev.reported.includes(userId)){
+    //if(checked){
+      const updateInfo = await reviewCollection.updateOne({_id: objReviewId},{$addToSet: {reported: username}});
+      if (!updateInfo.matchedCount && !updateInfo.modifiedCount) return false;
+      // const updateInfo = await reviewCollection.updateOne({_id: objReviewId},{$pull: {reported: userId}});
+      // if (!updateInfo.matchedCount && !updateInfo.modifiedCount) return false;
+   // }
+  //}
+  // else{
+  //     const updateInfo = await reviewCollection.updateOne({_id: objReviewId},{$pull: {reported: username}});
+  //     if (!updateInfo.matchedCount && !updateInfo.modifiedCount) return false;
+  //     // const updateInfo = await reviewCollection.updateOne({_id: objReviewId},{$addToSet: {reported: userId}});
+  //     // if (!updateInfo.matchedCount && !updateInfo.modifiedCount) return false;
+  // }
+  const myRevUpdated = await getById(reviewId);
+  if (myRevUpdated.reported.length == 5){
+      await this.remove(reviewId);
+      return true;
+  }
+  return false;
+};
+
 module.exports = {
   create,
   getByUser,
@@ -164,4 +201,5 @@ module.exports = {
   getReviewsByMovieId,
   update,
   remove,
+  updateReviewReport
 };
