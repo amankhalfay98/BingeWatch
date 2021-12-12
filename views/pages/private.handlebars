@@ -59,34 +59,87 @@
 	</main>
 {{!-- </body> --}} -->
 
-<div class="container">
-	<div class="row justify-content-center">
-		<div class="col-6 mt-1">
-			<h1 class="text-center mt-3 mb-2">{{user.name}}</h1>
-			<p class="lead text-center">{{user.email}}</p>
-			<!-- <h6 class="lead text-center">({{user.date_of_birth}})</h6> -->
-			<div class="user-avatar">
-				<img class="img-avatar" src="/{{user.profile_pic}}"
-					alt="User avatar">
-			</div>
-			<form action='/private' method='post' id='userEdit-form' class="mt-4 mb-2">
-				<div class="form-group">
-					<label for="name">Name</label>
-					<input type="text" class="form-control" id="name" value="{{user.name}}">
-				</div>
+<div class='container'>
+	<div class='row justify-content-center'>
+		<div class='col-6 mt-1'>
+			<h1 class='text-center mt-3 mb-2'>{{user.name}}</h1>
+			<p class='lead text-center'>{{user.email}}</p>
+			<p class='lead text-center'>Followers:
+				{{user.followers.length}}
+				| Following:
+				{{user.following.length}}</p>
 
-				<div class="form-group">
-					<label for="oldpass">Old Password</label>
-					<input type="password" class="form-control" id="oldpass"
-						placeholder="Enter your old password">
-				</div>
-				<div class="form-group">
-					<label for="newpass">New Password</label>
-					<input type="password" class="form-control" id="newpass"
-						placeholder="Enter your new password">
+			<!-- <h6 class="lead text-center">({{user.date_of_birth}})</h6> -->
+			<div class='user-avatar'>
+				<img class='img-avatar' src='/{{user.profile_pic}}' alt='User avatar' />
+			</div>
+			<form action='/private' method='post' id='private-form' class='mt-4 mb-2'>
+				<div class='form-group text-center'>
+					<label class='switch' for='private'>Private</label>
+					<label class='switch'>
+						<input id='private' type='checkbox' name='private' value='false' />
+						<span class='slider round'></span>
+					</label>
 				</div>
 			</form>
-			<button class="btn btn-danger">Update Account Details</button>
+			<form
+				action='/private'
+				method='post'
+				id='userEdit-form'
+				class='mt-4 mb-2'
+			>
+				<div class='form-group'>
+					<label for='name'>Name</label>
+					<input
+						type='text'
+						class='form-control'
+						id='name'
+						name='name'
+						value='{{user.name}}'
+					/>
+				</div>
+
+				<div class='form-group'>
+					<label for='newpass'>New Password</label>
+					<input
+						type='password'
+						class='form-control'
+						id='newpass'
+						placeholder='Enter your new password'
+						name='password'
+					/>
+				</div>
+				<div class='form-group'>
+					<label for='password'>Confirm Password</label>
+					<input
+						type='password'
+						class='form-control'
+						id='password'
+						name='newpass'
+						placeholder='Confirm your new password'
+					/>
+				</div>
+
+				<button type='submit' class='btn btn-danger'>Update Account Details</button>
+			</form>
+		</div>
+	</div>
+	<br />
+	<div class='row justify-content-center'>
+		<div class='card w-50'>
+			<div class='card-body'>
+				<h5 class='card-title'>Favourites</h5>
+				{{user.favourites}}
+				<br />
+				<a href='/movies/all' class='btn btn-outline-danger'>Watch Now</a>
+			</div>
+			<hr />
+			<div class='card-body'>
+				<h5 class='card-title'>Watchlist</h5>
+				{{user.favourites}}
+				<br />
+				<a href='/movies/all' class='btn btn-outline-danger'>Watch Now</a>
+			</div>
 		</div>
 	</div>
 </div>
