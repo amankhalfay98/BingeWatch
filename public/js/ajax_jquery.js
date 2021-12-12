@@ -142,7 +142,7 @@
     let user = $(this).data("user");
     var id = window.location.href.split("/");
     id = id[id.length - 1];
-    if (rating || review) {
+    if (rating && review) {
       var requestConfig = {
         method: "POST",
         url: "/reviews/postReview",
@@ -164,7 +164,7 @@
       });
     } else {
       const error = '<p class="error">Rating and Review cannot be empty.</p>';
-      $("#reviews").before(error);
+      $("#error").append(error);
     }
   });
 

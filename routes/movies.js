@@ -29,7 +29,7 @@ router.get("/all", async (req, res) => {
     res.render("movies/allMovies", {
       movieList: listMovies,
       title: "All Movies",
-      user:rev,
+      user: rev,
       authenticated: req.session.user ? true : false,
       username: req.session.user.username,
     });
@@ -62,6 +62,8 @@ router.get("/addMovie", async (req, res) => {
       res.render("movies/newMovie", {
         title: "Add Movies",
         authenticated: req.session.user ? true : false,
+        username: req.session.user.username,
+        new: true,
       });
     } catch (e) {
       res.status(400).render("pages/error", {
@@ -196,7 +198,9 @@ router.post("/addMovie", upload.single("movie_img"), async (req, res) => {
       : "temp";
   const moviesDataList = req.body;
   if (req && req.file && req.file.fieldname === "movie_img" && moviesDataList) {
-    moviesDataList.movie_img = req.file.path;
+    moviesDataList.movie_img = "/" + req.file.path;
+  } else {
+    moviesDataList.movie_img = "public/images/logo.jpeg";
   }
   if (
     moviesDataList &&
@@ -271,7 +275,16 @@ router.post("/addMovie", upload.single("movie_img"), async (req, res) => {
       genre,
       movie_img
     );
-    res.status(200).json(newMovie);
+    // res.status(200).json(newMovie);
+    // res.status(200).redirect('/movies/all')
+    res
+      .status(200)
+      .render("movies/newMovie", {
+        added: "Movie Added Successfullly",
+        new: false,
+        authenticated: req.session.user ? true : false,
+        username: req.session.user.username,
+      });
   } catch (e) {
     res.status(500).json({ error: e });
   }
@@ -348,7 +361,7 @@ router.put("/edit/:id", async (req, res) => {
 router.post("/report", async function (req, res) {
   let data = req.body;
   const { movieId, username } = data;
-  const reported = await moviesData.updateMovieReport(movieId,username);
+  const reported = await moviesData.updateMovieReport(movieId, username);
   res.json(reported);
 });
 
