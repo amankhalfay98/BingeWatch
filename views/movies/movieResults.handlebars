@@ -1,67 +1,32 @@
-{{!-- <div id="showList">
-          {{#each movieList}}
-          <div class="card mb-3 cardall">
-            <div class="row g-0">
-              <div class="col-md-4">
-                <img src="/{{movie_img}}" class="img-fluid rounded-start movie_card_img" alt="{{movie_name}} poster">
-              </div>
-              <div class="col-md-8">
-                <div class="card-body">
-                  <a href="/movies/{{_id}}">
-                    <h5 class="card-title">{{movie_name}}</h5>
-                  </a>
-                  <label for="release_year">Release Year: {{release_year}}</label>
-                  <br>
-                  <label for="streaming_service">Streaming On: </label>
-                  <a href={{streaming_service.link}}>{{streaming_service.name}}</a>
-                  <br>
-                  <label for="genre">Genres: {{genre}}</label>
-                  <br>
-                  <label for="rate">Rating: {{rating}}</label>
-                  <br>
-                  <label for="views">Views: {{views}}</label>
-                </div>
-              </div>
-            </div>
-          </div>
-          {{/each}}
-        </div>
-      </div> --}}
-
 <div id='TEST' class='col'>
 	<div class='p-4 border bg-light'>
 		<div id='showList'>
 			{{#each movieList}}
-				<div class='card mb-3 cardall'>
-					<div class='row g-0'>
-						<div class='col-md-4'>
-							<img
-								src='/{{movie_img}}'
-								class='img-fluid rounded-start movie_card_img'
-								alt='{{movie_name}} poster'
-							/>
-						</div>
-						<div class='col-md-8'>
-							<div class='card-body'>
-								<a href='/movies/{{_id}}'>
-									<h5 class='card-title'>{{movie_name}}</h5>
-								</a>
-								<label for='release_year'>Release Year: {{release_year}}</label>
-								<br />
-								<label for='streaming_service'>Streaming On: </label>
-								<a
-									href={{streaming_service.link}}
-								>{{streaming_service.name}}</a>
-								<br />
-								<label for='genre'>Genres: {{genre}}</label>
-								<br />
-								<label for='rate'>Rating: {{rating}}</label>
-								<br />
-								<label for='views'>Views: {{views}}</label>
-							</div>
+			<div class='card mb-3 cardall'>
+				<div class='row g-0'>
+					<div class='col-md-4'>
+						<img src='{{movie_img}}' class='img-fluid rounded-start movie_card_img'
+							alt='{{movie_name}} poster' />
+					</div>
+					<div class='col-md-8'>
+						<div class='card-body'>
+							<a href='/movies/{{_id}}'>
+								<h5 class='card-title'>{{movie_name}}</h5>
+							</a>
+							<label for='release_year'>Release Year: {{release_year}}</label>
+							<br />
+							<label for='streaming_service'>Streaming On: </label>
+							<a href={{streaming_service.link}}>{{streaming_service.name}}</a>
+							<br />
+							<label for='genre'>Genres: {{genre}}</label>
+							<br />
+							<label for='rate'>Rating: {{rating}}</label>
+							<br />
+							<label for='views'>Views: {{views}}</label>
 						</div>
 					</div>
 				</div>
+			</div>
 			{{/each}}
 		</div>
 	</div>

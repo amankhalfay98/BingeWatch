@@ -76,14 +76,16 @@
           <div class="card mb-3 cardall">
             <div class="row g-0">
               <div class="col-md-4">
-                <img src="/{{movie_img}}" class="img-fluid rounded-start movie_card_img" alt="{{movie_name}} poster">
+                <img src="{{movie_img}}" class="img-fluid rounded-start movie_card_img" alt="{{movie_name}} poster"
+                  id="allImagePoster">
               </div>
               <div class="col-md-8">
                 <div class="card-body">
                   <a href="/movies/{{_id}}">
                     <h5 class="card-title">{{movie_name}}</h5>
                   </a>
-                  <button name="reportMovie" class="reportMovie" data-username="{{../user.username}}" data-movid="{{this._id}}">Report</button>
+                  <button name="reportMovie" class="reportMovie" data-username="{{../user.username}}"
+                    data-movid="{{this._id}}">Report</button>
                   <label for="release_year">Release Year: {{release_year}}</label>
                   <br>
                   <label for="streaming_service">Streaming On: </label>
