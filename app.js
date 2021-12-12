@@ -80,7 +80,7 @@ app.use('/movies/addMovie', (req, res, next) => {
 app.use('/private', (req, res, next) => {
 	//console.log(req.session.id);
 	if (!req.session.user) {
-		return res.status(403).render('pages/error');
+		return res.status(403).redirect('/noSession');
 	} else {
 		next();
 	}

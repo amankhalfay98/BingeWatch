@@ -470,35 +470,33 @@ router.get('/private', async (req, res) => {
 // Individual User Page Route
 router.get('/private/:username', async (req, res) => {
 	if (req.session.user) {
-	try {
-	let rev = await usersData.getUser(req.params.username);
-	let hidden = '';
-	if (req.params.username == req.session.user.username) {
-		hidden = 'hidden';
-	}
-	let follow = 'Follow';
-	if (rev.followers.includes(req.session.user.username)) {
-		follow = 'Unfollow';
-	} else {
-		follow = 'Follow';
-	}
-
-	res.render('pages/individualUser', {
-		user: rev,
-		user1: req.session.user.username,
-		hidden: hidden,
-		follow: follow,
-		authenticated: req.session.user ? true : false,
-		username: req.session.user.username,
-	});
-} catch (e) {
-				res
-					.status(400)
-					.render('pages/error', { error: e, title: 'User Error' });
+		try {
+			let rev = await usersData.getUser(req.params.username);
+			let hidden = '';
+			if (req.params.username == req.session.user.username) {
+				hidden = 'hidden';
 			}
-		} else {
-			res.status(403).render('pages/error');
+			let follow = 'Follow';
+			if (rev.followers.includes(req.session.user.username)) {
+				follow = 'Unfollow';
+			} else {
+				follow = 'Follow';
+			}
+
+			res.render('pages/individualUser', {
+				user: rev,
+				user1: req.session.user.username,
+				hidden: hidden,
+				follow: follow,
+				authenticated: req.session.user ? true : false,
+				username: req.session.user.username,
+			});
+		} catch (e) {
+			res.status(400).render('pages/error', { error: e, title: 'User Error' });
 		}
+	} else {
+		res.status(403).redirect('/noSession');
+	}
 });
 
 // To Logout
