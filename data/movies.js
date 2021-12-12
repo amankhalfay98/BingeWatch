@@ -153,6 +153,8 @@ let createMovie = async (
     watched_list: [],
     movie_img: movie_img,
     tag: "movie",
+    favourite_list:[],
+    toWatch_list:[]
   };
 
   const insertMovie = await movieCollection.insertOne(newMovie);
