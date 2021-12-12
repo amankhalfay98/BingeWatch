@@ -52,7 +52,7 @@
             {{#each reviews}}
             <li class="list-group-item d-flex justify-content-between align-items-start">
               <div class="ms-2 me-auto">
-                <div class="fw-bold">{{this.username}}</div>
+                <div class="fw-bold"><a href="/private/{{this.username}}">{{this.username}}</a></div>
                 {{this.review}}
                 <button name="report" class="btn btn-primary report" data-username="{{../user.username}}"
                   data-revid="{{this._id}}">Report</button>
