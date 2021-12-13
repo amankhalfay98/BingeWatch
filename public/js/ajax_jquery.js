@@ -357,14 +357,14 @@
   let loginForm = $('#login-form')
   let usernameInput = $('#username');
   let passwordInput = $('#password');
-  let submitButton = $('#submitButton');
+  let submitLogin = $('#submitLogin');
   let errors = $('.error');
 
   loginForm.submit((event) => {
       event.preventDefault();
       usernameInput.removeClass('is-invalid is-valid');
       passwordInput.removeClass('is-invalid is-valid');
-      submitButton.prop('disabled', true);
+      submitLogin.prop('disabled', true);
       errors.hide();
 
       let info = {
@@ -384,7 +384,7 @@
       } else {
           errors.html('Username/Password cannot be empty.')
           errors.show();
-          submitButton.prop('disabled', false);
+          submitLogin.prop('disabled', false);
       }
   });
 
@@ -522,6 +522,116 @@
     //       //error.show();
     //       submitSignup.prop('disabled', false);
     //   }
+  });
+  
+  let addMovieForm = $('#addMovieForm');
+  let movie_name = $('#movie_name');
+  let stream_service = $('#stream_service');
+  let stream_service_url = $('#stream_service_url');
+  let release_year = $('#release_year');
+  let cast = $('#cast');
+  let genre =$('#genre');
+  let director = $('#director');
+  let err = $('.error');
+
+  let submitButton = $('#submitButton');
+  //let errors = $('.error');
+
+  addMovieForm.submit((event) => {
+      event.preventDefault();
+      movie_name.removeClass('is-invalid is-valid');
+      stream_service.removeClass('is-invalid is-valid');
+      stream_service_url.removeClass('is-invalid is-valid');
+      cast.removeClass('is-invalid is-valid');
+      release_year.removeClass('is-invalid is-valid');
+      director.removeClass('is-invalid is-valid');
+      genre.removeClass('is-invalid is-valid');
+      submitButton.prop('disabled', true);
+      errors.hide();
+
+      let info = {
+        movie_name: movie_name.val().trim(),
+        stream_service: stream_service.val().trim(),
+        stream_service_url: stream_service_url.val().trim(),
+        cast: cast.val().trim(),
+        release_year: release_year.val().trim(),
+        director: director.val().trim(),
+        genre: genre.val().trim()
+      };
+
+      if (
+        !info.movie_name ||
+        !info.stream_service ||
+        !info.director ||
+        !info.release_year ||
+        !info.cast ||
+        !info.stream_service_url ||
+        !info.genre ||
+        !info.cast
+      ){
+        err.html( 'One or more input parameter missing.');
+        err.show();
+        return
+      }
+        
+    
+      if (
+        typeof info.movie_name !== "string" ||
+        typeof info.director !== "string" ||
+        typeof info.genre !== "string"
+      ){
+        err.html( 'Incorrect data types');
+        err.show();
+        return
+      }
+    
+      if (
+        movie_name.trim().length === 0 ||
+        director.trim().length === 0 ||
+        genre.trim().length === 0
+      ){
+        err.html( 'Strings are just empty spaces');
+        err.show();
+        return
+      }
+
+        if (release_year < 1888 || release_year > new Date().getFullYear())
+        {
+            err.html( 'Invalid release year');
+            err.show();
+            return
+          }
+
+    for (i = 0; i < cast.length; i++) {
+        if (typeof cast[i] !== "string" || cast[i].trim().length === 0 || !validate.validName(cast[i]))
+        {
+            err.html( 'cast is not an array of strings or contains empty strings');
+            err.show();
+            return
+          }
+        cast[i] = cast[i].trim();
+      }
+      if (!("name" in streaming) || !("link" in streaming))
+      {
+        err.html( 'streaming missing important information');
+        err.show();
+        return
+      }
+
+      let hasErrors = false;
+    //   if (!info.username || !info.password) {
+    //       usernameInput.addClass('is-invalid');
+    //       passwordInput.addClass('is-invalid');
+    //       hasErrors = true;
+    //   }
+
+      if (!hasErrors) {
+        addMovieForm.unbind().submit();
+      } else {
+          errors.html('Username/Password cannot be empty.')
+          errors.show();
+          submitButton.prop('disabled', false);
+      }
   });
   
   var image_input = $('#profile_pic');

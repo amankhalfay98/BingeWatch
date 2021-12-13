@@ -348,7 +348,7 @@ let updateMovieReviewID = async (movie_id, review_id, review_rating) => {
   const movieCollection = await movies();
   let movie = await movieCollection.findOne({ _id: parseId });
   movie.reviews.push(review_id.toString());
-  if(movie.rating !== rating){
+  if(movie.rating !== review_rating){
   movie.rating = review_rating;
   const updatedMovie = await movieCollection.updateOne(
     { _id: parseId },
