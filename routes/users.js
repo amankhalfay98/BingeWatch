@@ -1,4 +1,4 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 let { ObjectId } = require("mongodb");
@@ -6,34 +6,39 @@ const usersData = require("../data/users");
 const path = require("path");
 const movies = require("../data/movies");
 const multer = require("multer");
+const xss = require('xss');
 
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const path = "profile/";
-    fs.mkdirSync(path, { recursive: true });
-    cb(null, path);
-  },
-  filename: function (req, file, cb) {
-    cb(null, new Date().toISOString() + file.originalname);
-  },
+	destination: function (req, file, cb) {
+		const path = 'profile/';
+		fs.mkdirSync(path, { recursive: true });
+		cb(null, path);
+	},
+	filename: function (req, file, cb) {
+		cb(null, new Date().toISOString() + file.originalname);
+	},
 });
 
 const upload = multer({ storage: storage });
 
 //FOR USERS NOT HAVING SESSION
-router.get("/noSession", async (req, res) => {
-  res
-    .status(400)
-    .render("pages/error", { error: "You are not Logged In", title: "Error" });
+router.get('/noSession', async (req, res) => {
+	res
+		.status(400)
+		.render('pages/error', { error: 'You are not Logged In', title: 'Error' });
 });
 
+//CHANGE: xss and error check
 //FOR USERS FOLLOWING OTHER USERS (CHANGE IF NEEDED)
 router.post("/follow/:username", async (req, res) => {
   const follow = req.body;
   try {
     const { user, username } = follow;
+	if(!user || !username)
+		throw "missing input parameters";
+	
     //const movie = await moviesData.getMovie(req.params.id);
-    let userFollow = await usersData.followUser(user, username);
+    let userFollow = await usersData.followUser(xss(user), xss(username));
     res.status(200).json(userFollow);
   } catch (e) {
     res.status(400).render("pages/error", { error: e, title: "Error" });
@@ -48,13 +53,17 @@ router.post("/follow/:username", async (req, res) => {
   // }
 });
 
+//CHANGE: xss and error check
 //FOR USERS UNFOLLOWING OTHER USERS
 router.post("/unfollow/:username", async (req, res) => {
   const unfollow = req.body;
   try {
     const { user, username } = unfollow;
+	if(!user || !username)
+		throw "missing input parameters"
+
     //const movie = await moviesData.getMovie(req.params.id);
-    let userUnfollow = await usersData.unfollowUser(user, username);
+    let userUnfollow = await usersData.unfollowUser(xss(user), xss(username));
     res.status(200).json(userUnfollow);
   } catch (e) {
     res.status(400).render("pages/error", { error: e, title: "Error" });
@@ -92,53 +101,54 @@ router.post("/unfollow/:username", async (req, res) => {
 // });
 
 // To go on Landing Page
-router.get("/", async (req, res) => {
-  //console.log(req.session);
-  // if (req.session.user) {
+router.get('/', async (req, res) => {
+	//console.log(req.session);
+	// if (req.session.user) {
 
-  if (req.session.user) {
-    res.redirect("movies/all");
-  } else {
-    const trendingMovies = await movies.getTrending();
-    res.render("pages/landing", {
-      title: "Binge-Watch",
-      trending: trendingMovies,
-    });
-  }
+	if (req.session.user) {
+		res.redirect('movies/all');
+	} else {
+		const trendingMovies = await movies.getTrending();
+		res.render('pages/landing', {
+			title: 'Binge-Watch',
+			trending: trendingMovies,
+		});
+	}
 });
 
 // To go on Login Page
-router.get("/login", async (req, res) => {
-  if (req.session.user) {
-    res.redirect("/movies/all");
-  } else {
-    res.render("pages/login");
-  }
+router.get('/login', async (req, res) => {
+	if (req.session.user) {
+		res.redirect('/movies/all');
+	} else {
+		res.render('pages/login');
+	}
 });
 
 // To go on Signup Page
-router.get("/signup", async (req, res) => {
-  if (req.session.user) {
-    res.redirect("/movies/all");
-  } else {
-    res.render("pages/signup");
-  }
+router.get('/signup', async (req, res) => {
+	if (req.session.user) {
+		res.redirect('/movies/all');
+	} else {
+		res.render('pages/signup');
+	}
 });
 
+//CHANGE: cleaned up error check and xss
 // To Sign Up a new User
 router.post("/signup", upload.single("profile_pic"), async (req, res) => {
   const newUser = req.body;
   if (req && req.file && req.file.fieldname === "profile_pic" && newUser) {
     newUser.profile_pic = "/" + req.file.path;
   } else {
-    newUser.profile_pic = "/public/images/abstract-user-flat-4.png";
+    newUser.profile_pic = '/public/images/abstract-user-flat-4.png';
   }
   //console.log(newUser);
   //req.session.user = newUser;
 
   // Error handling for name
-  if (!newUser.name || newUser.name.trim() == "") {
-    res.status(400).render("pages/signup", { error: "Please provide name", newUser: newUser });
+  if (!newUser.name || newUser.name.trim().length === 0) {
+    res.status(400).render("pages/signup", { error: "Please provide name" });
     return;
   }
   newUser.name = newUser.name.trim();
@@ -149,17 +159,16 @@ router.post("/signup", upload.single("profile_pic"), async (req, res) => {
     if (!element.match(/([a-zA-Z])/)) {
       res.status(400).render("pages/signup", {
         error: "only characters allowed",
-        newUser: newUser
       });
       return;
     }
   }
 
   //Error Handling for DOB
-  if (!newUser.date_of_birth || newUser.date_of_birth.trim() == "") {
+  if (!newUser.date_of_birth || newUser.date_of_birth.trim().length === 0) {
     res
       .status(400)
-      .render("pages/signup", { error: "Please provide Date of Birth", newUser: newUser });
+      .render("pages/signup", { error: "Please provide Date of Birth" });
     return;
   }
   newUser.date_of_birth = newUser.date_of_birth.trim();
@@ -168,16 +177,15 @@ router.post("/signup", upload.single("profile_pic"), async (req, res) => {
   if (!newUser.date_of_birth.match(/^\d{4}-\d{2}-\d{2}$/)) {
     res.status(400).render("pages/signup", {
       error: "Invalid Date of Birth",
-      newUser: newUser
     });
     return;
   }
 
   // Error handling for username
-  if (!newUser.username || newUser.username.trim() == "") {
+  if (!newUser.username || newUser.username.trim().length === 0) {
     res
       .status(400)
-      .render("pages/signup", { error: "Please provide username", newUser: newUser });
+      .render("pages/signup", { error: "Please provide username" });
     return;
   }
 
@@ -185,7 +193,6 @@ router.post("/signup", upload.single("profile_pic"), async (req, res) => {
   if (newUser.username.length < 4) {
     res.status(400).render("pages/signup", {
       error: "username should be at least 4 characters long",
-      newUser: newUser
     });
     return;
   }
@@ -196,24 +203,23 @@ router.post("/signup", upload.single("profile_pic"), async (req, res) => {
     if (/\s+/g.test(element)) {
       res
         .status(400)
-        .render("pages/signup", { error: "spaces not allowed in username", newUser: newUser });
+        .render("pages/signup", { error: "spaces not allowed in username" });
       return;
     }
 
     if (!element.match(/([a-z0-9])/)) {
       res.status(400).render("pages/signup", {
         error: "only alphanumeric characters allowed",
-        newUser: newUser
       });
       return;
     }
   }
 
   // Error handling for Email
-  if (!newUser.email || newUser.email.trim() == "") {
+  if (!newUser.email || newUser.email.trim().length === 0) {
     res
       .status(400)
-      .render("pages/signup", { error: "Please provide valid emailId", newUser: newUser });
+      .render("pages/signup", { error: "Please provide valid emailId" });
     return;
   }
   newUser.email = newUser.email.trim();
@@ -225,24 +231,22 @@ router.post("/signup", upload.single("profile_pic"), async (req, res) => {
   ) {
     res.status(400).render("pages/signup", {
       error: "Invalid Email Address",
-      newUser: newUser
     });
     return;
   }
 
   // Error handling for password
 
-  if (!newUser.password || newUser.password.trim() == "") {
+  if (!newUser.password || newUser.password.trim().length === 0) {
     res
       .status(400)
-      .render("pages/signup", { error: "Please provide password" , newUser: newUser});
+      .render("pages/signup", { error: "Please provide password" });
     return;
   }
 
   if (newUser.password.length < 6) {
     res.status(400).render("pages/signup", {
       error: "password should be at least 6 characters long",
-      newUser: newUser
     });
     return;
   }
@@ -253,7 +257,7 @@ router.post("/signup", upload.single("profile_pic"), async (req, res) => {
     if (/\s+/g.test(element)) {
       res
         .status(400)
-        .render("pages/signup", { error: "spaces not allowed in password" , newUser: newUser});
+        .render("pages/signup", { error: "spaces not allowed in password" });
       return;
     }
   }
@@ -264,12 +268,12 @@ router.post("/signup", upload.single("profile_pic"), async (req, res) => {
 
     //console.log(newRestaurant);
     const rev = await usersData.createUser(
-      name,
-      date_of_birth,
-      username,
-      password,
-      email,
-      profile_pic
+      xss(name),
+      xss(date_of_birth),
+      xss(username),
+      xss(password),
+      xss(email),
+      xss(profile_pic)
     );
 
     //For Sessions
@@ -288,13 +292,14 @@ router.post("/signup", upload.single("profile_pic"), async (req, res) => {
   }
 });
 
+//CHANGE: xss and cleaned up error check
 // To Post Login Information
 router.post("/login", async (req, res) => {
   const newUser = req.body;
   //console.log(req.session);
 
   // Error handling for username
-  if (!newUser.username || newUser.username.trim() == "") {
+  if (!newUser.username || newUser.username.trim().length === 0) {
     res.status(400).render("pages/login", { error: "Please provide username" });
     return;
   }
@@ -328,7 +333,7 @@ router.post("/login", async (req, res) => {
 
   // Error handling for password
 
-  if (!newUser.password || newUser.password.trim() == "") {
+  if (!newUser.password || newUser.password.trim().length === 0) {
     res.status(400).render("pages/login", { error: "Please provide password" });
     return;
   }
@@ -355,7 +360,7 @@ router.post("/login", async (req, res) => {
     const { username, password } = newUser;
 
     //console.log(newUser);
-    const rev = await usersData.checkUser(username, password);
+    const rev = await usersData.checkUser(xss(username), xss(password));
     if (rev.authenticated) {
       req.session.user = { username: newUser.username };
       //console.log(req.session);
@@ -371,6 +376,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
+//CHANGE: xss and error check
 // To Update a User
 router.post("/private", async (req, res) => {
   const newUser = req.body;
@@ -444,7 +450,7 @@ router.post("/private", async (req, res) => {
 
     //console.log(newUser);
     let current = await usersData.getUser(req.session.user.username);
-    let rev = await usersData.update(current.username, name, newpass, password);
+    let rev = await usersData.update(xss(current.username), xss(name), xss(newpass), xss(password));
     //console.log(rev);
     res.status(200).redirect("/");
   } catch (e) {
@@ -466,67 +472,101 @@ router.post("/private", async (req, res) => {
 });
 
 // If authenticated go to Private Route
-router.get("/private", async (req, res) => {
-  let rev = await usersData.getUser(req.session.user.username);
-  //console.log(rev);
-  let checked = "";
-  if (rev.private) {
-    checked = "checked";
-  }
+router.get('/private', async (req, res) => {
+	let rev = await usersData.getUser(req.session.user.username);
+	//console.log(rev);
+	let checked = '';
+	if (rev.private) {
+		checked = 'checked';
+	}
 
-  res.render("pages/private", {
-    user: rev,
-    authenticated: req.session.user ? true : false,
-    username: req.session.user.username,
-    checked: checked,
-  });
+	res.render('pages/private', {
+		user: rev,
+		authenticated: req.session.user ? true : false,
+		username: req.session.user.username,
+		checked: checked,
+	});
+});
+
+// Search User on Search Bar
+router.get('/private/search/:user', async (req, res) => {
+	if (req.session.user) {
+		try {
+			let rev = await usersData.searchByUsername(req.params.user);
+			// if (!rev) {
+			// 	throw 'no user found with that username';
+			// }
+			// let hidden = '';
+			// if (req.params.username == req.session.user.username) {
+			// 	hidden = 'hidden';
+			// }
+			// let follow = 'Follow';
+			// if (rev.followers.includes(req.session.user.username)) {
+			// 	follow = 'Unfollow';
+			// } else {
+			// 	follow = 'Follow';
+			// }
+
+			res.render('pages/searchResults', {
+				username: req.session.user.username,
+				profile_pic: profile_pic,
+			});
+		} catch (e) {
+			res.status(400).render('pages/error', { error: e, title: 'User Error' });
+		}
+	} else {
+		res.status(403).render('pages/error');
+	}
 });
 
 // Individual User Page Route
-router.get("/private/:username", async (req, res) => {
-  if (req.session.user) {
-    try {
-      let rev = await usersData.getUser(req.params.username);
-      let hidden = "";
-      if (req.params.username == req.session.user.username) {
-        hidden = "hidden";
-      }
-      let follow = "Follow";
-      if (rev.followers.includes(req.session.user.username)) {
-        follow = "Unfollow";
-      } else {
-        follow = "Follow";
-      }
+router.get('/private/:username', async (req, res) => {
+	if (req.session.user) {
+		try {
+			let rev = await usersData.getUser(req.params.username);
+			if (!rev) {
+				throw 'no user found with that username';
+			}
+			let hidden = '';
+			if (req.params.username == req.session.user.username) {
+				hidden = 'hidden';
+			}
+			let follow = 'Follow';
+			if (rev.followers.includes(req.session.user.username)) {
+				follow = 'Unfollow';
+			} else {
+				follow = 'Follow';
+			}
 
-      res.render("pages/individualUser", {
-        user: rev,
-        user1: req.session.user.username,
-        hidden: hidden,
-        follow: follow,
-        authenticated: req.session.user ? true : false,
-        username: req.session.user.username,
-      });
-    } catch (e) {
-      res.status(400).render("pages/error", { error: e, title: "User Error" });
-    }
-  } else {
-    res.status(403).render("pages/error");
-  }
+			res.render('pages/individualUser', {
+				user: rev,
+				user1: req.session.user.username,
+				hidden: hidden,
+				follow: follow,
+				authenticated: req.session.user ? true : false,
+				username: req.session.user.username,
+			});
+		} catch (e) {
+			res.status(400).render('pages/error', { error: e, title: 'User Error' });
+		}
+	} else {
+		res.status(403).render('pages/error');
+	}
 });
 
-router.post("/profile/:username/:checked", async (req, res) => {
-  const private = await usersData.setPrivate(
-    req.params.username,
-    req.params.checked
-  );
-  res.json(private);
+router.post('/profile/:username/:checked', async (req, res) => {
+	const private = await usersData.setPrivate(
+		req.params.username,
+		req.params.checked
+	);
+	res.json(private);
 });
 
 // To Logout
-router.get("/logout", async (req, res) => {
-  req.session.destroy();
-  res.clearCookie("AuthCookie");
-  res.render("pages/logout");
+router.get('/logout', async (req, res) => {
+	req.session.destroy();
+	res.clearCookie('AuthCookie');
+	res.render('pages/logout');
 });
 
 module.exports = router;

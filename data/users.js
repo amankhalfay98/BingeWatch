@@ -32,7 +32,12 @@ module.exports = {
 		// --------------------CHANGES---------------------------------------
 
 		//For Name
-		if (!name || typeof name !== 'string' || name.trim().length === 0 || !validate.validName(name.trim())) {
+		if (
+			!name ||
+			typeof name !== 'string' ||
+			name.trim().length === 0 ||
+			!validate.validName(name.trim())
+		) {
 			throw 'Name given is invalid';
 		}
 
@@ -56,8 +61,8 @@ module.exports = {
 		// console.log('In Data', date_of_birth);
 		// if (!date_of_birth.match(/^\d{2}-\d{2}-\d{4}$/))
 		// 	throw 'Invalid Date of Birth';
-		if(!validate.validAge((new Date().getFullYear()) - birthYear))
-			throw "Invalid date of birth";
+		if (!validate.validAge(new Date().getFullYear() - birthYear))
+			throw 'Invalid date of birth';
 
 		// --------------------CHANGES---------------------------------------
 
@@ -161,11 +166,15 @@ module.exports = {
 	},
 
 	async checkUser(username, password) {
-
 		// --------------------CHANGES---------------------------------------
 
 		// Error handling for username
-		if (!username || typeof username !== "string" || username.trim().length === 0) throw 'Please provide username';
+		if (
+			!username ||
+			typeof username !== 'string' ||
+			username.trim().length === 0
+		)
+			throw 'Please provide username';
 
 		username = username.trim().toLowerCase();
 		if (username.length < 4)
@@ -181,7 +190,12 @@ module.exports = {
 
 		// Error handling for password
 
-		if (!password || typeof password !== "string" || password.trim().length === 0) throw 'Please provide password';
+		if (
+			!password ||
+			typeof password !== 'string' ||
+			password.trim().length === 0
+		)
+			throw 'Please provide password';
 
 		// --------------------CHANGES---------------------------------------
 
@@ -220,7 +234,12 @@ module.exports = {
 	async getUser(username) {
 		// --------------------CHANGES---------------------------------------
 
-		if (!username || typeof username !== "string" || username.trim().length === 0) throw 'Please provide username';
+		if (
+			!username ||
+			typeof username !== 'string' ||
+			username.trim().length === 0
+		)
+			throw 'Please provide username';
 
 		// --------------------CHANGES---------------------------------------
 
@@ -247,13 +266,13 @@ module.exports = {
 		// --------------------CHANGES---------------------------------------
 
 		//Error Handeling
-		if (!id) throw "no id is given.";
+		if (!id) throw 'no id is given.';
 
- 	 	if (typeof id !== "string") throw "id is of invalid type";
+		if (typeof id !== 'string') throw 'id is of invalid type';
 
-  		if (id.trim().length === 0) throw "id supplied is just an empty string";
+		if (id.trim().length === 0) throw 'id supplied is just an empty string';
 
-  		if (!ObjectId.isValid(id.trim())) throw "id is not a valid ObjectId";
+		if (!ObjectId.isValid(id.trim())) throw 'id is not a valid ObjectId';
 
 		let parseId = ObjectId(id.trim());
 		// --------------------CHANGES---------------------------------------
@@ -275,13 +294,13 @@ module.exports = {
 		//Error Handeling
 		// --------------------CHANGES---------------------------------------
 
-		if (!id) throw "no id is given.";
+		if (!id) throw 'no id is given.';
 
- 	 	if (typeof id !== "string") throw "id is of invalid type";
+		if (typeof id !== 'string') throw 'id is of invalid type';
 
-  		if (id.trim().length === 0) throw "id supplied is just an empty string";
+		if (id.trim().length === 0) throw 'id supplied is just an empty string';
 
-  		if (!ObjectId.isValid(id.trim())) throw "id is not a valid ObjectId";
+		if (!ObjectId.isValid(id.trim())) throw 'id is not a valid ObjectId';
 
 		let parseId = ObjectId(id.trim());
 
@@ -318,7 +337,12 @@ module.exports = {
 
 		// --------------------CHANGES---------------------------------------
 		// For Name
-		if (!name || typeof name !== 'string' || name.trim().length === 0 || !validate.validName(name.trim())) {
+		if (
+			!name ||
+			typeof name !== 'string' ||
+			name.trim().length === 0 ||
+			!validate.validName(name.trim())
+		) {
 			throw 'Name given is invalid';
 		}
 
@@ -342,8 +366,8 @@ module.exports = {
 		// console.log('In Data', date_of_birth);
 		// if (!date_of_birth.match(/^\d{2}-\d{2}-\d{4}$/))
 		// 	throw 'Invalid Date of Birth';
-		if(!validate.validAge((new Date().getFullYear()) - birthYear))
-			throw "Invalid date of birth";
+		if (!validate.validAge(new Date().getFullYear() - birthYear))
+			throw 'Invalid date of birth';
 
 		// --------------------CHANGES---------------------------------------
 
@@ -419,31 +443,40 @@ module.exports = {
 	},
 
 	async addToFave(user, movie) {
-		if(!user || ! movie)
-			{throw "missing input parameters";}
-		
-		if(typeof user !== 'string' || typeof movie !== 'string')
-			{throw "invalid data type";}
+		if (!user || !movie) {
+			throw 'missing input parameters';
+		}
 
-		if(user.trim().length === 0 || movie.trim().length === 0)
-			{throw "invalid strings";}
+		if (typeof user !== 'string' || typeof movie !== 'string') {
+			throw 'invalid data type';
+		}
 
-		let isFav=false;
+		if (user.trim().length === 0 || movie.trim().length === 0) {
+			throw 'invalid strings';
+		}
+
+		let isFav = false;
 		const usersCollection = await users();
 		let currUser = await usersCollection.findOne({ username: user.trim() });
 		if (currUser === null) throw 'user not found';
 
-		if (currUser.favourites.includes(movie)){
-            const updatedUser = await usersCollection.updateOne({ username: user.trim() },{$pull: { favourites: movie.trim() }});
-            if (updatedUser.matchedCount && updatedUser.modifiedCount) {isFav = false};
-        }
-        else{
-            const updatedUser = await usersCollection.updateOne(
+		if (currUser.favourites.includes(movie)) {
+			const updatedUser = await usersCollection.updateOne(
+				{ username: user.trim() },
+				{ $pull: { favourites: movie.trim() } }
+			);
+			if (updatedUser.matchedCount && updatedUser.modifiedCount) {
+				isFav = false;
+			}
+		} else {
+			const updatedUser = await usersCollection.updateOne(
 				{ username: user.trim() },
 				{ $addToSet: { favourites: movie.trim() } }
 			);
-            if (updatedUser.matchedCount && updatedUser.modifiedCount) {isFav = true};
-        }
+			if (updatedUser.matchedCount && updatedUser.modifiedCount) {
+				isFav = true;
+			}
+		}
 		await movieData.favMovies(user, movie);
 		return isFav;
 	},
@@ -474,34 +507,44 @@ module.exports = {
 	},
 
 	async addToWatch(user, movie) {
+		if (!user || !movie) {
+			throw 'missing input parameters';
+		}
 
-		if(!user || ! movie)
-			{throw "missing input parameters";}
-		
-		if(typeof user !== 'string' || typeof movie !== 'string')
-			{throw "invalid data type";}
+		if (typeof user !== 'string' || typeof movie !== 'string') {
+			throw 'invalid data type';
+		}
 
-		if(user.trim().length === 0 || movie.trim().length === 0)
-			{throw "invalid strings";}
+		if (user.trim().length === 0 || movie.trim().length === 0) {
+			throw 'invalid strings';
+		}
 
-			let isWatched=false;
-			const usersCollection = await users();
-			let currUser = await usersCollection.findOne({ username: user.trim() });
-			if(currUser === null) {throw "user not found";}
-	
-			if (currUser.watchlist.includes(movie)){
-				const updatedUser = await usersCollection.updateOne({ username: user.trim() },{$pull: { watchlist: movie.trim() }});
-				if (updatedUser.matchedCount && updatedUser.modifiedCount) {isWatched = false};
+		let isWatched = false;
+		const usersCollection = await users();
+		let currUser = await usersCollection.findOne({ username: user.trim() });
+		if (currUser === null) {
+			throw 'user not found';
+		}
+
+		if (currUser.watchlist.includes(movie)) {
+			const updatedUser = await usersCollection.updateOne(
+				{ username: user.trim() },
+				{ $pull: { watchlist: movie.trim() } }
+			);
+			if (updatedUser.matchedCount && updatedUser.modifiedCount) {
+				isWatched = false;
 			}
-			else{
-				const updatedUser = await usersCollection.updateOne(
-					{ username: user.trim() },
-					{ $addToSet: { watchlist: movie.trim() } }
-				);
-				if (updatedUser.matchedCount && updatedUser.modifiedCount) {isWatched = true};
+		} else {
+			const updatedUser = await usersCollection.updateOne(
+				{ username: user.trim() },
+				{ $addToSet: { watchlist: movie.trim() } }
+			);
+			if (updatedUser.matchedCount && updatedUser.modifiedCount) {
+				isWatched = true;
 			}
-			await movieData.toWatchMovies(user, movie);
-			return isWatched;
+		}
+		await movieData.toWatchMovies(user, movie);
+		return isWatched;
 	},
 
 	async removeFromWatch(user, movie) {
@@ -637,10 +680,9 @@ module.exports = {
 		let currUser = await usersCollection.findOne({ username: user.trim() });
 		if (currUser === null) throw 'user not found';
 
-		if(private ==='true'){
+		if (private === 'true') {
 			private = true;
-		}
-		else{
+		} else {
 			private = false;
 		}
 		const updatedUser = await usersCollection.updateOne(
