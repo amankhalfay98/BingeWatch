@@ -138,12 +138,10 @@ router.post('/signup', upload.single('profile_pic'), async (req, res) => {
 
 	// Error handling for name
 	if (!newUser.name || newUser.name.trim() == '') {
-		res
-			.status(400)
-			.render('pages/signup', {
-				error: 'Please provide name',
-				newUser: newUser,
-			});
+		res.status(400).render('pages/signup', {
+			error: 'Please provide name',
+			newUser: newUser,
+		});
 		return;
 	}
 	newUser.name = newUser.name.trim();
@@ -162,12 +160,10 @@ router.post('/signup', upload.single('profile_pic'), async (req, res) => {
 
 	//Error Handling for DOB
 	if (!newUser.date_of_birth || newUser.date_of_birth.trim() == '') {
-		res
-			.status(400)
-			.render('pages/signup', {
-				error: 'Please provide Date of Birth',
-				newUser: newUser,
-			});
+		res.status(400).render('pages/signup', {
+			error: 'Please provide Date of Birth',
+			newUser: newUser,
+		});
 		return;
 	}
 	newUser.date_of_birth = newUser.date_of_birth.trim();
@@ -183,12 +179,10 @@ router.post('/signup', upload.single('profile_pic'), async (req, res) => {
 
 	// Error handling for username
 	if (!newUser.username || newUser.username.trim() == '') {
-		res
-			.status(400)
-			.render('pages/signup', {
-				error: 'Please provide username',
-				newUser: newUser,
-			});
+		res.status(400).render('pages/signup', {
+			error: 'Please provide username',
+			newUser: newUser,
+		});
 		return;
 	}
 
@@ -205,12 +199,10 @@ router.post('/signup', upload.single('profile_pic'), async (req, res) => {
 		const element = newUser.username[i];
 		//console.log(element);
 		if (/\s+/g.test(element)) {
-			res
-				.status(400)
-				.render('pages/signup', {
-					error: 'spaces not allowed in username',
-					newUser: newUser,
-				});
+			res.status(400).render('pages/signup', {
+				error: 'spaces not allowed in username',
+				newUser: newUser,
+			});
 			return;
 		}
 
@@ -225,12 +217,10 @@ router.post('/signup', upload.single('profile_pic'), async (req, res) => {
 
 	// Error handling for Email
 	if (!newUser.email || newUser.email.trim() == '') {
-		res
-			.status(400)
-			.render('pages/signup', {
-				error: 'Please provide valid emailId',
-				newUser: newUser,
-			});
+		res.status(400).render('pages/signup', {
+			error: 'Please provide valid emailId',
+			newUser: newUser,
+		});
 		return;
 	}
 	newUser.email = newUser.email.trim();
@@ -250,12 +240,10 @@ router.post('/signup', upload.single('profile_pic'), async (req, res) => {
 	// Error handling for password
 
 	if (!newUser.password || newUser.password.trim() == '') {
-		res
-			.status(400)
-			.render('pages/signup', {
-				error: 'Please provide password',
-				newUser: newUser,
-			});
+		res.status(400).render('pages/signup', {
+			error: 'Please provide password',
+			newUser: newUser,
+		});
 		return;
 	}
 
@@ -271,12 +259,10 @@ router.post('/signup', upload.single('profile_pic'), async (req, res) => {
 		const element = newUser.password[i];
 		//console.log(element);
 		if (/\s+/g.test(element)) {
-			res
-				.status(400)
-				.render('pages/signup', {
-					error: 'spaces not allowed in password',
-					newUser: newUser,
-				});
+			res.status(400).render('pages/signup', {
+				error: 'spaces not allowed in password',
+				newUser: newUser,
+			});
 			return;
 		}
 	}
@@ -505,11 +491,45 @@ router.get('/private', async (req, res) => {
 	});
 });
 
+// Search User on Search Bar
+router.get('/private/search/:user', async (req, res) => {
+	if (req.session.user) {
+		try {
+			let rev = await usersData.searchByUsername(req.params.user);
+			// if (!rev) {
+			// 	throw 'no user found with that username';
+			// }
+			// let hidden = '';
+			// if (req.params.username == req.session.user.username) {
+			// 	hidden = 'hidden';
+			// }
+			// let follow = 'Follow';
+			// if (rev.followers.includes(req.session.user.username)) {
+			// 	follow = 'Unfollow';
+			// } else {
+			// 	follow = 'Follow';
+			// }
+
+			res.render('pages/searchResults', {
+				username: req.session.user.username,
+				profile_pic: profile_pic,
+			});
+		} catch (e) {
+			res.status(400).render('pages/error', { error: e, title: 'User Error' });
+		}
+	} else {
+		res.status(403).render('pages/error');
+	}
+});
+
 // Individual User Page Route
 router.get('/private/:username', async (req, res) => {
 	if (req.session.user) {
 		try {
 			let rev = await usersData.getUser(req.params.username);
+			if (!rev) {
+				throw 'no user found with that username';
+			}
 			let hidden = '';
 			if (req.params.username == req.session.user.username) {
 				hidden = 'hidden';
