@@ -468,7 +468,7 @@ router.post("/watched/:id", async (req, res) => {
 router.get("/search/movie/:term", async (req, res) => {
   try {
     if(!req.params.term || typeof req.params.term !== "string")
-      throw "invalid id passed";
+      throw "invalid term passed";
     
     const movie = await moviesData.searchByMovie(req.params.term);
     res.render("movies/allMovies", {
@@ -492,8 +492,8 @@ router.get("/search/movie/:term", async (req, res) => {
 //SEARCH BAR WHEN GIVEN DIRECTOR
 router.get("/search/director/:term", async (req, res) => {
   try {
-    if(!req.params.id || typeof req.params.id !== "string")
-      throw "invalid id passed";
+    if(!req.params.term || typeof req.params.term !== "string")
+      throw "invalid term passed";
     
     const movie = await moviesData.searchByDirector(req.params.term);
     res.render("movies/allMovies", {
@@ -517,8 +517,8 @@ router.get("/search/director/:term", async (req, res) => {
 //SEARCH BAR WHEN GIVEN CAST NAME
 router.get("/search/cast/:term", async (req, res) => {
   try {
-    if(!req.params.id || typeof req.params.id !== "string")
-      throw "invalid id passed";
+    if(!req.params.term || typeof req.params.term !== "string")
+      throw "invalid term passed";
       
     const movie = await moviesData.searchByCast(req.params.term);
     res.render("movies/allMovies", {
