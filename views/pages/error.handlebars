@@ -1,12 +1,16 @@
-<head>
-	<meta charset='UTF-8' />
-	
-	<title>{{title}}</title>
-</head>
-<body>
-<main>
-	<h3>{{error}}</h3>
-
-	<a href='/login'>Go back to Login</a>
-</main>
-{{! </body> }}
+<div class="showcaseFull">
+	<div class="container">
+		<div class="card-tansparent text-center">
+			<div class="card-body content">
+				<h1 class="card-title head">Welcome To BingeWatch</h1>
+				<h2 class="card-text">OOPS!</h2>
+				{{#if error}}
+				<h3 class="card-text">{{error}}</h3><a href="/login" class="btn btn-danger">Click here to Login</a>
+				{{else}}
+				<h3 class="card-text">Looks Like Something Went Wrong</h3><a href="/login" class="btn btn-danger">Click
+					here to Login</a>
+				{{/if}}
+			</div>
+		</div>
+	</div>
+</div>

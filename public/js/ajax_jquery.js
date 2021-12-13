@@ -45,7 +45,7 @@
           const li = `<div class="card mb-3">
           <div class="row g-0">
             <div class="col-md-4">
-              <img src="/${this.movie_img}" class="img-fluid rounded-start movie_card_img" alt="${this.movie_name} poster"">
+              <img src="${this.movie_img}" class="img-fluid rounded-start movie_card_img" alt="${this.movie_name} poster"">
             </div>
             <div class="col-md-8">
               <div class="card-body">
@@ -100,7 +100,7 @@
           const li = `<div class="card mb-3">
           <div class="row g-0">
             <div class="col-md-4">
-            <img src="/${this.movie_img}" class="img-fluid rounded-start movie_card_img" alt="${this.movie_name} poster"">
+            <img src="${this.movie_img}" class="img-fluid rounded-start movie_card_img" alt="${this.movie_name} poster"">
             </div>
             <div class="col-md-8">
               <div class="card-body">

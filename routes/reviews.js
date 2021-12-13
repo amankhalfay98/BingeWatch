@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const data = require("../data");
 const reviews = data.reviews;
-const xss = require('xss');
+const xss = require("xss");
 
 //CHANGE: xss (still needs error check)
 //WHY IS TAG BEING PASSED???????????
@@ -15,7 +15,7 @@ router.post("/postReview", async (req, res) => {
     xss(movie_id),
     xss(movie_name),
     xss(review),
-    xss(parseInt(rating)),
+    parseInt(xss(rating)),
     xss(tag)
   );
   //   console.log(postReview);
@@ -23,12 +23,16 @@ router.post("/postReview", async (req, res) => {
 });
 
 //CHANGE: xss and error check
-router.post('/report', async function (req, res){
+router.post("/report", async function (req, res) {
   let data = req.body;
   const { reviewId, username, movie_id } = data;
-  const reported = await reviews.updateReviewReport(xss(reviewId), xss(username), xss(movie_id));
+  const reported = await reviews.updateReviewReport(
+    xss(reviewId),
+    xss(username),
+    xss(movie_id)
+  );
   res.json(reported);
-})
+});
 
 //CHANGE: error check + xss
 router.post("/:id", async (req, res) => {
@@ -36,12 +40,12 @@ router.post("/:id", async (req, res) => {
   //const { movie_id } = data;
   //if(req.params.id){
   try {
-    if(!req.params.id || typeof req.params.id !== "string")
+    if (!req.params.id || typeof req.params.id !== "string")
       throw "invalid id passed";
     const allReviews = await reviews.getReviewsByMovieId(xss(req.params.id));
     res.json(allReviews);
-  } catch(e) {
-    res.status(404).json({error: e});
+  } catch (e) {
+    res.status(404).json({ error: e });
   }
   // if(!req.params.id || typeof req.params.id !== "string")
   //   throw "invalid id passed";
@@ -54,16 +58,16 @@ router.post("/:id", async (req, res) => {
 //CHANGE: input check for id and throw string
 router.delete("/deleteReview/:id", async (req, res) => {
   try {
-    if(!req.params.id || typeof req.params.id !== "string")
+    if (!req.params.id || typeof req.params.id !== "string")
       throw "invalid id passed";
-    
+
     let data = req.params.id;
     const deleteReview = await reviews.remove(data);
     if (deleteReview.deleted) {
       res.json(deleteReview);
     }
   } catch (e) {
-    res.status(404).json({error: e});
+    res.status(404).json({ error: e });
   }
 });
 

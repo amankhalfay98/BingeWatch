@@ -5,9 +5,8 @@ const router = express.Router();
 // const usersData = require('../data/users');
 const data = require("../data");
 const multer = require("multer");
-const xss = require('xss');
-const fs = require('fs');
-
+const xss = require("xss");
+const fs = require("fs");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -58,13 +57,13 @@ router.get("/allMovies", async (req, res) => {
 router.post("/all/:value", async (req, res) => {
   try {
     let sortVal = xss(req.params.value);
-    if(!sortVal || typeof sortVal !== "string") {
-      throw "invalid value field"
+    if (!sortVal || typeof sortVal !== "string") {
+      throw "invalid value field";
     }
     const sorted = await moviesData.getSort(sortVal);
     res.json(sorted);
   } catch (e) {
-    res.status(404).json({error: e});
+    res.status(404).json({ error: e });
   }
 });
 
@@ -90,14 +89,13 @@ router.get("/addMovie", async (req, res) => {
   }
 });
 
-
 //CHANGE: error check with id and throw error string
 router.get("/:id", async (req, res) => {
   //console.log(req.params.id);
   //console.log(req.session);
   if (req.session.user) {
     try {
-      if(!req.params.id || typeof req.params.id !== "string")
+      if (!req.params.id || typeof req.params.id !== "string")
         throw "invalid id passed";
 
       const movie = await moviesData.getMovie(req.params.id);
@@ -164,11 +162,9 @@ router.get("/:id", async (req, res) => {
   } else {
     res.status(403).render("pages/error", {
       authenticated: req.session.user ? true : false,
-      username: req.session.user.username,
     });
   }
 });
-
 
 router.get("/", async (req, res) => {
   try {
@@ -208,7 +204,6 @@ router.get("/", async (req, res) => {
 //   }
 // });
 
-
 //CHANGE: added xss in create try/catch
 router.post("/addMovie", upload.single("movie_img"), async (req, res) => {
   let username =
@@ -227,8 +222,8 @@ router.post("/addMovie", upload.single("movie_img"), async (req, res) => {
     moviesDataList.stream_service_url
   ) {
     moviesDataList.streaming_services = {
-      name: moviesDataList.stream_service,
-      link: moviesDataList.stream_service_url,
+      name: xss(moviesDataList.stream_service),
+      link: xss(moviesDataList.stream_service_url),
     };
   }
   if (!moviesDataList.movie_name) {
@@ -275,7 +270,7 @@ router.post("/addMovie", upload.single("movie_img"), async (req, res) => {
   }
   moviesDataList.release_year = parseInt(moviesDataList.release_year);
   try {
-    const {
+    let {
       movie_name,
       director,
       release_year,
@@ -284,13 +279,14 @@ router.post("/addMovie", upload.single("movie_img"), async (req, res) => {
       genre,
       movie_img,
     } = moviesDataList;
-    const newMovie = await moviesData.createMovie(
+    console.log(xss(streaming_services));
+    let newMovie = await moviesData.createMovie(
       xss(username),
       xss(movie_name),
       xss(director),
-      xss(release_year),
-      xss(cast),
-      xss(streaming_services),
+      parseInt(xss(release_year)),
+      xss(cast).split("\r\n"),
+      streaming_services,
       xss(genre),
       xss(movie_img)
     );
@@ -311,7 +307,7 @@ router.post("/addMovie", upload.single("movie_img"), async (req, res) => {
 router.get("/edit/:id", async (req, res) => {
   if (req.session.user) {
     try {
-      if(!req.params.id || typeof req.params.id !== "string")
+      if (!req.params.id || typeof req.params.id !== "string")
         throw "invalid id passed";
 
       const movie = await moviesData.getMovie(req.params.id);
@@ -335,8 +331,7 @@ router.get("/edit/:id", async (req, res) => {
 
 //CHANGE: xss added
 router.put("/edit/:id", async (req, res) => {
-
-  if(!req.params.id || typeof req.params.id !== "string")
+  if (!req.params.id || typeof req.params.id !== "string")
     throw "invalid id passed";
 
   const updatedData = req.body;
@@ -388,7 +383,10 @@ router.put("/edit/:id", async (req, res) => {
 router.post("/report", async function (req, res) {
   let data = req.body;
   const { movieId, username } = data;
-  const reported = await moviesData.updateMovieReport(xss(movieId), xss(username));
+  const reported = await moviesData.updateMovieReport(
+    xss(movieId),
+    xss(username)
+  );
   res.json(reported);
 });
 
@@ -451,7 +449,10 @@ router.post("/watched/:id", async (req, res) => {
   try {
     const { username, movie_name } = movie;
     //const movie = await moviesData.getMovie(req.params.id);
-    const watchMovie = await moviesData.movieWatched(xss(username), xss(movie_name));
+    const watchMovie = await moviesData.movieWatched(
+      xss(username),
+      xss(movie_name)
+    );
     res.status(200).json(watchMovie);
   } catch (e) {
     res.status(400).render("pages/error", {
@@ -467,9 +468,9 @@ router.post("/watched/:id", async (req, res) => {
 //SEARCH BAR WHEN GIVEN MOVIE NAME
 router.get("/search/movie/:term", async (req, res) => {
   try {
-    if(!req.params.term || typeof req.params.term !== "string")
+    if (!req.params.term || typeof req.params.term !== "string")
       throw "invalid term passed";
-    
+
     const movie = await moviesData.searchByMovie(req.params.term);
     res.render("movies/allMovies", {
       movieList: movie,
@@ -492,9 +493,9 @@ router.get("/search/movie/:term", async (req, res) => {
 //SEARCH BAR WHEN GIVEN DIRECTOR
 router.get("/search/director/:term", async (req, res) => {
   try {
-    if(!req.params.term || typeof req.params.term !== "string")
+    if (!req.params.term || typeof req.params.term !== "string")
       throw "invalid term passed";
-    
+
     const movie = await moviesData.searchByDirector(req.params.term);
     res.render("movies/allMovies", {
       movieList: movie,
@@ -517,9 +518,9 @@ router.get("/search/director/:term", async (req, res) => {
 //SEARCH BAR WHEN GIVEN CAST NAME
 router.get("/search/cast/:term", async (req, res) => {
   try {
-    if(!req.params.term || typeof req.params.term !== "string")
+    if (!req.params.term || typeof req.params.term !== "string")
       throw "invalid term passed";
-      
+
     const movie = await moviesData.searchByCast(req.params.term);
     res.render("movies/allMovies", {
       movieList: movie,

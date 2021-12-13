@@ -14,7 +14,8 @@
 				<div class='form-group text-center'>
 					<label class='switch' for='private'>Private</label>
 					<label class='switch'>
-						<input id='private' data-user="{{user.username}}" data-private="{{checked}}" type='checkbox' name='private' value='false' {{checked}}/>
+						<input id='private' data-user="{{user.username}}" data-private="{{checked}}" type='checkbox'
+							name='private' value='false' {{checked}} />
 						<span class='slider round'></span>
 					</label>
 				</div>
@@ -44,15 +45,15 @@
 	<div class="row justify-content-center mb-5">
 		<div class="card w-50">
 			<div class="card-body">
-				<h5 class="card-title">Favourites</h5>
+				<h2 class="card-title">Favourites</h2>
+				{{#if user.favourites.length}}
 				<ul class="list-group">
-					{{#if user.favourites.length}}
 					{{#each user.favourites}}
 					<li class="list-group-item d-flex justify-content-between align-items-start">
 						<div class="ms-2 me-auto">
 							<div class="fw-bold">{{this}}</div>
 						</div>
-						<i class="bi bi-trash"></i>
+						{{!-- <i class="bi bi-trash"></i> --}}
 					</li>
 					{{/each}}
 				</ul>
@@ -64,15 +65,15 @@
 			</div>
 			<hr>
 			<div class="card-body">
-				<h5 class="card-title">Watchlist</h5>
+				<h2 class="card-title">Watchlist</h2>
+				{{#if user.watchlist.length}}
 				<ul class="list-group">
-					{{#if user.watchlist.length}}
 					{{#each user.watchlist}}
 					<li class="list-group-item d-flex justify-content-between align-items-start">
 						<div class="ms-2 me-auto">
 							<div class="fw-bold">{{this}}</div>
 						</div>
-						<i class="bi bi-trash"></i>
+						{{!-- <i class="bi bi-trash"></i> --}}
 					</li>
 					{{/each}}
 				</ul>

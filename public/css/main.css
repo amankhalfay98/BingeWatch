@@ -35,7 +35,7 @@ html body {
 .showcase {
   background-image: url("../images/bgimg.jpg");
   position: relative;
-  height: 80vh;
+  height: 85vh;
   width: 100%;
 }
 
@@ -138,8 +138,8 @@ html body {
   left: 50%;
   transform: translate(-50%, -50%);
 } */
-.centered{
-  margin-left: 30%
+.centered {
+  margin-left: 30%;
 }
 /* The switch - the box around the slider */
 .switch {
@@ -230,6 +230,55 @@ input:checked + .slider:before {
 .dropdown-menu[data-bs-popper] {
   left: -50px;
 }
-.followbtn{
+.followbtn {
   margin-left: 520px;
+}
+.userlist {
+  margin-left: 30%;
+  margin-right: 30%;
+}
+.profile_photo {
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
+}
+.profile_photo img {
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border: 1px solid #aaa;
+  width: 70px;
+  height: 70px;
+}
+
+.loginbg {
+  background-image: url("../../public/images/loginbg.jpg");
+  opacity: 0.9;
+  position: absolute;
+  height: 80vh;
+  width: 100%;
+  min-height: 100%;
+  background-repeat: repeat-y;
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
+}
+.signupbg {
+  background-image: url("../../public/images/loginbg.jpg");
+  opacity: 0.9;
+  position: absolute;
+  height: 120vh;
+  width: 100%;
+  min-height: 100%;
+  background-repeat: repeat-y;
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
+}
+
+.navbar-default {
+  background: none;
+}
+.login-signup-a {
+  color: #5584ff;
 }
