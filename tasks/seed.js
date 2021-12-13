@@ -25,7 +25,7 @@ async function main() {
       link: "https://www.disneyplus.com/movies/marvel-studios-the-avengers/2h6PcHFDbsPy",
     },
     "Action",
-    "image"
+    "https://m.media-amazon.com/images/M/MV5BNDYxNjQyMjAtNTdiOS00NGYwLWFmNTAtNThmYjU5ZGI2YTI1XkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_.jpg"
   );
 
   const inception = await movies.seedCreate(user2.username, "Inception", "Christopher Nolan", 2010,
@@ -35,17 +35,17 @@ async function main() {
       link: "https://www.hulu.com/movie/inception-5519f425-9b21-48fb-8e67-aef24c76604a?entity_id=5519f425-9b21-48fb-8e67-aef24c76604a",
     },
     "Science-Fiction",
-    "image"
+    "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_.jpg"
   );
 
   const forrest = await movies.seedCreate(user3.username, "Forrest Gump", "Robert Zemeckis", 1994,
     ["Tom Hanks", "Robin Wright", "Gary Sinise"],
     {
-      name: "YouTube",
-      link: "https://www.youtube.com/watch?v=hf_lCA-T99c",
+      name: "Amazon",
+      link: "https://www.amazon.com/Forrest-Gump-Tom-Hanks/dp/B002QVZ71I",
     },
     "Comedy",
-    "image"
+    "https://m.media-amazon.com/images/I/61oZBKzdPVL._AC_SY679_.jpg"
   );
 
   const ultron = await movies.seedCreate(user1.username, "Avengers: Age of Ultron", "Joss Whedon", 2015, 
@@ -55,7 +55,7 @@ async function main() {
       link: "https://www.disneyplus.com/movies/marvel-studios-avengers-age-of-ultron/76IUxY0rNHzt?irclickid=WD-U-91IHxyITsK194zLNw5PUkGzPYzFo2Su2A0&irgwc=1&cid=DSS-Affiliate-Impact-Content-New%20York%20Post%20Network-564546",
     },
     "Action",
-    "image"
+    "https://m.media-amazon.com/images/I/71wV2rzkFwL._AC_SL1022_.jpg"
   );
 
   const infinity = await movies.seedCreate(user4.username, "Avengers: Infinity War", "Anthony Russo", 2018,
@@ -65,7 +65,7 @@ async function main() {
       link: "https://www.disneyplus.com/movies/marvel-studios-avengers-infinity-war/1WEuZ7H6y39v",
     },
     "Action",
-    "image"
+    "https://m.media-amazon.com/images/I/A1t8xCe9jwL._AC_SL1500_.jpg"
   );
 
   const endgame = await movies.seedCreate(user5.username, "Avengers: Endgame", "Anthony Russo", 2019,
@@ -75,7 +75,7 @@ async function main() {
       link: "https://www.disneyplus.com/movies/marvel-studios-avengers-endgame/aRbVJUb2h2Rf",
     },
     "Action",
-    "image"
+    "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/d1pklzbuyaab0la-1552597012.jpg"
   );
 
   const chicks = await movies.seedCreate(user5.username, "White Chicks", "Keenan Ivory Wayans", 2004,
@@ -85,7 +85,7 @@ async function main() {
       link: "https://www.amazon.com/White-Chicks-Shawn-Wayans/dp/B000I9YV62",
     },
     "Comedy",
-    "image"
+    "https://i5.walmartimages.com/asr/42324b5b-c1dd-4f26-8320-92358095b7e9.f2fbf621f5b1d103d876bb778a27cdce.jpeg"
   );
 
   const us = await movies.seedCreate(user4.username, "Us", "Jordan Peele", 2019,
@@ -95,17 +95,17 @@ async function main() {
       link: "https://www.amazon.com/Us-Lupita-Nyongo/dp/B07PH2LGM2",
     },
     "Horror",
-    "image"
+    "https://m.media-amazon.com/images/I/91jatiUZjtL._AC_SL1500_.jpg"
   );
 
-  const after = await movies.seedCreate(user2.username, "After We Fell", "Castille Landon", 2021,
-  ["Josephine Langford", "Hero Fiennes-Tiffin"],
+  const lala = await movies.seedCreate(user2.username, "La La Land", "Damien Chazelle", 2016,
+  ["Ryan Gosling", "Emma Stone"],
     {
-      name: "Youtube",
-      link: "https://www.youtube.com/watch?v=HaLOu5EB_L8",
+      name: "Hulu",
+      link: "https://www.hulu.com/movie/la-la-land-dfeeff0a-2c96-4be0-a453-49e238706914?cmp=7958&utm_source=google&utm_medium=cpc&utm_campaign=BM+Search+TV+Shows&utm_term=&gclsrc=aw.ds&gclid=EAIaIQobChMI6oXK79Xf9AIVAwaICR28nwP5EAAYASAAEgIkfPD_BwE",
     },
     "Romance",
-    "image"
+    "https://m.media-amazon.com/images/I/91jrKX9xjQL._AC_SL1500_.jpg"
   );
 
   const citizen = await movies.seedCreate(user3.username, "Citizen Kane", "Orson Welles", 1941,
@@ -115,7 +115,7 @@ async function main() {
       link: "https://www.amazon.com/Citizen-Kane-Orson-Welles/dp/B00GJBCMB4",
     },
     "Mystery",
-    "image"
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Citizen_Kane_poster%2C_1941_%28Style_B%2C_unrestored%29.jpg/681px-Citizen_Kane_poster%2C_1941_%28Style_B%2C_unrestored%29.jpg"
   );
 
   const review1 = await reviews.create(user1.username, avengers["_id"].toString(), avengers.movie_name, "Good Movie!", 5);
@@ -150,9 +150,9 @@ async function main() {
   const review23 = await reviews.create(user3.username, us["_id"].toString(), us.movie_name, "Meh", 1);
   const review24 = await reviews.create(user4.username, us["_id"].toString(), us.movie_name, "So badddddddddddddddddddddddd", 1);
 
-  const review25 = await reviews.create(user5.username, after["_id"].toString(), after.movie_name, "Good Movie!", 4);
-  const review26 = await reviews.create(user1.username, after["_id"].toString(), after.movie_name, "Meh", 3);
-  const review27 = await reviews.create(user2.username, after["_id"].toString(), after.movie_name, "So badddddddddddddddddddddddd", 1);
+  const review25 = await reviews.create(user5.username, lala["_id"].toString(), lala.movie_name, "Good Movie!", 4);
+  const review26 = await reviews.create(user1.username, lala["_id"].toString(), lala.movie_name, "Meh", 3);
+  const review27 = await reviews.create(user2.username, lala["_id"].toString(), lala.movie_name, "So badddddddddddddddddddddddd", 1);
 
   const review28 = await reviews.create(user3.username, citizen["_id"].toString(), citizen.movie_name, "Good Movie!", 5);
   const review29 = await reviews.create(user4.username, citizen["_id"].toString(), citizen.movie_name, "Meh", 3);

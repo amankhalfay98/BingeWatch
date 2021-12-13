@@ -13,7 +13,6 @@
 		<div class="form-group">
 			<label for="stream_service">Streaming Service:</label>
 			<select id="stream_service" class="form-control" name="stream_service" required>
-				<option value="all">All</option>
 				<option value="netflix">Netflix</option>
 				<option value="amazon">Amazon</option>
 				<option value="disney">Disney+</option>
@@ -82,6 +81,7 @@
 		<br>
 		<button type="submit" class="btn btn-primary" name="submitButton" id="submitButton">Add Movie</button>
 	</form>
+	<p class="error"></p>
 	{{else}}
 	<h1>{{added}}</h1>
 	<a href="/movies/all">See all Movies</a>
