@@ -19,6 +19,7 @@
 	},
 	"homepage": "https://github.com/amankhalfay98/BingeWatch#readme",
 	"dependencies": {
+		"@khanacademy/tota11y": "^0.2.0",
 		"axios": "^0.23.0",
 		"bcryptjs": "^2.4.3",
 		"blueimp-md5": "^2.19.0",
