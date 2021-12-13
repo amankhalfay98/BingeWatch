@@ -267,13 +267,9 @@
         }),
       };
       $.ajax(requestConfig).then(function (response) {
-        //console.log(response)
         if(response){
             location.reload();
         }
-        // else{
-        //     follow.html("Follow");
-        // }
       });
   });
 
@@ -288,7 +284,6 @@
     else{
         private = 'false';
     }
-    //username = username[username.length - 1];
 
     var requestConfig = {
         method: "Post",
@@ -302,9 +297,6 @@
       };
       $.ajax(requestConfig).then(function (response) {
           console.log(response);
-        // if(response){
-        //     location.reload();
-        // }
       });
   });
 
@@ -316,7 +308,6 @@
       var username = $(this).data('username');
       let id = window.location.href.split("/");
       id = id[id.length - 1];
-      //var check = this.checked
       var requestConfig = {
         method: "POST",
         url: "/reviews/report",
@@ -325,7 +316,6 @@
             reviewId: revid, 
             username: username, 
             movie_id: id,
-            //checked:check
         }),
       };
       $.ajax(requestConfig).then(function (response) {
@@ -364,42 +354,175 @@
       });
   });
 
-  //let loginForm = $('#login-form')
-  //let usernameInput = $('#username');
-  //let passwordInput = $('#password');
-  //let submitButton = $('#submitButton');
-  //let errors = $('.error');
-  //let genre = $('#genre');
-  // let year = $('#release_year');
-  // let service = $('#service');
-  // let rate = $('#rate');
-  // //let add = $('#addReview');
+  let loginForm = $('#login-form')
+  let usernameInput = $('#username');
+  let passwordInput = $('#password');
+  let submitButton = $('#submitButton');
+  let errors = $('.error');
 
-  // loginForm.submit((event) => {
-  //     event.preventDefault();
-  //     usernameInput.removeClass('is-invalid is-valid');
-  //     passwordInput.removeClass('is-invalid is-valid');
-  //     submitButton.prop('disabled', true);
-  //     errors.hide();
+  loginForm.submit((event) => {
+      event.preventDefault();
+      usernameInput.removeClass('is-invalid is-valid');
+      passwordInput.removeClass('is-invalid is-valid');
+      submitButton.prop('disabled', true);
+      errors.hide();
 
-  //     let info = {
-  //         username: usernameInput.val().trim(),
-  //         password: passwordInput.val().trim()
-  //     };
+      let info = {
+          username: usernameInput.val().trim(),
+          password: passwordInput.val().trim()
+      };
 
-  //     let hasErrors = false;
-  //     if (!info.username || !info.password) {
-  //         usernameInput.addClass('is-invalid');
-  //         passwordInput.addClass('is-invalid');
-  //         hasErrors = true;
-  //     }
+      let hasErrors = false;
+      if (!info.username || !info.password) {
+          usernameInput.addClass('is-invalid');
+          passwordInput.addClass('is-invalid');
+          hasErrors = true;
+      }
 
-  //     if (!hasErrors) {
-  //         loginForm.unbind().submit();
-  //     } else {
-  //         submitButton.prop('disabled', false);
-  //     }
-  // });
+      if (!hasErrors) {
+          loginForm.unbind().submit();
+      } else {
+          errors.html('Username/Password cannot be empty.')
+          errors.show();
+          submitButton.prop('disabled', false);
+      }
+  });
+
+  let signupForm = $('#signup-form')
+  let name = $('#name');
+  let email = $('#email');
+  let dob = $('#date_of_birth');
+  let username = $('#username');
+  let password = $('#password');
+  let submitSignup = $('#submitSignup');
+  let error = $('.error');
+
+  signupForm.submit((event) => {
+      event.preventDefault();
+      username.removeClass('is-invalid is-valid');
+      password.removeClass('is-invalid is-valid');
+      dob.removeClass('is-invalid is-valid');
+      email.removeClass('is-invalid is-valid');
+      name.removeClass('is-invalid is-valid');
+      //submitSignup.prop('disabled', true);
+      error.hide();
+
+      let info = {
+          userInp: username.val().trim(),
+          passInp: password.val().trim(),
+          nameInp: name.val().trim(),
+          emailInp: email.val().trim(),
+          dobInp: dob.val().trim(),    
+      };
+      //let hasErrors = false;
+
+      if (!info.nameInp || typeof info.nameInp !== 'string' || info.nameInp.trim().length === 0) {
+        name.addClass('is-invalid');
+        error.html('Name given is invalid');
+        error.show();
+        return
+    }
+
+    // For Email
+    if (!info.emailInp || typeof info.emailInp !== 'string' || info.emailInp.trim().length === 0) {
+        email.addClass('is-invalid');
+        error.html(  'User email id is invalid');
+        error.show();
+        return
+    }
+    info.emailInp = info.emailInp.trim().toLowerCase();
+    if (
+        !info.emailInp.match(
+            /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        )
+    ){
+        email.addClass('is-invalid');
+        error.html( 'Invalid Email Address');
+        error.show();
+        return}
+    
+        //Validation Date of birth
+     if (
+        !info.dobInp ||
+        typeof info.dobInp !== 'string' ||
+        info.dobInp.trim().length === 0
+    ) {
+        dob.addClass('is-invalid');
+        error.html('Please provide Date of Birth');
+        error.show();
+        return
+    }
+
+    //username
+    if (
+        !info.userInp ||
+        typeof info.userInp !== 'string' ||
+        info.userInp.trim().length === 0
+    ) {
+        username.addClass('is-invalid');
+        error.html('Please provide username');
+        error.show();
+        return
+    }
+
+    info.userInp = info.userInp.trim().toLowerCase();
+    if (info.userInp.length < 4){
+        username.addClass('is-invalid');
+    error.html( 'username should be at least 4 characters long');
+    error.show();
+        return}
+
+    for (let i = 0; i < info.userInp.length; i++) {
+        const element = info.userInp[i];
+        //console.log(element);
+        if (/\s+/g.test(element)) {
+        username.addClass('is-invalid');
+        error.html( 'spaces not allowed in username');
+        error.show();
+        return
+    }
+        if (!element.match(/([a-z0-9])/)){
+        username.addClass('is-invalid');
+        error.html( 'only alphanumeric characters allowed');
+        error.show();
+        return
+    }
+    }
+
+    //For Password
+    if (
+        !info.passInp ||
+        typeof info.passInp !== 'string' ||
+        info.passInp.trim().length === 0
+    ) {
+        password.addClass('is-invalid');
+        error.html( 'Please provide password');
+        error.show();
+        return
+    }
+
+    if (info.passInp.length < 6){
+        password.addClass('is-invalid');
+        error.html( 'password should be at least 6 characters long');
+        error.show();
+        return}
+
+    for (let i = 0; i < info.passInp.length; i++) {
+        const element = info.passInp[i];
+        //console.log(element);
+        if (/\s+/g.test(element)){ 
+        password.addClass('is-invalid');
+        error.html( 'spaces not allowed in password');
+        error.show();
+        return}
+    }
+        signupForm.unbind().submit();
+    //   } else {
+    //       //error.html('All input field are required/cannot be empty.')
+    //       //error.show();
+    //       submitSignup.prop('disabled', false);
+    //   }
+  });
   
   var image_input = $('#profile_pic');
   image_input.change(function(){
