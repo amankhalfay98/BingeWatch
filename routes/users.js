@@ -1,4 +1,4 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 let { ObjectId } = require("mongodb");
@@ -9,21 +9,23 @@ const multer = require("multer");
 const xss = require('xss');
 
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "profile/");
-  },
-  filename: function (req, file, cb) {
-    cb(null, new Date().toISOString() + file.originalname);
-  },
+	destination: function (req, file, cb) {
+		const path = 'profile/';
+		fs.mkdirSync(path, { recursive: true });
+		cb(null, path);
+	},
+	filename: function (req, file, cb) {
+		cb(null, new Date().toISOString() + file.originalname);
+	},
 });
 
 const upload = multer({ storage: storage });
 
 //FOR USERS NOT HAVING SESSION
-router.get("/noSession", async (req, res) => {
-  res
-    .status(400)
-    .render("pages/error", { error: "You are not Logged In", title: "Error" });
+router.get('/noSession', async (req, res) => {
+	res
+		.status(400)
+		.render('pages/error', { error: 'You are not Logged In', title: 'Error' });
 });
 
 //CHANGE: xss and error check
@@ -99,37 +101,37 @@ router.post("/unfollow/:username", async (req, res) => {
 // });
 
 // To go on Landing Page
-router.get("/", async (req, res) => {
-  //console.log(req.session);
-  // if (req.session.user) {
+router.get('/', async (req, res) => {
+	//console.log(req.session);
+	// if (req.session.user) {
 
-  if (req.session.user) {
-    res.redirect("movies/all");
-  } else {
-    const trendingMovies = await movies.getTrending();
-    res.render("pages/landing", {
-      title: "Binge-Watch",
-      trending: trendingMovies,
-    });
-  }
+	if (req.session.user) {
+		res.redirect('movies/all');
+	} else {
+		const trendingMovies = await movies.getTrending();
+		res.render('pages/landing', {
+			title: 'Binge-Watch',
+			trending: trendingMovies,
+		});
+	}
 });
 
 // To go on Login Page
-router.get("/login", async (req, res) => {
-  if (req.session.user) {
-    res.redirect("/movies/all");
-  } else {
-    res.render("pages/login");
-  }
+router.get('/login', async (req, res) => {
+	if (req.session.user) {
+		res.redirect('/movies/all');
+	} else {
+		res.render('pages/login');
+	}
 });
 
 // To go on Signup Page
-router.get("/signup", async (req, res) => {
-  if (req.session.user) {
-    res.redirect("/movies/all");
-  } else {
-    res.render("pages/signup");
-  }
+router.get('/signup', async (req, res) => {
+	if (req.session.user) {
+		res.redirect('/movies/all');
+	} else {
+		res.render('pages/signup');
+	}
 });
 
 //CHANGE: cleaned up error check and xss
@@ -473,8 +475,8 @@ router.post("/private", async (req, res) => {
 router.get('/private', async (req, res) => {
 	let rev = await usersData.getUser(req.session.user.username);
 	//console.log(rev);
-	let checked = ''
-	if(rev.private){
+	let checked = '';
+	if (rev.private) {
 		checked = 'checked';
 	}
 
@@ -482,53 +484,89 @@ router.get('/private', async (req, res) => {
 		user: rev,
 		authenticated: req.session.user ? true : false,
 		username: req.session.user.username,
-		checked:checked
+		checked: checked,
 	});
 });
 
-// Individual User Page Route
-router.get("/private/:username", async (req, res) => {
-  if (req.session.user) {
-    try {
-      let rev = await usersData.getUser(req.params.username);
-      let hidden = "";
-      if (req.params.username == req.session.user.username) {
-        hidden = "hidden";
-      }
-      let follow = "Follow";
-      if (rev.followers.includes(req.session.user.username)) {
-        follow = "Unfollow";
-      } else {
-        follow = "Follow";
-      }
+// Search User on Search Bar
+router.get('/private/search/:user', async (req, res) => {
+	if (req.session.user) {
+		try {
+			let rev = await usersData.searchByUsername(req.params.user);
+			// if (!rev) {
+			// 	throw 'no user found with that username';
+			// }
+			// let hidden = '';
+			// if (req.params.username == req.session.user.username) {
+			// 	hidden = 'hidden';
+			// }
+			// let follow = 'Follow';
+			// if (rev.followers.includes(req.session.user.username)) {
+			// 	follow = 'Unfollow';
+			// } else {
+			// 	follow = 'Follow';
+			// }
 
-      res.render("pages/individualUser", {
-        user: rev,
-        user1: req.session.user.username,
-        hidden: hidden,
-        follow: follow,
-        authenticated: req.session.user ? true : false,
-        username: req.session.user.username,
-      });
-    } catch (e) {
-      res.status(400).render("pages/error", { error: e, title: "User Error" });
-    }
-  } else {
-    res.status(403).render("pages/error");
-  }
+			res.render('pages/searchResults', {
+				username: req.session.user.username,
+				profile_pic: profile_pic,
+			});
+		} catch (e) {
+			res.status(400).render('pages/error', { error: e, title: 'User Error' });
+		}
+	} else {
+		res.status(403).render('pages/error');
+	}
 });
 
-router.post('/profile/:username/:checked', async (req, res)=>{
-const private = await usersData.setPrivate(req.params.username,req.params.checked);
-res.json(private);
+// Individual User Page Route
+router.get('/private/:username', async (req, res) => {
+	if (req.session.user) {
+		try {
+			let rev = await usersData.getUser(req.params.username);
+			if (!rev) {
+				throw 'no user found with that username';
+			}
+			let hidden = '';
+			if (req.params.username == req.session.user.username) {
+				hidden = 'hidden';
+			}
+			let follow = 'Follow';
+			if (rev.followers.includes(req.session.user.username)) {
+				follow = 'Unfollow';
+			} else {
+				follow = 'Follow';
+			}
 
+			res.render('pages/individualUser', {
+				user: rev,
+				user1: req.session.user.username,
+				hidden: hidden,
+				follow: follow,
+				authenticated: req.session.user ? true : false,
+				username: req.session.user.username,
+			});
+		} catch (e) {
+			res.status(400).render('pages/error', { error: e, title: 'User Error' });
+		}
+	} else {
+		res.status(403).render('pages/error');
+	}
+});
+
+router.post('/profile/:username/:checked', async (req, res) => {
+	const private = await usersData.setPrivate(
+		req.params.username,
+		req.params.checked
+	);
+	res.json(private);
 });
 
 // To Logout
-router.get("/logout", async (req, res) => {
-  req.session.destroy();
-  res.clearCookie("AuthCookie");
-  res.render("pages/logout");
+router.get('/logout', async (req, res) => {
+	req.session.destroy();
+	res.clearCookie('AuthCookie');
+	res.render('pages/logout');
 });
 
 module.exports = router;

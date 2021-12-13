@@ -6,10 +6,14 @@ const router = express.Router();
 const data = require("../data");
 const multer = require("multer");
 const xss = require('xss');
+const fs = require('fs');
+
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/");
+    const path = "uploads/";
+    fs.mkdirSync(path, { recursive: true });
+    cb(null, path);
   },
   filename: function (req, file, cb) {
     cb(null, new Date().toISOString() + file.originalname);
@@ -173,6 +177,7 @@ router.get("/", async (req, res) => {
       movieList: listMovies,
       title: "Trending Movies",
       authenticated: req.session.user ? true : false,
+      username: req.session.user.username,
     });
   } catch (e) {
     res.status(400).render("pages/error", {
@@ -291,14 +296,12 @@ router.post("/addMovie", upload.single("movie_img"), async (req, res) => {
     );
     // res.status(200).json(newMovie);
     // res.status(200).redirect('/movies/all')
-    res
-      .status(200)
-      .render("movies/newMovie", {
-        added: "Movie Added Successfullly",
-        new: false,
-        authenticated: req.session.user ? true : false,
-        username: req.session.user.username,
-      });
+    res.status(200).render("movies/newMovie", {
+      added: "Movie Added Successfullly",
+      new: false,
+      authenticated: req.session.user ? true : false,
+      username: req.session.user.username,
+    });
   } catch (e) {
     res.status(500).json({ error: e });
   }
@@ -472,6 +475,8 @@ router.get("/search/movie/:term", async (req, res) => {
       movieList: movie,
       title: "All Movies",
       user: req.session.user.username,
+      authenticated: req.session.user ? true : false,
+      username: req.session.user.username,
     });
   } catch (e) {
     res.status(400).render("pages/error", {
@@ -495,6 +500,8 @@ router.get("/search/director/:term", async (req, res) => {
       movieList: movie,
       title: "All Movies",
       user: req.session.user.username,
+      authenticated: req.session.user ? true : false,
+      username: req.session.user.username,
     });
   } catch (e) {
     res.status(400).render("pages/error", {
@@ -518,6 +525,8 @@ router.get("/search/cast/:term", async (req, res) => {
       movieList: movie,
       title: "All Movies",
       user: req.session.user.username,
+      authenticated: req.session.user ? true : false,
+      username: req.session.user.username,
     });
   } catch (e) {
     res.status(400).render("pages/error", {

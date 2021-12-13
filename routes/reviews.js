@@ -25,8 +25,8 @@ router.post("/postReview", async (req, res) => {
 //CHANGE: xss and error check
 router.post('/report', async function (req, res){
   let data = req.body;
-  const { reviewId, username } = data;
-  const reported = await reviews.updateReviewReport(xss(reviewId), xss(username));
+  const { reviewId, username, movie_id } = data;
+  const reported = await reviews.updateReviewReport(xss(reviewId), xss(username), xss(movie_id));
   res.json(reported);
 })
 
