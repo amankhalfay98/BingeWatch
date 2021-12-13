@@ -530,7 +530,7 @@
   let stream_service_url = $('#stream_service_url');
   let release_year = $('#release_year');
   let cast = $('#cast');
-  let genre =$('#genre');
+  let genre = $('#genre');
   let director = $('#director');
   let err = $('.error');
 
@@ -574,7 +574,6 @@
         return
       }
         
-    
       if (
         typeof info.movie_name !== "string" ||
         typeof info.director !== "string" ||
@@ -586,52 +585,31 @@
       }
     
       if (
-        movie_name.trim().length === 0 ||
-        director.trim().length === 0 ||
-        genre.trim().length === 0
+        info.movie_name.length === 0 ||
+        info.director.length === 0 ||
+        info.genre.length === 0
       ){
         err.html( 'Strings are just empty spaces');
         err.show();
         return
       }
 
-        if (release_year < 1888 || release_year > new Date().getFullYear())
+        if (info.release_year < 1888 || info.release_year > new Date().getFullYear())
         {
             err.html( 'Invalid release year');
             err.show();
             return
           }
 
-    for (i = 0; i < cast.length; i++) {
-        if (typeof cast[i] !== "string" || cast[i].trim().length === 0 || !validate.validName(cast[i]))
+    for (i = 0; i < info.cast.length; i++) {
+        if (typeof info.cast[i] !== "string" || info.cast[i].trim().length === 0)
         {
             err.html( 'cast is not an array of strings or contains empty strings');
             err.show();
             return
           }
-        cast[i] = cast[i].trim();
       }
-      if (!("name" in streaming) || !("link" in streaming))
-      {
-        err.html( 'streaming missing important information');
-        err.show();
-        return
-      }
-
-      let hasErrors = false;
-    //   if (!info.username || !info.password) {
-    //       usernameInput.addClass('is-invalid');
-    //       passwordInput.addClass('is-invalid');
-    //       hasErrors = true;
-    //   }
-
-      if (!hasErrors) {
         addMovieForm.unbind().submit();
-      } else {
-          errors.html('Username/Password cannot be empty.')
-          errors.show();
-          submitButton.prop('disabled', false);
-      }
   });
   
   var image_input = $('#profile_pic');

@@ -3,7 +3,7 @@ const movies = mongoCollections.movies;
 //const reviewCollection = require('./reviews');
 const { ObjectId } = require('mongodb');
 const validate = require('./validation');
-const users = require('./users');
+//const users = require('./users');
 
 let validWebsite = (website) => {
 	let lowCaseWeb = website.toLowerCase();
@@ -577,11 +577,11 @@ const updateMovieReport = async (movieId, username) => {
 	if (movieId.trim().length === 0 || username.trim().length === 0)
 		throw 'movieId supplied is just an empty string';
 
-	if (!ObjectId.isValid(id.trim())) throw 'movieId is not a valid ObjectId';
+	if (!ObjectId.isValid(movieId.trim())) throw 'movieId is not a valid ObjectId';
 
-	let findUser = await users.getUser(username);
+	//let findUser = await users.getUser(username);
 
-	if (findUser === null) throw 'username not in database';
+	//if (findUser === null) throw 'username not in database';
 
 	// ----------------------------DELETE IF IT BREAKS APP -----------------------
 

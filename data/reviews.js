@@ -20,7 +20,7 @@ const create = async (
     throw "movie name provided is not a valid string.";
   if (!validation.validString(review))
     throw "review provided is not a valid string.";
-  if (!validation.validRating(rating))
+  if (typeof(rating) !== 'number')
     throw "rating provided is not a valid string.";
   let newReview = {
     username,
@@ -46,7 +46,7 @@ const create = async (
   else{
    overAllRating = rating; 
   }
-  const update = await moviesData.updateMovieReviewID(movie_id,insertInfo.insertedId.toString(),overAllRating);
+  const update = await moviesData.updateMovieReviewID(movie_id,insertInfo.insertedId,overAllRating);
   //const reviewAdded = getById(insertInfo.insertedId.toString());
   //return reviewAdded;
   return `${review} successfully added!`;

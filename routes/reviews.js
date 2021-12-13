@@ -15,7 +15,7 @@ router.post("/postReview", async (req, res) => {
     xss(movie_id),
     xss(movie_name),
     xss(review),
-    xss(parseInt(rating)),
+    parseInt(xss(rating)),
     xss(tag)
   );
   //   console.log(postReview);

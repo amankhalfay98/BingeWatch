@@ -163,8 +163,9 @@ router.get("/:id", async (req, res) => {
     }
   } else {
     res.status(403).render("pages/error", {
-      authenticated: req.session.user ? true : false,
-      username: req.session.user.username,
+      error: "Error"
+      //authenticated: req.session.user ? true : false,
+      //username: req.session.user.username,
     });
   }
 });
