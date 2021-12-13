@@ -6,6 +6,7 @@ const usersData = require("../data/users");
 const path = require("path");
 const movies = require("../data/movies");
 const multer = require("multer");
+const xss = require('xss');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -25,13 +26,17 @@ router.get("/noSession", async (req, res) => {
     .render("pages/error", { error: "You are not Logged In", title: "Error" });
 });
 
+//CHANGE: xss and error check
 //FOR USERS FOLLOWING OTHER USERS (CHANGE IF NEEDED)
 router.post("/follow/:username", async (req, res) => {
   const follow = req.body;
   try {
     const { user, username } = follow;
+	if(!user || !username)
+		throw "missing input parameters";
+	
     //const movie = await moviesData.getMovie(req.params.id);
-    let userFollow = await usersData.followUser(user, username);
+    let userFollow = await usersData.followUser(xss(user), xss(username));
     res.status(200).json(userFollow);
   } catch (e) {
     res.status(400).render("pages/error", { error: e, title: "Error" });
@@ -46,13 +51,17 @@ router.post("/follow/:username", async (req, res) => {
   // }
 });
 
+//CHANGE: xss and error check
 //FOR USERS UNFOLLOWING OTHER USERS
 router.post("/unfollow/:username", async (req, res) => {
   const unfollow = req.body;
   try {
     const { user, username } = unfollow;
+	if(!user || !username)
+		throw "missing input parameters"
+
     //const movie = await moviesData.getMovie(req.params.id);
-    let userUnfollow = await usersData.unfollowUser(user, username);
+    let userUnfollow = await usersData.unfollowUser(xss(user), xss(username));
     res.status(200).json(userUnfollow);
   } catch (e) {
     res.status(400).render("pages/error", { error: e, title: "Error" });
@@ -123,6 +132,7 @@ router.get("/signup", async (req, res) => {
   }
 });
 
+//CHANGE: cleaned up error check and xss
 // To Sign Up a new User
 router.post("/signup", upload.single("profile_pic"), async (req, res) => {
   const newUser = req.body;
@@ -135,7 +145,7 @@ router.post("/signup", upload.single("profile_pic"), async (req, res) => {
   //req.session.user = newUser;
 
   // Error handling for name
-  if (!newUser.name || newUser.name.trim() == "") {
+  if (!newUser.name || newUser.name.trim().length === 0) {
     res.status(400).render("pages/signup", { error: "Please provide name" });
     return;
   }
@@ -153,7 +163,7 @@ router.post("/signup", upload.single("profile_pic"), async (req, res) => {
   }
 
   //Error Handling for DOB
-  if (!newUser.date_of_birth || newUser.date_of_birth.trim() == "") {
+  if (!newUser.date_of_birth || newUser.date_of_birth.trim().length === 0) {
     res
       .status(400)
       .render("pages/signup", { error: "Please provide Date of Birth" });
@@ -170,7 +180,7 @@ router.post("/signup", upload.single("profile_pic"), async (req, res) => {
   }
 
   // Error handling for username
-  if (!newUser.username || newUser.username.trim() == "") {
+  if (!newUser.username || newUser.username.trim().length === 0) {
     res
       .status(400)
       .render("pages/signup", { error: "Please provide username" });
@@ -204,7 +214,7 @@ router.post("/signup", upload.single("profile_pic"), async (req, res) => {
   }
 
   // Error handling for Email
-  if (!newUser.email || newUser.email.trim() == "") {
+  if (!newUser.email || newUser.email.trim().length === 0) {
     res
       .status(400)
       .render("pages/signup", { error: "Please provide valid emailId" });
@@ -225,7 +235,7 @@ router.post("/signup", upload.single("profile_pic"), async (req, res) => {
 
   // Error handling for password
 
-  if (!newUser.password || newUser.password.trim() == "") {
+  if (!newUser.password || newUser.password.trim().length === 0) {
     res
       .status(400)
       .render("pages/signup", { error: "Please provide password" });
@@ -256,12 +266,12 @@ router.post("/signup", upload.single("profile_pic"), async (req, res) => {
 
     //console.log(newRestaurant);
     const rev = await usersData.createUser(
-      name,
-      date_of_birth,
-      username,
-      password,
-      email,
-      profile_pic
+      xss(name),
+      xss(date_of_birth),
+      xss(username),
+      xss(password),
+      xss(email),
+      xss(profile_pic)
     );
 
     //For Sessions
@@ -280,13 +290,14 @@ router.post("/signup", upload.single("profile_pic"), async (req, res) => {
   }
 });
 
+//CHANGE: xss and cleaned up error check
 // To Post Login Information
 router.post("/login", async (req, res) => {
   const newUser = req.body;
   //console.log(req.session);
 
   // Error handling for username
-  if (!newUser.username || newUser.username.trim() == "") {
+  if (!newUser.username || newUser.username.trim().length === 0) {
     res.status(400).render("pages/login", { error: "Please provide username" });
     return;
   }
@@ -320,7 +331,7 @@ router.post("/login", async (req, res) => {
 
   // Error handling for password
 
-  if (!newUser.password || newUser.password.trim() == "") {
+  if (!newUser.password || newUser.password.trim().length === 0) {
     res.status(400).render("pages/login", { error: "Please provide password" });
     return;
   }
@@ -347,7 +358,7 @@ router.post("/login", async (req, res) => {
     const { username, password } = newUser;
 
     //console.log(newUser);
-    const rev = await usersData.checkUser(username, password);
+    const rev = await usersData.checkUser(xss(username), xss(password));
     if (rev.authenticated) {
       req.session.user = { username: newUser.username };
       //console.log(req.session);
@@ -363,6 +374,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
+//CHANGE: xss and error check
 // To Update a User
 router.post("/private", async (req, res) => {
   const newUser = req.body;
@@ -436,7 +448,7 @@ router.post("/private", async (req, res) => {
 
     //console.log(newUser);
     let current = await usersData.getUser(req.session.user.username);
-    let rev = await usersData.update(current.username, name, newpass, password);
+    let rev = await usersData.update(xss(current.username), xss(name), xss(newpass), xss(password));
     //console.log(rev);
     res.status(200).redirect("/");
   } catch (e) {

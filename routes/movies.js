@@ -5,6 +5,7 @@ const router = express.Router();
 // const usersData = require('../data/users');
 const data = require("../data");
 const multer = require("multer");
+const xss = require('xss');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -46,14 +47,21 @@ router.get("/allMovies", async (req, res) => {
   try {
     const listMovies = await moviesData.getAllMovies();
     res.json(listMovies);
-  } catch (error) {}
+  } catch (e) {}
 });
 
+//CHANGE: xss added with error
 router.post("/all/:value", async (req, res) => {
   try {
-    const sorted = await moviesData.getSort(req.params.value);
+    let sortVal = xss(req.params.value);
+    if(!sortVal || typeof sortVal !== "string") {
+      throw "invalid value field"
+    }
+    const sorted = await moviesData.getSort(sortVal);
     res.json(sorted);
-  } catch (e) {}
+  } catch (e) {
+    res.status(404).json({error: e});
+  }
 });
 
 router.get("/addMovie", async (req, res) => {
@@ -78,11 +86,16 @@ router.get("/addMovie", async (req, res) => {
   }
 });
 
+
+//CHANGE: error check with id and throw error string
 router.get("/:id", async (req, res) => {
   //console.log(req.params.id);
   //console.log(req.session);
   if (req.session.user) {
     try {
+      if(!req.params.id || typeof req.params.id !== "string")
+        throw "invalid id passed";
+
       const movie = await moviesData.getMovie(req.params.id);
 
       const reviews = await reviewData.getReviewsByMovieId(req.params.id);
@@ -152,7 +165,6 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-//WIP!!!!!
 
 router.get("/", async (req, res) => {
   try {
@@ -191,6 +203,8 @@ router.get("/", async (req, res) => {
 //   }
 // });
 
+
+//CHANGE: added xss in create try/catch
 router.post("/addMovie", upload.single("movie_img"), async (req, res) => {
   let username =
     req.session.user != undefined || req.session.user != null
@@ -266,14 +280,14 @@ router.post("/addMovie", upload.single("movie_img"), async (req, res) => {
       movie_img,
     } = moviesDataList;
     const newMovie = await moviesData.createMovie(
-      username,
-      movie_name,
-      director,
-      release_year,
-      cast,
-      streaming_services,
-      genre,
-      movie_img
+      xss(username),
+      xss(movie_name),
+      xss(director),
+      xss(release_year),
+      xss(cast),
+      xss(streaming_services),
+      xss(genre),
+      xss(movie_img)
     );
     // res.status(200).json(newMovie);
     // res.status(200).redirect('/movies/all')
@@ -290,9 +304,13 @@ router.post("/addMovie", upload.single("movie_img"), async (req, res) => {
   }
 });
 
+//CHANGE: error check for id and throw string
 router.get("/edit/:id", async (req, res) => {
   if (req.session.user) {
     try {
+      if(!req.params.id || typeof req.params.id !== "string")
+        throw "invalid id passed";
+
       const movie = await moviesData.getMovie(req.params.id);
       let rev = await usersData.getUser(req.session.user.username);
       let cast = movie.cast;
@@ -312,7 +330,12 @@ router.get("/edit/:id", async (req, res) => {
   }
 });
 
+//CHANGE: xss added
 router.put("/edit/:id", async (req, res) => {
+
+  if(!req.params.id || typeof req.params.id !== "string")
+    throw "invalid id passed";
+
   const updatedData = req.body;
   if (
     !updatedData.movie_name ||
@@ -344,13 +367,13 @@ router.put("/edit/:id", async (req, res) => {
     } = updatedData;
     const updatedMovie = await moviesData.updatingMovie(
       req.params.id,
-      movie_name,
-      director,
-      release_year,
-      cast,
-      streaming_services,
-      genre,
-      movie_img
+      xss(movie_name),
+      xss(director),
+      xss(release_year),
+      xss(cast),
+      xss(streaming_services),
+      xss(genre),
+      xss(movie_img)
     );
     res.status(200).json(updatedMovie);
   } catch (e) {
@@ -358,20 +381,22 @@ router.put("/edit/:id", async (req, res) => {
   }
 });
 
+//CHANGE: xss added
 router.post("/report", async function (req, res) {
   let data = req.body;
   const { movieId, username } = data;
-  const reported = await moviesData.updateMovieReport(movieId, username);
+  const reported = await moviesData.updateMovieReport(xss(movieId), xss(username));
   res.json(reported);
 });
 
+//CHANGE: xss added
 //ADDING MOVIE TO USER'S FAVE LIST
 router.post("/favorite/:id", async (req, res) => {
   const movie = req.body;
   try {
     const { username, movie_name } = movie;
     //const movie = await moviesData.getMovie(req.params.id);
-    let userFav = await usersData.addToFave(username, movie_name);
+    let userFav = await usersData.addToFave(xss(username), xss(movie_name));
     res.status(200).json(userFav);
   } catch (e) {
     res.status(400).render("pages/error", { error: e, title: "Error" });
@@ -391,13 +416,14 @@ router.post("/favorite/:id", async (req, res) => {
 //   }
 // });
 
+//CHANGE: xss added
 //ADDING MOVIE TO USER'S WATCHLIST
 router.post("/watchlist/:id", async (req, res) => {
   const movie = req.body;
   try {
     const { username, movie_name } = movie;
     //const movie = await moviesData.getMovie(req.params.id);
-    let userWatch = await usersData.addToWatch(username, movie_name);
+    let userWatch = await usersData.addToWatch(xss(username), xss(movie_name));
     res.status(200).json(userWatch);
   } catch (e) {
     res.status(400).render("pages/error", { error: e, title: "Error" });
@@ -415,13 +441,14 @@ router.post("/watchlist/:id", async (req, res) => {
 //   }
 // });
 
+//CHANGE: xss added
 //MARKING MOVIE AS WATCHED
 router.post("/watched/:id", async (req, res) => {
   const movie = req.body;
   try {
     const { username, movie_name } = movie;
     //const movie = await moviesData.getMovie(req.params.id);
-    const watchMovie = await moviesData.movieWatched(username, movie_name);
+    const watchMovie = await moviesData.movieWatched(xss(username), xss(movie_name));
     res.status(200).json(watchMovie);
   } catch (e) {
     res.status(400).render("pages/error", {
@@ -433,9 +460,13 @@ router.post("/watched/:id", async (req, res) => {
   }
 });
 
+//CHANGE: input check for term and throw string
 //SEARCH BAR WHEN GIVEN MOVIE NAME
 router.get("/search/movie/:term", async (req, res) => {
   try {
+    if(!req.params.term || typeof req.params.term !== "string")
+      throw "invalid id passed";
+    
     const movie = await moviesData.searchByMovie(req.params.term);
     res.render("movies/allMovies", {
       movieList: movie,
@@ -452,9 +483,13 @@ router.get("/search/movie/:term", async (req, res) => {
   }
 });
 
+//CHANGE: input check for term and throw string
 //SEARCH BAR WHEN GIVEN DIRECTOR
 router.get("/search/director/:term", async (req, res) => {
   try {
+    if(!req.params.id || typeof req.params.id !== "string")
+      throw "invalid id passed";
+    
     const movie = await moviesData.searchByDirector(req.params.term);
     res.render("movies/allMovies", {
       movieList: movie,
@@ -471,9 +506,13 @@ router.get("/search/director/:term", async (req, res) => {
   }
 });
 
+//CHANGE: input check for term and routes
 //SEARCH BAR WHEN GIVEN CAST NAME
 router.get("/search/cast/:term", async (req, res) => {
   try {
+    if(!req.params.id || typeof req.params.id !== "string")
+      throw "invalid id passed";
+      
     const movie = await moviesData.searchByCast(req.params.term);
     res.render("movies/allMovies", {
       movieList: movie,
