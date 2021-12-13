@@ -346,6 +346,7 @@ let getAllMovies = async () => {
 
 // A method to add review id to movies collection when new review is added.
 let updateMovieReviewID = async (movie_id, review_id, review_rating) => {
+
 	if (!ObjectId.isValid(movie_id.trim()))
 		throw 'Movie id is not a valid ObjectId';
 
