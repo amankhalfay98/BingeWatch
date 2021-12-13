@@ -81,10 +81,10 @@
               </div>
               <div class="col-md-8">
                 <div class="card-body">
-                  <a href="/movies/{{_id}}">
+                  <a class="d-inline" href="/movies/{{_id}}">
                     <h2 class="card-title">{{movie_name}}</h2>
                   </a>
-                  <button name="reportMovie" class="reportMovie" data-username="{{../user.username}}"
+                  <button name="reportMovie" class="reportMovie d-inline btn btn-primary" data-username="{{../user.username}}"
                     data-movid="{{this._id}}">Report</button>
                   <label for="release_year">Release Year: {{release_year}}</label>
                   <br>

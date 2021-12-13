@@ -354,20 +354,20 @@ module.exports = {
 		// }
 
 		// For DOB
-		if (
-			!date_of_birth ||
-			typeof date_of_birth !== 'string' ||
-			date_of_birth.trim().length === 0
-		) {
-			throw 'Please provide Date of Birth';
-		}
-		date_of_birth = date_of_birth.trim();
-		let birthYear = parseInt(date_of_birth.slice(-4));
+		// if (
+		// 	!date_of_birth ||
+		// 	typeof date_of_birth !== 'string' ||
+		// 	date_of_birth.trim().length === 0
+		// ) {
+		// 	throw 'Please provide Date of Birth';
+		// }
+		// date_of_birth = date_of_birth.trim();
+		// let birthYear = parseInt(date_of_birth.slice(-4));
 		// console.log('In Data', date_of_birth);
 		// if (!date_of_birth.match(/^\d{2}-\d{2}-\d{4}$/))
 		// 	throw 'Invalid Date of Birth';
-		if (!validate.validAge(new Date().getFullYear() - birthYear))
-			throw 'Invalid date of birth';
+		// if (!validate.validAge(new Date().getFullYear() - birthYear))
+		// 	throw 'Invalid date of birth';
 
 		// --------------------CHANGES---------------------------------------
 

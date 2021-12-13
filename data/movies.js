@@ -79,17 +79,6 @@ let createMovie = async (
 
   if (!Array.isArray(cast)) throw "Incorrect data type";
 
-  //Loop within cast array to check name validity
-  for (i = 0; i < cast.length; i++) {
-    if (
-      typeof cast[i] !== "string" ||
-      cast[i].trim().length === 0 ||
-      !validate.validName(cast[i])
-    )
-      throw "cast is not an array of strings or contains empty strings";
-    cast[i] = cast[i].trim();
-  }
-
   if (typeof streaming !== "object") throw "streaming is not an object";
 
   if (streaming === null || Array.isArray(streaming))
@@ -204,17 +193,6 @@ let updatingMovie = async (
     throw "Invalid release year";
 
   if (!Array.isArray(cast)) throw "Incorrect data type";
-
-  //Loop within cast array to check name validity
-  for (i = 0; i < cast.length; i++) {
-    if (
-      typeof cast[i] !== "string" ||
-      cast[i].trim().length === 0 ||
-      !validate.validName(cast[i])
-    )
-      throw "cast is not an array of strings or contains empty strings";
-    cast[i] = cast[i].trim();
-  }
 
   if (typeof streaming !== "object") throw "streaming is not an object";
 
@@ -575,9 +553,9 @@ const updateMovieReport = async (movieId, username) => {
   if (movieId.trim().length === 0 || username.trim().length === 0)
     throw "movieId supplied is just an empty string";
 
-  if (!ObjectId.isValid(id.trim())) throw "movieId is not a valid ObjectId";
+  if (!ObjectId.isValid(movieId.trim())) throw "movieId is not a valid ObjectId";
 
-  if (findUser === null) throw "username not in database";
+  // if (findUser === null) throw "username not in database";
 
   // ----------------------------DELETE IF IT BREAKS APP -----------------------
 
@@ -677,17 +655,6 @@ let seedCreate = async (
     throw "Invalid release year";
 
   if (!Array.isArray(cast)) throw "Incorrect data type";
-
-  //Loop within cast array to check name validity
-  for (i = 0; i < cast.length; i++) {
-    if (
-      typeof cast[i] !== "string" ||
-      cast[i].trim().length === 0 ||
-      !validate.validName(cast[i])
-    )
-      throw "cast is not an array of strings or contains empty strings";
-    cast[i] = cast[i].trim();
-  }
 
   if (typeof streaming !== "object") throw "streaming is not an object";
 

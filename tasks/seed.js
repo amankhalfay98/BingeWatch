@@ -87,8 +87,8 @@ async function main() {
     1994,
     ["Tom Hanks", "Robin Wright", "Gary Sinise"],
     {
-      name: "YouTube",
-      link: "https://www.youtube.com/watch?v=hf_lCA-T99c",
+      name: "Amazon",
+      link: "https://www.amazon.com/gp/video/detail/amzn1.dv.gti.f4a9f7ae-8751-637f-45fe-baf203e8df44?autoplay=1&ref_=atv_cf_strg_wb",
     },
     "Comedy",
     "https://m.media-amazon.com/images/I/81xTx-LxAPL._SL1500_.jpg"
@@ -171,8 +171,8 @@ async function main() {
     2021,
     ["Josephine Langford", "Hero Fiennes-Tiffin"],
     {
-      name: "Youtube",
-      link: "https://www.youtube.com/watch?v=HaLOu5EB_L8",
+      name: "Amazon",
+      link: "https://www.amazon.com/gp/video/detail/amzn1.dv.gti.7ee769a7-9206-4ac7-8f9f-89df37b8483e?autoplay=1&ref_=atv_cf_strg_wb",
     },
     "Romance",
     "https://images2.minutemediacdn.com/image/fetch/w_2000,h_2000,c_fit/https%3A%2F%2Fnetflixlife.com%2Ffiles%2F2021%2F03%2FAFTERWEFELL_27x40_PAYOFF_HOTTUB.jpg"

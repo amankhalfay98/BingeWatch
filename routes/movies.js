@@ -279,7 +279,6 @@ router.post("/addMovie", upload.single("movie_img"), async (req, res) => {
       genre,
       movie_img,
     } = moviesDataList;
-    console.log(xss(streaming_services));
     let newMovie = await moviesData.createMovie(
       xss(username),
       xss(movie_name),

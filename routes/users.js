@@ -447,11 +447,8 @@ router.post("/private", async (req, res) => {
 
   try {
     const { name, newpass, password } = newUser;
-
-    //console.log(newUser);
     let current = await usersData.getUser(req.session.user.username);
     let rev = await usersData.update(xss(current.username), xss(name), xss(newpass), xss(password));
-    //console.log(rev);
     res.status(200).redirect("/");
   } catch (e) {
     console.log(e);

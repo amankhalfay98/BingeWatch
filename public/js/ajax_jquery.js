@@ -169,377 +169,459 @@
   });
 
   //Increment Views on Movies
-  var view = $('#view');
-  view.click(function(){
+  var view = $("#view");
+  view.click(function () {
     var id = window.location.href.split("/");
     let movie = $(this).data("movie");
     let user = $(this).data("user");
     id = id[id.length - 1];
     var requestConfig = {
-        method: "Post",
-        url: `/movies/watched/${id}`,
-        contentType: "application/json",
-        data: JSON.stringify({
-          username: user,
-          movie_id: id,
-          movie_name: movie,
-        }),
-      };
-      $.ajax(requestConfig).then(function (response) {
-        if(response){
-            location.reload();
-        } 
-      });
+      method: "Post",
+      url: `/movies/watched/${id}`,
+      contentType: "application/json",
+      data: JSON.stringify({
+        username: user,
+        movie_id: id,
+        movie_name: movie,
+      }),
+    };
+    $.ajax(requestConfig).then(function (response) {
+      if (response) {
+        location.reload();
+      }
+    });
   });
 
   //Add Remove Movie from Fav list
-  var fav = $('#fav');
-  fav.click(function(){
+  var fav = $("#fav");
+  fav.click(function () {
     let id = window.location.href.split("/");
     let movie = $(this).data("movie");
     let user = $(this).data("user");
     id = id[id.length - 1];
     var requestConfig = {
-        method: "Post",
-        url: `/movies/favorite/${id}`,
-        contentType: "application/json",
-        data: JSON.stringify({
-          username: user,
-          movie_id: id,
-          movie_name: movie,
-        }),
-      };
-      $.ajax(requestConfig).then(function (response) {
-        //console.log(response)
-        if(response){
-            fav.html("UnFavorite");
-        }
-        else{
-            fav.html("Favorite");
-        }
-      });
+      method: "Post",
+      url: `/movies/favorite/${id}`,
+      contentType: "application/json",
+      data: JSON.stringify({
+        username: user,
+        movie_id: id,
+        movie_name: movie,
+      }),
+    };
+    $.ajax(requestConfig).then(function (response) {
+      //console.log(response)
+      if (response) {
+        fav.html("UnFavorite");
+      } else {
+        fav.html("Favorite");
+      }
+    });
   });
 
   //Add Remove Movie from watchlist
-  var watch = $('#watched');
-  watch.click(function(){
+  var watch = $("#watched");
+  watch.click(function () {
     let movie = $(this).data("movie");
     let user = $(this).data("user");
     let id = window.location.href.split("/");
     id = id[id.length - 1];
     var requestConfig = {
-        method: "Post",
-        url: `/movies/watchlist/${id}`,
-        contentType: "application/json",
-        data: JSON.stringify({
-          username: user,
-          movie_id: id,
-          movie_name: movie,
-        }),
-      };
-      $.ajax(requestConfig).then(function (response) {
-        //console.log(response)
-        if(response){
-            watch.html("Watched");
-        }
-        else{
-            watch.html("Want to watch");
-        }
-      });
+      method: "Post",
+      url: `/movies/watchlist/${id}`,
+      contentType: "application/json",
+      data: JSON.stringify({
+        username: user,
+        movie_id: id,
+        movie_name: movie,
+      }),
+    };
+    $.ajax(requestConfig).then(function (response) {
+      //console.log(response)
+      if (response) {
+        watch.html("Watched");
+      } else {
+        watch.html("Want to watch");
+      }
+    });
   });
 
   //follow unfollow user functionality
-  var follow = $('#follow');
-  follow.click(function(){
+  var follow = $("#follow");
+  follow.click(function () {
     let username = window.location.href.split("/");
     var folw = $(this).html();
     let user = $(this).data("user");
     username = username[username.length - 1];
 
     var requestConfig = {
-        method: "Post",
-        url: `/${folw}/${username}`,
-        contentType: "application/json",
-        data: JSON.stringify({
-          user: user,
-          username: username,
-          
-        }),
-      };
-      $.ajax(requestConfig).then(function (response) {
-        if(response){
-            location.reload();
-        }
-      });
+      method: "Post",
+      url: `/${folw}/${username}`,
+      contentType: "application/json",
+      data: JSON.stringify({
+        user: user,
+        username: username,
+      }),
+    };
+    $.ajax(requestConfig).then(function (response) {
+      if (response) {
+        location.reload();
+      }
+    });
   });
 
   //private
-  var private = $('#private');
-  private.click(function(){
+  var private = $("#private");
+  private.click(function () {
     let user = $(this).data("user");
     let private = $(this).data("private");
-    if(private ===''){
-        private = 'true';
-    }
-    else{
-        private = 'false';
+    if (private === "") {
+      private = "true";
+    } else {
+      private = "false";
     }
 
     var requestConfig = {
-        method: "Post",
-        url: `/profile/${user}/${private}`,
-        contentType: "application/json",
-        data: JSON.stringify({
-          user: user,
-          private: private,
-          
-        }),
-      };
-      $.ajax(requestConfig).then(function (response) {
-          console.log(response);
-      });
+      method: "Post",
+      url: `/profile/${user}/${private}`,
+      contentType: "application/json",
+      data: JSON.stringify({
+        user: user,
+        private: private,
+      }),
+    };
+    $.ajax(requestConfig).then(function (response) {
+      console.log(response);
+    });
   });
 
-
   //report Review Functionality
-  var report = $('.report');
-  report.click(function(){
-      var revid = $(this).data('revid');
-      var username = $(this).data('username');
-      let id = window.location.href.split("/");
-      id = id[id.length - 1];
-      var requestConfig = {
-        method: "POST",
-        url: "/reviews/report",
-        contentType: "application/json",
-        data: JSON.stringify({
-            reviewId: revid, 
-            username: username, 
-            movie_id: id,
-        }),
-      };
-      $.ajax(requestConfig).then(function (response) {
-          console.log(response);
-        // const div = `<div>${review.username}<br>${review.review}<br>${review.rating}</div>`;
-        // $('#reviews').prepend(div);
-        //if(response){
-        location.reload();
-       // }
-      });
+  var report = $(".report");
+  report.click(function () {
+    var revid = $(this).data("revid");
+    var username = $(this).data("username");
+    let id = window.location.href.split("/");
+    id = id[id.length - 1];
+    var requestConfig = {
+      method: "POST",
+      url: "/reviews/report",
+      contentType: "application/json",
+      data: JSON.stringify({
+        reviewId: revid,
+        username: username,
+        movie_id: id,
+      }),
+    };
+    $.ajax(requestConfig).then(function (response) {
+      console.log(response);
+      // const div = `<div>${review.username}<br>${review.review}<br>${review.rating}</div>`;
+      // $('#reviews').prepend(div);
+      //if(response){
+      location.reload();
+      // }
+    });
   });
 
   //reportMovie
-  var reportMovie = $('.reportMovie');
-  reportMovie.click(function(){
-      var movid = $(this).data('movid');
-      var username = $(this).data('username');
-      //var check = this.checked
-      var requestConfig = {
-        method: "POST",
-        url: "/movies/report",
-        contentType: "application/json",
-        data: JSON.stringify({
-            movieId: movid, 
-            username: username, 
-            //checked:check
-        }),
-      };
-      $.ajax(requestConfig).then(function (response) {
-          console.log(response);
-        // const div = `<div>${review.username}<br>${review.review}<br>${review.rating}</div>`;
-        // $('#reviews').prepend(div);
-        //if(response){
-        location.reload();
-       // }
-      });
+  var reportMovie = $(".reportMovie");
+  reportMovie.click(function () {
+    var movid = $(this).data("movid");
+    var username = $(this).data("username");
+    //var check = this.checked
+    var requestConfig = {
+      method: "POST",
+      url: "/movies/report",
+      contentType: "application/json",
+      data: JSON.stringify({
+        movieId: movid,
+        username: username,
+        //checked:check
+      }),
+    };
+    $.ajax(requestConfig).then(function (response) {
+      console.log(response);
+      // const div = `<div>${review.username}<br>${review.review}<br>${review.rating}</div>`;
+      // $('#reviews').prepend(div);
+      //if(response){
+      location.reload();
+      // }
+    });
   });
 
-  let loginForm = $('#login-form')
-  let usernameInput = $('#username');
-  let passwordInput = $('#password');
-  let submitButton = $('#submitButton');
-  let errors = $('.error');
+  let loginForm = $("#login-form");
+  let usernameInput = $("#username");
+  let passwordInput = $("#password");
+  let submitLogin = $("#submitLogin");
+  let errors = $(".error");
 
   loginForm.submit((event) => {
-      event.preventDefault();
-      usernameInput.removeClass('is-invalid is-valid');
-      passwordInput.removeClass('is-invalid is-valid');
-      submitButton.prop('disabled', true);
-      errors.hide();
+    event.preventDefault();
+    usernameInput.removeClass("is-invalid is-valid");
+    passwordInput.removeClass("is-invalid is-valid");
+    submitLogin.prop("disabled", true);
+    errors.hide();
 
-      let info = {
-          username: usernameInput.val().trim(),
-          password: passwordInput.val().trim()
-      };
+    let info = {
+      username: usernameInput.val().trim(),
+      password: passwordInput.val().trim(),
+    };
 
-      let hasErrors = false;
-      if (!info.username || !info.password) {
-          usernameInput.addClass('is-invalid');
-          passwordInput.addClass('is-invalid');
-          hasErrors = true;
-      }
+    let hasErrors = false;
+    if (!info.username || !info.password) {
+      usernameInput.addClass("is-invalid");
+      passwordInput.addClass("is-invalid");
+      hasErrors = true;
+    }
 
-      if (!hasErrors) {
-          loginForm.unbind().submit();
-      } else {
-          errors.html('Username/Password cannot be empty.')
-          errors.show();
-          submitButton.prop('disabled', false);
-      }
+    if (!hasErrors) {
+      loginForm.unbind().submit();
+    } else {
+      errors.html("Username/Password cannot be empty.");
+      errors.show();
+      submitLogin.prop("disabled", false);
+    }
   });
 
-  let signupForm = $('#signup-form')
-  let name = $('#name');
-  let email = $('#email');
-  let dob = $('#date_of_birth');
-  let username = $('#username');
-  let password = $('#password');
-  let submitSignup = $('#submitSignup');
-  let error = $('.error');
+  let signupForm = $("#signup-form");
+  let name = $("#name");
+  let email = $("#email");
+  let dob = $("#date_of_birth");
+  let username = $("#username");
+  let password = $("#password");
+  let submitSignup = $("#submitSignup");
+  let error = $(".error");
 
   signupForm.submit((event) => {
-      event.preventDefault();
-      username.removeClass('is-invalid is-valid');
-      password.removeClass('is-invalid is-valid');
-      dob.removeClass('is-invalid is-valid');
-      email.removeClass('is-invalid is-valid');
-      name.removeClass('is-invalid is-valid');
-      //submitSignup.prop('disabled', true);
-      error.hide();
+    event.preventDefault();
+    username.removeClass("is-invalid is-valid");
+    password.removeClass("is-invalid is-valid");
+    dob.removeClass("is-invalid is-valid");
+    email.removeClass("is-invalid is-valid");
+    name.removeClass("is-invalid is-valid");
+    //submitSignup.prop('disabled', true);
+    error.hide();
 
-      let info = {
-          userInp: username.val().trim(),
-          passInp: password.val().trim(),
-          nameInp: name.val().trim(),
-          emailInp: email.val().trim(),
-          dobInp: dob.val().trim(),    
-      };
-      //let hasErrors = false;
+    let info = {
+      userInp: username.val().trim(),
+      passInp: password.val().trim(),
+      nameInp: name.val().trim(),
+      emailInp: email.val().trim(),
+      dobInp: dob.val().trim(),
+    };
+    //let hasErrors = false;
 
-      if (!info.nameInp || typeof info.nameInp !== 'string' || info.nameInp.trim().length === 0) {
-        name.addClass('is-invalid');
-        error.html('Name given is invalid');
-        error.show();
-        return
+    if (
+      !info.nameInp ||
+      typeof info.nameInp !== "string" ||
+      info.nameInp.trim().length === 0
+    ) {
+      name.addClass("is-invalid");
+      error.html("Name given is invalid");
+      error.show();
+      return;
     }
 
     // For Email
-    if (!info.emailInp || typeof info.emailInp !== 'string' || info.emailInp.trim().length === 0) {
-        email.addClass('is-invalid');
-        error.html(  'User email id is invalid');
-        error.show();
-        return
+    if (
+      !info.emailInp ||
+      typeof info.emailInp !== "string" ||
+      info.emailInp.trim().length === 0
+    ) {
+      email.addClass("is-invalid");
+      error.html("User email id is invalid");
+      error.show();
+      return;
     }
     info.emailInp = info.emailInp.trim().toLowerCase();
     if (
-        !info.emailInp.match(
-            /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-        )
-    ){
-        email.addClass('is-invalid');
-        error.html( 'Invalid Email Address');
-        error.show();
-        return}
-    
-        //Validation Date of birth
-     if (
-        !info.dobInp ||
-        typeof info.dobInp !== 'string' ||
-        info.dobInp.trim().length === 0
+      !info.emailInp.match(
+        /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      )
     ) {
-        dob.addClass('is-invalid');
-        error.html('Please provide Date of Birth');
-        error.show();
-        return
+      email.addClass("is-invalid");
+      error.html("Invalid Email Address");
+      error.show();
+      return;
+    }
+
+    //Validation Date of birth
+    if (
+      !info.dobInp ||
+      typeof info.dobInp !== "string" ||
+      info.dobInp.trim().length === 0
+    ) {
+      dob.addClass("is-invalid");
+      error.html("Please provide Date of Birth");
+      error.show();
+      return;
     }
 
     //username
     if (
-        !info.userInp ||
-        typeof info.userInp !== 'string' ||
-        info.userInp.trim().length === 0
+      !info.userInp ||
+      typeof info.userInp !== "string" ||
+      info.userInp.trim().length === 0
     ) {
-        username.addClass('is-invalid');
-        error.html('Please provide username');
-        error.show();
-        return
+      username.addClass("is-invalid");
+      error.html("Please provide username");
+      error.show();
+      return;
     }
 
     info.userInp = info.userInp.trim().toLowerCase();
-    if (info.userInp.length < 4){
-        username.addClass('is-invalid');
-    error.html( 'username should be at least 4 characters long');
-    error.show();
-        return}
+    if (info.userInp.length < 4) {
+      username.addClass("is-invalid");
+      error.html("username should be at least 4 characters long");
+      error.show();
+      return;
+    }
 
     for (let i = 0; i < info.userInp.length; i++) {
-        const element = info.userInp[i];
-        //console.log(element);
-        if (/\s+/g.test(element)) {
-        username.addClass('is-invalid');
-        error.html( 'spaces not allowed in username');
+      const element = info.userInp[i];
+      //console.log(element);
+      if (/\s+/g.test(element)) {
+        username.addClass("is-invalid");
+        error.html("spaces not allowed in username");
         error.show();
-        return
-    }
-        if (!element.match(/([a-z0-9])/)){
-        username.addClass('is-invalid');
-        error.html( 'only alphanumeric characters allowed');
+        return;
+      }
+      if (!element.match(/([a-z0-9])/)) {
+        username.addClass("is-invalid");
+        error.html("only alphanumeric characters allowed");
         error.show();
-        return
-    }
+        return;
+      }
     }
 
     //For Password
     if (
-        !info.passInp ||
-        typeof info.passInp !== 'string' ||
-        info.passInp.trim().length === 0
+      !info.passInp ||
+      typeof info.passInp !== "string" ||
+      info.passInp.trim().length === 0
     ) {
-        password.addClass('is-invalid');
-        error.html( 'Please provide password');
-        error.show();
-        return
+      password.addClass("is-invalid");
+      error.html("Please provide password");
+      error.show();
+      return;
     }
 
-    if (info.passInp.length < 6){
-        password.addClass('is-invalid');
-        error.html( 'password should be at least 6 characters long');
-        error.show();
-        return}
+    if (info.passInp.length < 6) {
+      password.addClass("is-invalid");
+      error.html("password should be at least 6 characters long");
+      error.show();
+      return;
+    }
 
     for (let i = 0; i < info.passInp.length; i++) {
-        const element = info.passInp[i];
-        //console.log(element);
-        if (/\s+/g.test(element)){ 
-        password.addClass('is-invalid');
-        error.html( 'spaces not allowed in password');
+      const element = info.passInp[i];
+      //console.log(element);
+      if (/\s+/g.test(element)) {
+        password.addClass("is-invalid");
+        error.html("spaces not allowed in password");
         error.show();
-        return}
+        return;
+      }
     }
-        signupForm.unbind().submit();
+    signupForm.unbind().submit();
     //   } else {
     //       //error.html('All input field are required/cannot be empty.')
     //       //error.show();
     //       submitSignup.prop('disabled', false);
     //   }
   });
-  
-  var image_input = $('#profile_pic');
-  image_input.change(function(){
-    var input = document.getElementById('profile_pic');
+
+  let addMovieForm = $("#addMovieForm");
+  let movie_name = $("#movie_name");
+  let stream_service = $("#stream_service");
+  let stream_service_url = $("#stream_service_url");
+  let release_year = $("#release_year");
+  let cast = $("#cast");
+  let genre = $("#genre");
+  let director = $("#director");
+  let err = $(".error");
+
+  let submitButton = $("#submitButton");
+  //let errors = $('.error');
+
+  addMovieForm.submit((event) => {
+    event.preventDefault();
+    movie_name.removeClass("is-invalid is-valid");
+    stream_service.removeClass("is-invalid is-valid");
+    stream_service_url.removeClass("is-invalid is-valid");
+    cast.removeClass("is-invalid is-valid");
+    release_year.removeClass("is-invalid is-valid");
+    director.removeClass("is-invalid is-valid");
+    genre.removeClass("is-invalid is-valid");
+    err.hide();
+
+    let info = {
+      movie_name: movie_name.val().trim(),
+      stream_service: stream_service.val().trim(),
+      stream_service_url: stream_service_url.val().trim(),
+      cast: cast.val().trim(),
+      release_year: release_year.val().trim(),
+      director: director.val().trim(),
+      genre: genre.val().trim(),
+    };
+
+    if (
+      !info.movie_name ||
+      !info.stream_service ||
+      !info.director ||
+      !info.release_year ||
+      !info.cast ||
+      !info.stream_service_url ||
+      !info.genre ||
+      !info.cast
+    ) {
+      err.html("One or more input parameter missing.");
+      err.show();
+      return;
+    }
+
+    if (
+      typeof info.movie_name !== "string" ||
+      typeof info.director !== "string" ||
+      typeof info.genre !== "string"
+    ) {
+      err.html("Incorrect data types");
+      err.show();
+      return;
+    }
+
+    if (
+      info.movie_name.length === 0 ||
+      info.director.length === 0 ||
+      info.genre.length === 0
+    ) {
+      err.html("Strings are just empty spaces");
+      err.show();
+      return;
+    }
+
+    if (
+      parseInt(info.release_year) < 1888 ||
+      parseInt(info.release_year) > new Date().getFullYear()
+    ) {
+      err.html("Invalid release year");
+      err.show();
+      return;
+    }
+    addMovieForm.unbind().submit();
+  });
+
+  var image_input = $("#profile_pic");
+  image_input.change(function () {
+    var input = document.getElementById("profile_pic");
     if (input.files && input.files[0]) {
       var reader = new FileReader();
 
       reader.onload = function (e) {
-          $('#img_avatar')
-              .attr('src', e.target.result)
-              .width(150)
-              .height(200);
+        $("#img_avatar").attr("src", e.target.result).width(150).height(200);
       };
 
       reader.readAsDataURL(input.files[0]);
       // $('label[for=profile_pic]').remove();
-  }
-  })
-
+    }
+  });
 })(window.jQuery);
