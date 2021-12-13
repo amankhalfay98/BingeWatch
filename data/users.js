@@ -42,11 +42,11 @@ module.exports = {
 		}
 
 		//REWORK ERROR CHECKS
-		// for (let i = 0; i < name.length; i++) {
-		// 	const element = name[i];
-		// 	//console.log(element);
-		// 	if (!element.match(/([a-zA-Z])/)) throw 'only characters allowed';
-		// }
+		for (let i = 0; i < name.length; i++) {
+			const element = name[i];
+			//console.log(element);
+			if (!element.match(/([a-zA-Z ])/)) throw 'only characters allowed';
+		}
 
 		// For DOB
 		if (
@@ -347,11 +347,11 @@ module.exports = {
 		}
 
 		//REWORK ERROR CHECKS
-		// for (let i = 0; i < name.length; i++) {
-		// 	const element = name[i];
-		// 	//console.log(element);
-		// 	if (!element.match(/([a-zA-Z])/)) throw 'only characters allowed';
-		// }
+		for (let i = 0; i < name.length; i++) {
+			const element = name[i];
+			//console.log(element);
+			if (!element.match(/([a-zA-Z ])/)) throw 'only characters allowed';
+		}
 
 		// For DOB
 		if (

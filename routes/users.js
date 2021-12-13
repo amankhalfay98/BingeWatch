@@ -156,7 +156,7 @@ router.post("/signup", upload.single("profile_pic"), async (req, res) => {
   for (let i = 0; i < newUser.name.length; i++) {
     const element = newUser.name[i];
 
-    if (!element.match(/([a-zA-Z])/)) {
+    if (!element.match(/([a-zA-Z ])/)) {
       res.status(400).render("pages/signup", {
         error: "only characters allowed",
       });
@@ -384,22 +384,22 @@ router.post("/private", async (req, res) => {
   //console.log(newUser);
 
   // // Error handling for name
-  // if (!newUser.name || newUser.name.trim() == '') {
-  // 	res.status(400).render('pages/private', { error: 'Please provide name' });
-  // 	return;
-  // }
-  // newUser.name = newUser.name.trim();
+  if (!newUser.name || newUser.name.trim() == '') {
+  	res.status(400).render('pages/private', { error: 'Please provide name' });
+  	return;
+  }
+  newUser.name = newUser.name.trim();
 
-  // for (let i = 0; i < newUser.name.length; i++) {
-  // 	const element = newUser.name[i];
+  for (let i = 0; i < newUser.name.length; i++) {
+  	const element = newUser.name[i];
 
-  // 	if (!element.match(/([a-zA-Z])/)) {
-  // 		res.status(400).render('pages/private', {
-  // 			error: 'only characters allowed',
-  // 		});
-  // 		return;
-  // 	}
-  // }
+  	if (!element.match(/([a-zA-Z])/)) {
+  		res.status(400).render('pages/private', {
+  			error: 'only characters allowed',
+  		});
+  		return;
+  	}
+  }
 
   // //Error Handling for DOB
   // //   if (!newUser.date_of_birth || newUser.date_of_birth.trim() == "") {
@@ -420,30 +420,30 @@ router.post("/private", async (req, res) => {
 
   // // Error handling for password
 
-  // if (!newUser.password || newUser.password.trim() == '') {
-  // 	res
-  // 		.status(400)
-  // 		.render('pages/signup', { error: 'Please provide password' });
-  // 	return;
-  // }
+  if (!newUser.password || newUser.password.trim() == '') {
+  	res
+  		.status(400)
+  		.render('pages/signup', { error: 'Please provide password' });
+  	return;
+  }
 
-  // if (newUser.password.length < 6) {
-  // 	res.status(400).render('pages/signup', {
-  // 		error: 'password should be at least 6 characters long',
-  // 	});
-  // 	return;
-  // }
+  if (newUser.password.length < 6) {
+  	res.status(400).render('pages/signup', {
+  		error: 'password should be at least 6 characters long',
+  	});
+  	return;
+  }
 
-  // for (let i = 0; i < newUser.password.length; i++) {
-  // 	const element = newUser.password[i];
-  // 	//console.log(element);
-  // 	if (/\s+/g.test(element)) {
-  // 		res
-  // 			.status(400)
-  // 			.render('pages/signup', { error: 'spaces not allowed in password' });
-  // 		return;
-  // 	}
-  // }
+  for (let i = 0; i < newUser.password.length; i++) {
+  	const element = newUser.password[i];
+  	//console.log(element);
+  	if (/\s+/g.test(element)) {
+  		res
+  			.status(400)
+  			.render('pages/signup', { error: 'spaces not allowed in password' });
+  		return;
+  	}
+  }
 
   try {
     const { name, newpass, password } = newUser;
