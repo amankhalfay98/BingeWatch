@@ -57,15 +57,17 @@ let createMovie = async (
     typeof username !== "string" ||
     typeof movie_name !== "string" ||
     typeof director !== "string" ||
-    typeof genre !== "string"
+    typeof genre !== "string" ||
+    typeof movie_img !== "string"
   )
     throw "Incorrect data types";
-
+  
   if (
     username.trim().length === 0 ||
     movie_name.trim().length === 0 ||
     director.trim().length === 0 ||
-    genre.trim().length === 0
+    genre.trim().length === 0 ||
+    movie_img.trim().length === 0
   )
     throw "Strings are just empty spaces";
 
@@ -181,7 +183,8 @@ let updatingMovie = async (
     typeof username !== "string" ||
     typeof movie_name !== "string" ||
     typeof director !== "string" ||
-    typeof genre !== "string"
+    typeof genre !== "string" ||
+    typeof movie_img !== "string"
   )
     throw "Incorrect data types";
 
@@ -189,7 +192,8 @@ let updatingMovie = async (
     username.trim().length === 0 ||
     movie_name.trim().length === 0 ||
     director.trim().length === 0 ||
-    genre.trim().length === 0
+    genre.trim().length === 0 ||
+    movie_img.trim().length === 0
   )
     throw "Strings are just empty spaces";
 
@@ -348,7 +352,7 @@ let updateMovieReviewID = async (movie_id, review_id, review_rating) => {
   const movieCollection = await movies();
   let movie = await movieCollection.findOne({ _id: parseId });
   movie.reviews.push(review_id.toString());
-  if(movie.rating !== rating){
+  if(movie.rating !== review_rating){
   movie.rating = review_rating;
   const updatedMovie = await movieCollection.updateOne(
     { _id: parseId },
@@ -643,7 +647,8 @@ let seedCreate = async (
     typeof username !== "string" ||
     typeof movie_name !== "string" ||
     typeof director !== "string" ||
-    typeof genre !== "string"
+    typeof genre !== "string" ||
+    typeof movie_img !== "string"
   )
     throw "Incorrect data types";
 
@@ -651,11 +656,12 @@ let seedCreate = async (
     username.trim().length === 0 ||
     movie_name.trim().length === 0 ||
     director.trim().length === 0 ||
-    genre.trim().length === 0
+    genre.trim().length === 0 ||
+    movie_img.trim().length === 0
   )
     throw "Strings are just empty spaces";
 
-    if(!validate.validName(director))
+  if(!validate.validName(director))
     throw "Invalid director name";
 
   if (typeof release_year !== "number" || !Number.isInteger(release_year))
@@ -693,8 +699,6 @@ let seedCreate = async (
 
   if (!validWebsite(streaming["link"].trim()))
     throw "link field in streaming is not a valid website";
-
-  //validating img here
 
   const movieCollection = await movies();
   try {
