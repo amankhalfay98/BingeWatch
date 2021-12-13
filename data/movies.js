@@ -41,112 +41,112 @@ let createMovie = async (
 	genre,
 	movie_img
 ) => {
-	if (
-		!username ||
-		!movie_name ||
-		!director ||
-		!release_year ||
-		!cast ||
-		!streaming ||
-		!genre ||
-		!movie_img
-	)
-		throw 'One or more input parameter missing.';
+  if (
+    !username ||
+    !movie_name ||
+    !director ||
+    !release_year ||
+    !cast ||
+    !streaming ||
+    !genre ||
+    !movie_img
+  )
+    throw "One or more input parameter missing.";
 
-	if (
-		typeof username !== 'string' ||
-		typeof movie_name !== 'string' ||
-		typeof director !== 'string' ||
-		typeof genre !== 'string'
-	)
-		throw 'Incorrect data types';
+  if (
+    typeof username !== "string" ||
+    typeof movie_name !== "string" ||
+    typeof director !== "string" ||
+    typeof genre !== "string" ||
+    typeof movie_img !== "string"
+  )
+    throw "Incorrect data types";
+  
+  if (
+    username.trim().length === 0 ||
+    movie_name.trim().length === 0 ||
+    director.trim().length === 0 ||
+    genre.trim().length === 0 ||
+    movie_img.trim().length === 0
+  )
+    throw "Strings are just empty spaces";
 
-	if (
-		username.trim().length === 0 ||
-		movie_name.trim().length === 0 ||
-		director.trim().length === 0 ||
-		genre.trim().length === 0
-	)
-		throw 'Strings are just empty spaces';
+  if(!validate.validName(director))
+    throw "Invalid director name";
 
-	if (!validate.validName(director)) throw 'Invalid director name';
+  if (typeof release_year !== "number" || !Number.isInteger(release_year))
+    throw "Incorrect data type";
 
-	if (typeof release_year !== 'number' || !Number.isInteger(release_year))
-		throw 'Incorrect data type';
+  //First film produced was 1888
+  if (release_year < 1888 || release_year > new Date().getFullYear())
+    throw "Invalid release year";
 
-	//First film produced was 1888
-	if (release_year < 1888 || release_year > new Date().getFullYear())
-		throw 'Invalid release year';
+  if (!Array.isArray(cast))
+    throw "Incorrect data type";
 
-	if (!Array.isArray(cast)) throw 'Incorrect data type';
+  //Loop within cast array to check name validity
+  for (i = 0; i < cast.length; i++) {
+    if (typeof cast[i] !== "string" || cast[i].trim().length === 0 || !validate.validName(cast[i]))
+      throw "cast is not an array of strings or contains empty strings";
+    cast[i] = cast[i].trim();
+  }
 
-	//Loop within cast array to check name validity
-	for (i = 0; i < cast.length; i++) {
-		if (
-			typeof cast[i] !== 'string' ||
-			cast[i].trim().length === 0 ||
-			!validate.validName(cast[i])
-		)
-			throw 'cast is not an array of strings or contains empty strings';
-		cast[i] = cast[i].trim();
-	}
+  if (typeof streaming !== "object") throw "streaming is not an object";
 
-	if (typeof streaming !== 'object') throw 'streaming is not an object';
+  if (streaming === null || Array.isArray(streaming))
+    throw "streaming in not a valid object";
 
-	if (streaming === null || Array.isArray(streaming))
-		throw 'streaming in not a valid object';
+  if (!("name" in streaming) || !("link" in streaming))
+    throw "streaming missing important information";
 
-	if (!('name' in streaming) || !('link' in streaming))
-		throw 'streaming missing important information';
+  for (let option in streaming) {
+    if (
+      typeof streaming[option] !== "string" ||
+      streaming[option].trim().length === 0
+    )
+      throw "key/value pair in streaming is invalid";
+  }
 
-	for (let option in streaming) {
-		if (
-			typeof streaming[option] !== 'string' ||
-			streaming[option].trim().length === 0
-		)
-			throw 'key/value pair in streaming is invalid';
-	}
+  if (!validWebsite(streaming["link"].trim()))
+    throw "link field in streaming is not a valid website";
 
-	if (!validWebsite(streaming['link'].trim()))
-		throw 'link field in streaming is not a valid website';
+  //validating img here
 
-	//validating img here
+  const movieCollection = await movies();
+  try {
+    const findSameMovie = await movieCollection.findOne({
+      movie_name: movie_name.trim(),
+    });
+    if (findSameMovie !== null) throw "movie already exists within database";
+  } catch (e) {
+    throw "movie already exists within database";
+  }
 
-	const movieCollection = await movies();
-	try {
-		const findSameMovie = await movieCollection.findOne({
-			movie_name: movie_name.trim(),
-		});
-		if (findSameMovie !== null) throw 'movie already exists within database';
-	} catch (e) {
-		throw 'movie already exists within database';
-	}
+  let newMovie = {
+    username: username.trim(),
+    movie_name: movie_name.trim(),
+    director: director.trim(),
+    release_year: release_year,
+    cast: cast,
+    streaming_service: streaming,
+    rating: 0,
+    genre: genre.trim(),
+    views: 0,
+    reviews: [],
+    watched_list: [],
+    movie_img: movie_img,
+    tag: "movie",
+    favourite_list:[],
+    toWatch_list:[],
+    reported:[]
+  };
 
-	let newMovie = {
-		username: username.trim(),
-		movie_name: movie_name.trim(),
-		director: director.trim(),
-		release_year: release_year,
-		cast: cast,
-		streaming_service: streaming,
-		rating: 0,
-		genre: genre.trim(),
-		views: 0,
-		reviews: [],
-		watched_list: [],
-		movie_img: movie_img,
-		tag: 'movie',
-		favourite_list: [],
-		toWatch_list: [],
-		reported: [],
-	};
+  const insertMovie = await movieCollection.insertOne(newMovie);
 
-	const insertMovie = await movieCollection.insertOne(newMovie);
-
-	if (insertMovie.insertedCount === 0) throw 'movie could not be added';
-	const addedMovie = getMovie(insertMovie.insertedId.toString());
-	return addedMovie;
-	//return `${movie_name} successfully added!`;
+  if (insertMovie.insertedCount === 0) throw "movie could not be added";
+  const addedMovie = getMovie(insertMovie.insertedId.toString());
+  return addedMovie;
+  //return `${movie_name} successfully added!`;
 };
 
 let updatingMovie = async (
@@ -160,161 +160,161 @@ let updatingMovie = async (
 	genre,
 	movie_img
 ) => {
-	if (
-		!id ||
-		!username ||
-		!movie_name ||
-		!director ||
-		!release_year ||
-		!cast ||
-		!streaming ||
-		!genre ||
-		!movie_img
-	)
-		throw 'One or more input parameter missing.';
+  if (
+    !id ||
+    !username ||
+    !movie_name ||
+    !director ||
+    !release_year ||
+    !cast ||
+    !streaming ||
+    !genre ||
+    !movie_img
+  )
+    throw "One or more input parameter missing.";
 
-	if (typeof id !== 'string') throw 'id is of invalid type';
+  if (typeof id !== "string") throw "id is of invalid type";
 
-	if (id.trim().length === 0) throw 'id supplied is just an empty string';
+  if (id.trim().length === 0) throw "id supplied is just an empty string";
 
-	if (!ObjectId.isValid(id.trim())) throw 'id is not a valid ObjectId';
+  if (!ObjectId.isValid(id.trim())) throw "id is not a valid ObjectId";
 
-	if (
-		typeof username !== 'string' ||
-		typeof movie_name !== 'string' ||
-		typeof director !== 'string' ||
-		typeof genre !== 'string'
-	)
-		throw 'Incorrect data types';
+  if (
+    typeof username !== "string" ||
+    typeof movie_name !== "string" ||
+    typeof director !== "string" ||
+    typeof genre !== "string" ||
+    typeof movie_img !== "string"
+  )
+    throw "Incorrect data types";
 
-	if (
-		username.trim().length === 0 ||
-		movie_name.trim().length === 0 ||
-		director.trim().length === 0 ||
-		genre.trim().length === 0
-	)
-		throw 'Strings are just empty spaces';
+  if (
+    username.trim().length === 0 ||
+    movie_name.trim().length === 0 ||
+    director.trim().length === 0 ||
+    genre.trim().length === 0 ||
+    movie_img.trim().length === 0
+  )
+    throw "Strings are just empty spaces";
 
-	if (!validate.validName(director)) throw 'Invalid director name';
+  if(!validate.validName(director))
+    throw "Invalid director name";
 
-	if (typeof release_year !== 'number' || !Number.isInteger(release_year))
-		throw 'Incorrect data type';
+  if (typeof release_year !== "number" || !Number.isInteger(release_year))
+    throw "Incorrect data type";
 
-	//First film produced was 1888
-	if (release_year < 1888 || release_year > new Date().getFullYear())
-		throw 'Invalid release year';
+  //First film produced was 1888
+  if (release_year < 1888 || release_year > new Date().getFullYear())
+    throw "Invalid release year";
 
-	if (!Array.isArray(cast)) throw 'Incorrect data type';
+  if (!Array.isArray(cast))
+    throw "Incorrect data type";
 
-	//Loop within cast array to check name validity
-	for (i = 0; i < cast.length; i++) {
-		if (
-			typeof cast[i] !== 'string' ||
-			cast[i].trim().length === 0 ||
-			!validate.validName(cast[i])
-		)
-			throw 'cast is not an array of strings or contains empty strings';
-		cast[i] = cast[i].trim();
-	}
+  //Loop within cast array to check name validity
+  for (i = 0; i < cast.length; i++) {
+    if (typeof cast[i] !== "string" || cast[i].trim().length === 0 || !validate.validName(cast[i]))
+      throw "cast is not an array of strings or contains empty strings";
+    cast[i] = cast[i].trim();
+  }
 
-	if (typeof streaming !== 'object') throw 'streaming is not an object';
+  if (typeof streaming !== "object") throw "streaming is not an object";
 
-	if (streaming === null || Array.isArray(streaming))
-		throw 'streaming in not a valid object';
+  if (streaming === null || Array.isArray(streaming))
+    throw "streaming in not a valid object";
 
-	if (!('name' in streaming) || !('link' in streaming))
-		throw 'streaming missing important information';
+  if (!("name" in streaming) || !("link" in streaming))
+    throw "streaming missing important information";
 
-	for (let option in streaming) {
-		if (
-			typeof streaming[option] !== 'string' ||
-			streaming[option].trim().length === 0
-		)
-			throw 'key/value pair in streaming is invalid';
-	}
+  for (let option in streaming) {
+    if (
+      typeof streaming[option] !== "string" ||
+      streaming[option].trim().length === 0
+    )
+      throw "key/value pair in streaming is invalid";
+  }
 
-	if (!validWebsite(streaming['link'].trim()))
-		throw 'link field in streaming is not a valid website';
+  if (!validWebsite(streaming["link"].trim()))
+    throw "link field in streaming is not a valid website";
 
-	//validating img here
+  //validating img here
 
-	const movieCollection = await movies();
-	try {
-		const findSameMovie = await movieCollection.findOne({
-			movie_name: movie_name.trim(),
-		});
-		if (findSameMovie !== null) throw 'movie already exists within database';
-	} catch (e) {
-		throw 'movie already exists within database';
-	}
+  const movieCollection = await movies();
+  try {
+    const findSameMovie = await movieCollection.findOne({
+      movie_name: movie_name.trim(),
+    });
+    if (findSameMovie !== null) throw "movie already exists within database";
+  } catch (e) {
+    throw "movie already exists within database";
+  }
 
-	let parseId = ObjectId(id.trim());
-	let oldMovieName = '';
-	let oldDirector = '';
-	let oldYear = 0;
-	let oldCast = [];
-	let oldStream = {};
-	let currRating = 0;
-	let oldGenre = '';
-	let currViews = 0;
-	let currReviews = [];
-	let currWatch = [];
-	let oldImg = '';
+  let parseId = ObjectId(id.trim());
+  let oldMovieName = "";
+  let oldDirector = "";
+  let oldYear = 0;
+  let oldCast = [];
+  let oldStream = {};
+  let currRating = 0;
+  let oldGenre = "";
+  let currViews = 0;
+  let currReviews = [];
+  let currWatch = [];
+  let oldImg = "";
 
-	try {
-		const findMovie = await movieCollection.findOne({ _id: parseId });
-		if (findMovie === null) throw 'no movie with given id';
-		oldMovieName = findMovie.movie_name;
-		oldDirector = findMovie.director;
-		oldYear = findMovie.release_year;
-		oldCast = findMovie.cast;
-		oldStream = findMovie.streaming_service;
-		currRating = findMovie.rating;
-		oldGenre = findMovie.genre;
-		currViews = findMovie.views;
-		currReviews = findMovie.reviews;
-		currWatch = findMovie.watched_list;
-		oldImg = findMovie.movie_img;
-	} catch (e) {
-		throw 'no movie with given id';
-	}
+  try {
+    const findMovie = await movieCollection.findOne({ _id: parseId });
+    if (findMovie === null) throw "no movie with given id";
+    oldMovieName = findMovie.movie_name;
+    oldDirector = findMovie.director;
+    oldYear = findMovie.release_year;
+    oldCast = findMovie.cast;
+    oldStream = findMovie.streaming_service;
+    currRating = findMovie.rating;
+    oldGenre = findMovie.genre;
+    currViews = findMovie.views;
+    currReviews = findMovie.reviews;
+    currWatch = findMovie.watched_list;
+    oldImg = findMovie.movie_img;
+  } catch (e) {
+    throw "no movie with given id";
+  }
 
-	//Compare the mutable fields to see if at least ONE of them is different from previos version of the movie
-	if (
-		movie_name.trim() === oldMovieName &&
-		director.trim() === oldDirector &&
-		release_year === oldYear &&
-		cast === oldCast &&
-		streaming === oldStream &&
-		genre === oldGenre &&
-		movie_img === oldImg
-	)
-		throw 'updated fields are the same as the original';
+  //Compare the mutable fields to see if at least ONE of them is different from previos version of the movie
+  if (
+    movie_name.trim() === oldMovieName &&
+    director.trim() === oldDirector &&
+    release_year === oldYear &&
+    cast === oldCast &&
+    streaming === oldStream &&
+    genre === oldGenre &&
+    movie_img === oldImg
+  )
+    throw "updated fields are the same as the original";
 
-	let updateMovie = {
-		username: username.trim(),
-		movie_name: movie_name.trim(),
-		director: director.trim(),
-		release_year: release_year,
-		cast: cast,
-		streaming_service: streaming,
-		rating: currRating,
-		genre: genre.trim(),
-		views: currViews,
-		reviews: currReviews,
-		watched_list: currWatch,
-		movie_img: movie_img,
-		tag: 'movie',
-	};
+  let updateMovie = {
+    username: username.trim(),
+    movie_name: movie_name.trim(),
+    director: director.trim(),
+    release_year: release_year,
+    cast: cast,
+    streaming_service: streaming,
+    rating: currRating,
+    genre: genre.trim(),
+    views: currViews,
+    reviews: currReviews,
+    watched_list: currWatch,
+    movie_img: movie_img,
+    tag: "movie",
+  };
 
-	const updatedMovie = await movieCollection.updateOne(
-		{ _id: parseId },
-		{ $set: updateMovie }
-	);
+  const updatedMovie = await movieCollection.updateOne(
+    { _id: parseId },
+    { $set: updateMovie }
+  );
 
-	if (updatedMovie.modifiedCount === 0) throw 'nothing was updated';
+  if (updatedMovie.modifiedCount === 0) throw "nothing was updated";
 
-	return `${movie_name} with id ${id} successfully updated!`;
+  return `${movie_name} with id ${id} successfully updated!`;
 };
 
 let getMovie = async (id) => {
@@ -346,23 +346,21 @@ let getAllMovies = async () => {
 
 // A method to add review id to movies collection when new review is added.
 let updateMovieReviewID = async (movie_id, review_id, review_rating) => {
+  if (!ObjectId.isValid(movie_id.trim())) throw "Movie id is not a valid ObjectId";
 
-	if (!ObjectId.isValid(movie_id.trim()))
-		throw 'Movie id is not a valid ObjectId';
-
-	let parseId = ObjectId(movie_id.trim());
-	const movieCollection = await movies();
-	let movie = await movieCollection.findOne({ _id: parseId });
-	movie.reviews.push(review_id.toString());
-	if (movie.rating !== review_rating) {
-		movie.rating = review_rating;
-		const updatedMovie = await movieCollection.updateOne(
-			{ _id: parseId },
-			{ $set: movie }
-		);
-		if (updatedMovie.modifiedCount === 0) throw 'nothing was updated';
-	}
-	return `${movie.movie_name} with id ${movie._id} successfully updated!`;
+  let parseId = ObjectId(movie_id.trim());
+  const movieCollection = await movies();
+  let movie = await movieCollection.findOne({ _id: parseId });
+  movie.reviews.push(review_id.toString());
+  if(movie.rating !== review_rating){
+  movie.rating = review_rating;
+  const updatedMovie = await movieCollection.updateOne(
+    { _id: parseId },
+    { $set: movie }
+  );
+  if (updatedMovie.modifiedCount === 0) throw "nothing was updated";
+  }
+  return `${movie.movie_name} with id ${movie._id} successfully updated!`;
 };
 
 let updateMovieRating = async (movie_id, rating) => {
@@ -643,112 +641,110 @@ let seedCreate = async (
 	genre,
 	movie_img
 ) => {
-	if (
-		!username ||
-		!movie_name ||
-		!director ||
-		!release_year ||
-		!cast ||
-		!streaming ||
-		!genre ||
-		!movie_img
-	)
-		throw 'One or more input parameter missing.';
+  if (
+    !username ||
+    !movie_name ||
+    !director ||
+    !release_year ||
+    !cast ||
+    !streaming ||
+    !genre ||
+    !movie_img
+  )
+    throw "One or more input parameter missing.";
 
-	if (
-		typeof username !== 'string' ||
-		typeof movie_name !== 'string' ||
-		typeof director !== 'string' ||
-		typeof genre !== 'string'
-	)
-		throw 'Incorrect data types';
+  if (
+    typeof username !== "string" ||
+    typeof movie_name !== "string" ||
+    typeof director !== "string" ||
+    typeof genre !== "string" ||
+    typeof movie_img !== "string"
+  )
+    throw "Incorrect data types";
 
-	if (
-		username.trim().length === 0 ||
-		movie_name.trim().length === 0 ||
-		director.trim().length === 0 ||
-		genre.trim().length === 0
-	)
-		throw 'Strings are just empty spaces';
+  if (
+    username.trim().length === 0 ||
+    movie_name.trim().length === 0 ||
+    director.trim().length === 0 ||
+    genre.trim().length === 0 ||
+    movie_img.trim().length === 0
+  )
+    throw "Strings are just empty spaces";
 
-	if (!validate.validName(director)) throw 'Invalid director name';
+  if(!validate.validName(director))
+    throw "Invalid director name";
 
-	if (typeof release_year !== 'number' || !Number.isInteger(release_year))
-		throw 'Incorrect data type';
+  if (typeof release_year !== "number" || !Number.isInteger(release_year))
+    throw "Incorrect data type";
 
-	//First film produced was 1888
-	if (release_year < 1888 || release_year > new Date().getFullYear())
-		throw 'Invalid release year';
+  //First film produced was 1888
+  if (release_year < 1888 || release_year > new Date().getFullYear())
+    throw "Invalid release year";
 
-	if (!Array.isArray(cast)) throw 'Incorrect data type';
+  if (!Array.isArray(cast))
+    throw "Incorrect data type";
 
-	//Loop within cast array to check name validity
-	for (i = 0; i < cast.length; i++) {
-		if (
-			typeof cast[i] !== 'string' ||
-			cast[i].trim().length === 0 ||
-			!validate.validName(cast[i])
-		)
-			throw 'cast is not an array of strings or contains empty strings';
-		cast[i] = cast[i].trim();
-	}
+  //Loop within cast array to check name validity
+  for (i = 0; i < cast.length; i++) {
+    if (typeof cast[i] !== "string" || cast[i].trim().length === 0 || !validate.validName(cast[i]))
+      throw "cast is not an array of strings or contains empty strings";
+    cast[i] = cast[i].trim();
+  }
 
-	if (typeof streaming !== 'object') throw 'streaming is not an object';
+  if (typeof streaming !== "object") throw "streaming is not an object";
 
-	if (streaming === null || Array.isArray(streaming))
-		throw 'streaming in not a valid object';
+  if (streaming === null || Array.isArray(streaming))
+    throw "streaming in not a valid object";
 
-	if (!('name' in streaming) || !('link' in streaming))
-		throw 'streaming missing important information';
+  if (!("name" in streaming) || !("link" in streaming))
+    throw "streaming missing important information";
 
-	for (let option in streaming) {
-		if (
-			typeof streaming[option] !== 'string' ||
-			streaming[option].trim().length === 0
-		)
-			throw 'key/value pair in streaming is invalid';
-	}
+  for (let option in streaming) {
+    if (
+      typeof streaming[option] !== "string" ||
+      streaming[option].trim().length === 0
+    )
+      throw "key/value pair in streaming is invalid";
+  }
 
-	if (!validWebsite(streaming['link'].trim()))
-		throw 'link field in streaming is not a valid website';
+  if (!validWebsite(streaming["link"].trim()))
+    throw "link field in streaming is not a valid website";
 
-	//validating img here
+  const movieCollection = await movies();
+  try {
+    const findSameMovie = await movieCollection.findOne({
+      movie_name: movie_name.trim(),
+    });
+    if (findSameMovie !== null) throw "movie already exists within database";
+  } catch (e) {
+    throw "movie already exists within database";
+  }
 
-	const movieCollection = await movies();
-	try {
-		const findSameMovie = await movieCollection.findOne({
-			movie_name: movie_name.trim(),
-		});
-		if (findSameMovie !== null) throw 'movie already exists within database';
-	} catch (e) {
-		throw 'movie already exists within database';
-	}
+  //username should be already populated when filling form
+  let newMovie = {
+    username: username.trim(),
+    movie_name: movie_name.trim(),
+    director: director.trim(),
+    release_year: release_year,
+    cast: cast,
+    streaming_service: streaming,
+    rating: 0,
+    genre: genre,
+    views: Math.floor(Math.random() * (500 - 0 + 1) + 0),
+    reviews: [],
+    watched_list: [],
+    movie_img: movie_img,
+    tag: "movie",
+    favourite_list:[],
+    toWatch_list:[]
+  };
 
-	//username should be already populated when filling form
-	let newMovie = {
-		username: username.trim(),
-		movie_name: movie_name.trim(),
-		director: director.trim(),
-		release_year: release_year,
-		cast: cast,
-		streaming_service: streaming,
-		rating: 0,
-		genre: genre,
-		views: Math.floor(Math.random() * (500 - 0 + 1) + 0),
-		reviews: [],
-		watched_list: [],
-		movie_img: movie_img,
-		tag: 'movie',
-		favourite_list: [],
-		toWatch_list: [],
-	};
+  const insertMovie = await movieCollection.insertOne(newMovie);
 
-	const insertMovie = await movieCollection.insertOne(newMovie);
+  if (insertMovie.insertedCount === 0) throw "movie could not be added";
 
-	if (insertMovie.insertedCount === 0) throw 'movie could not be added';
-
-	return newMovie;
-	// return `${movie_name} successfully added!`;
+  return newMovie;
+  // return `${movie_name} successfully added!`;
 };
 
 module.exports = {
