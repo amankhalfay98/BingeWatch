@@ -7,7 +7,7 @@ const path = require("path");
 const movies = require("../data/movies");
 const multer = require("multer");
 const xss = require('xss');
-
+const fs = require("fs");
 const storage = multer.diskStorage({
 	destination: function (req, file, cb) {
 		const path = 'profile/';
@@ -156,7 +156,7 @@ router.post("/signup", upload.single("profile_pic"), async (req, res) => {
   for (let i = 0; i < newUser.name.length; i++) {
     const element = newUser.name[i];
 
-    if (!element.match(/([a-zA-Z])/)) {
+    if (!element.match(/([a-zA-Z ])/)) {
       res.status(400).render("pages/signup", {
         error: "only characters allowed",
       });
